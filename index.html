@@ -16,7 +16,6 @@
 
     <style>
         :root {
-            /* Updated Colors based on your NC Logo Image */
             --primary-gradient: linear-gradient(135deg, #0055ff, #00d4ff);
             --bg-light: #f0f2f5;
             --text-light: #1c1e21;
@@ -24,24 +23,23 @@
             --bg-dark: #0a0a0a;
             --text-dark: #e4e6eb;
             --card-dark: #18191a;
-            --mute-active: #ff3b30;
-            --call-accept: #30d158;
             --call-reject: #ff453a;
+            --call-accept: #30d158;
         }
 
-        /* Auto Theme Detection */
-        @media (prefers-color-scheme: dark) {
-            body { background-color: var(--bg-dark); color: var(--text-dark); }
-            .card, .nav-bar, .modal-content, .list-item { background-color: var(--card-dark) !important; color: var(--text-dark) !important; }
-            input { background-color: #3a3b3c !important; color: white !important; border: none !important; }
-            .header i { color: #e4e6eb !important; }
-        }
-
+        /* RESET & BASICS */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        body { background-color: var(--bg-light); color: var(--text-light); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        body { 
+            background-color: var(--bg-light); 
+            color: var(--text-light); 
+            height: 100vh; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+        }
 
-        /* --- LOADER --- */
+        /* --- LOADER (FIXED) --- */
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: black; z-index: 9999;
@@ -49,97 +47,116 @@
             transition: opacity 0.5s ease;
         }
         .nc-logo {
-            font-size: 80px; font-weight: 800; font-style: italic;
+            font-size: 70px; font-weight: 800; font-style: italic;
             background: var(--primary-gradient);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            letter-spacing: -5px; animation: glow 2s infinite alternate;
-            position: relative;
+            position: relative; margin-bottom: 10px;
+            /* Fix for logo rendering */
+            display: inline-block;
         }
-        /* Adding the swoosh underline effect from your logo */
+        /* Swoosh effect */
         .nc-logo::after {
-            content: ''; position: absolute; bottom: 10px; left: -10px; width: 120%; height: 5px;
+            content: ''; position: absolute; bottom: 8px; left: -5px; width: 110%; height: 4px;
             background: var(--primary-gradient); border-radius: 50%;
-            transform: rotate(-5deg); box-shadow: 0 0 10px #00d4ff;
+            transform: rotate(-3deg); box-shadow: 0 0 10px #00d4ff;
+        }
+
+        /* --- AUTH CONTAINER (MAJOR FIX HERE) --- */
+        .auth-container { 
+            display: flex; 
+            flex-direction: column; /* Forces vertical stacking */
+            justify-content: center; 
+            align-items: center; 
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+        }
+
+        .auth-container h3 { font-size: 24px; margin-bottom: 5px; }
+        .auth-container p { margin-bottom: 30px; }
+
+        .input-group { 
+            position: relative; 
+            margin: 10px 0; 
+            width: 100%; 
+            max-width: 320px; /* Limits width on big screens */
         }
         
-        .app-name-load { font-size: 20px; color: #fff; letter-spacing: 2px; margin-top: 10px; }
-        .creator-tag {
-            position: absolute; bottom: 30px; font-size: 12px; color: #888; letter-spacing: 1px;
-        }
-        @keyframes glow { from { filter: drop-shadow(0 0 5px #0055ff); } to { filter: drop-shadow(0 0 20px #00d4ff); } }
-
-        /* --- AUTH & PAGES --- */
-        .page { display: none; width: 100%; height: 100%; padding: 20px; overflow-y: auto; }
-        .active-page { display: flex; flex-direction: column; }
-
-        /* Login Screen */
-        .auth-container { justify-content: center; align-items: center; text-align: center; }
-        .input-group { position: relative; margin: 15px 0; width: 100%; max-width: 350px; }
         .input-group input {
-            width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #ddd; outline: none; font-size: 16px;
+            width: 100%; 
+            padding: 15px 45px 15px 15px; /* Right padding for icon */
+            border-radius: 12px; 
+            border: 1px solid #ddd; 
+            outline: none; 
+            font-size: 16px;
+            background: white; /* Force white background */
+            color: #333;
         }
+        
         .input-group i {
-            position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #888;
+            position: absolute; 
+            right: 15px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            cursor: pointer; 
+            color: #888;
+            z-index: 2;
         }
+
         .btn-primary {
-            background: var(--primary-gradient); color: white; padding: 15px; width: 100%; max-width: 350px;
-            border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px;
+            background: var(--primary-gradient); 
+            color: white; 
+            padding: 15px; 
+            width: 100%; 
+            max-width: 320px;
+            border: none; 
+            border-radius: 12px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            margin-top: 20px;
             box-shadow: 0 4px 15px rgba(0, 85, 255, 0.4);
         }
-        .error-msg { color: #ff453a; font-size: 12px; margin-top: 5px; display: none; }
 
-        /* --- MAIN DASHBOARD --- */
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; margin-bottom: 20px; }
+        /* --- DASHBOARD STYLES --- */
+        .page { display: none; width: 100%; height: 100%; padding: 20px; overflow-y: auto; }
+        .active-page { display: flex; flex-direction: column; }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; margin-bottom: 15px; }
         .user-profile { display: flex; align-items: center; gap: 10px; }
         .avatar {
             width: 45px; height: 45px; border-radius: 50%; background: var(--primary-gradient);
             display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; font-size: 20px;
-            box-shadow: 0 2px 10px rgba(0, 212, 255, 0.3);
         }
-        .status-dot { width: 12px; height: 12px; background: #31a24c; border-radius: 50%; position: absolute; bottom: 0; right: 0; border: 2px solid white; }
         
-        /* Tabs */
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; background: rgba(0,0,0,0.05); padding: 5px; border-radius: 15px; }
-        .tab-btn { flex: 1; padding: 10px; border-radius: 12px; border: none; font-weight: 500; cursor: pointer; background: transparent; color: inherit; }
-        .tab-btn.active { background: white; shadow: 0 2px 5px rgba(0,0,0,0.1); color: #0055ff; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 15px; background: rgba(0,0,0,0.05); padding: 5px; border-radius: 15px; }
+        .tab-btn { flex: 1; padding: 10px; border-radius: 12px; border: none; font-weight: 500; cursor: pointer; background: transparent; }
+        .tab-btn.active { background: white; color: #0055ff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
-        /* Lists */
         .list-item {
             display: flex; align-items: center; justify-content: space-between;
             padding: 15px; background: white; border-radius: 15px; margin-bottom: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: transform 0.1s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-        .list-item:active { transform: scale(0.98); }
 
-        /* --- CALL INTERFACE (OVERLAY) --- */
+        /* --- CALL SCREEN --- */
         #call-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #0f1014; z-index: 1000; display: none;
+            background: #0f1014; z-index: 2000; display: none;
             flex-direction: column; align-items: center; justify-content: space-between; padding: 40px 20px;
         }
-        .caller-info { text-align: center; margin-top: 50px; }
-        .caller-avatar { width: 120px; height: 120px; border-radius: 50%; background: #333; margin: 0 auto 20px; border: 3px solid #00d4ff; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 50px; color: white; }
-        
-        .call-controls {
-            display: flex; gap: 25px; justify-content: center; align-items: center; width: 100%; margin-bottom: 40px;
-        }
-        .control-btn {
-            width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 22px;
-            display: flex; align-items: center; justify-content: center; cursor: pointer; color: white;
-            transition: transform 0.2s; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
-        }
-        .control-btn:active { transform: scale(0.9); }
-        .btn-hangup { background: var(--call-reject); width: 70px; height: 70px; font-size: 28px; box-shadow: 0 5px 20px rgba(255, 69, 58, 0.4); }
-        .btn-answer { background: var(--call-accept); width: 70px; height: 70px; animation: pulse 1.5s infinite; }
-        .mute-active { background: white; color: black; }
+        .caller-avatar { width: 120px; height: 120px; border-radius: 50%; background: #333; margin: 0 auto 20px; border: 3px solid #00d4ff; display: flex; align-items: center; justify-content: center; font-size: 40px; color: white; }
+        .call-controls { display: flex; gap: 20px; }
+        .control-btn { width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 24px; color: white; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); cursor: pointer; }
+        .btn-hangup { background: var(--call-reject); }
+        .btn-answer { background: var(--call-accept); }
 
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(48, 209, 88, 0.7); } 70% { box-shadow: 0 0 0 20px rgba(48, 209, 88, 0); } 100% { box-shadow: 0 0 0 0 rgba(48, 209, 88, 0); } }
-
-        /* Popups */
-        .toast {
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-            background: rgba(0,0,0,0.8); color: white; padding: 10px 20px; border-radius: 20px; font-size: 12px;
-            display: none; z-index: 2000;
+        /* DARK MODE SUPPORT */
+        @media (prefers-color-scheme: dark) {
+            body { background-color: var(--bg-dark); color: var(--text-dark); }
+            .input-group input { background-color: #333; color: white; border: 1px solid #555; }
+            .list-item, .tab-btn.active { background-color: var(--card-dark); color: white; }
         }
     </style>
 </head>
@@ -152,18 +169,16 @@
     <div id="loader">
         <div class="nc-logo">NC</div>
         <div class="app-name-load">StartCall</div>
-        <div class="creator-tag">Created by - Nani Creations</div>
+        <p style="color:#888; font-size:12px; position:absolute; bottom:30px;">Created by - Nani Creations</p>
     </div>
 
-    <div id="toast" class="toast"><i class="fas fa-check-circle"></i> Request Sent</div>
-
     <div id="login-page" class="page auth-container">
-        <div class="nc-logo" style="font-size: 60px;">NC</div>
+        <div class="nc-logo">NC</div>
         <h3>Welcome Back</h3>
-        <p style="color:#888; font-size: 12px; margin-bottom: 30px;">Secure Login with Firebase</p>
+        <p style="color:#888; font-size: 12px;">Login to connect instantly</p>
         
         <div class="input-group">
-            <input type="text" id="username-input" placeholder="Display Name (e.g. Nani)">
+            <input type="text" id="username-input" placeholder="Display Name">
             <i class="fas fa-user"></i>
         </div>
         <div class="input-group">
@@ -174,75 +189,62 @@
             <input type="password" id="password-input" placeholder="Password">
             <i class="fas fa-eye" onclick="togglePassword()"></i>
         </div>
-        <p id="auth-error" class="error-msg">Error message here</p>
+        <p id="auth-error" style="color:red; font-size:12px; display:none; margin-top:5px;"></p>
         
         <button id="login-btn" class="btn-primary" onclick="handleAuth()">Login / Sign Up</button>
-        <p style="margin-top: 15px; font-size: 11px; color:#666;">If account doesn't exist, we will create one for you automatically.</p>
     </div>
 
     <div id="main-page" class="page">
         <div class="header">
             <div class="user-profile">
-                <div class="avatar" id="my-avatar">U<div class="status-dot"></div></div>
+                <div class="avatar" id="my-avatar">U</div>
                 <div>
-                    <h3 id="display-name">User</h3>
+                    <h3 id="display-name" style="font-size:16px;">User</h3>
                     <p style="font-size: 11px; color: #31a24c;">● Online</p>
                 </div>
             </div>
-            <i class="fas fa-sign-out-alt" onclick="logout()" style="font-size: 20px; color: #888; cursor:pointer;"></i>
+            <i class="fas fa-sign-out-alt" onclick="logout()" style="color:#888; font-size:18px;"></i>
         </div>
 
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('friends')">Friends</button>
-            <button class="tab-btn" onclick="switchTab('history')">History</button>
             <button class="tab-btn" onclick="switchTab('requests')">Requests</button>
+            <button class="tab-btn" onclick="switchTab('history')">History</button>
         </div>
 
-        <div class="input-group" style="max-width: 100%; margin-top:0;">
+        <div class="input-group" style="width:100%; margin-top:0;">
             <input type="text" placeholder="Search friends..." onkeyup="searchUsers(this.value)">
             <i class="fas fa-search"></i>
         </div>
 
-        <div id="friends-list">
-            <p style="text-align:center; color:#888; margin-top:20px; font-size:12px;">Loading users...</p>
+        <div id="friends-list" style="margin-top:10px;">
+            <p style="text-align:center; color:#888; font-size:12px;">Loading users...</p>
         </div>
-        
-        <div id="requests-list" style="display:none;">
-            <p style="text-align:center; color:#888; margin-top:20px;">No pending requests</p>
-        </div>
-
-        <div id="history-list" style="display:none;">
-            <p style="text-align:center; color:#888; margin-top:20px;">No recent calls</p>
-        </div>
+        <div id="requests-list" style="display:none; margin-top:10px;"></div>
+        <div id="history-list" style="display:none; margin-top:10px;"></div>
     </div>
 
     <div id="call-screen">
-        <div style="width:100%; display:flex; justify-content:space-between; color:white; padding:10px;">
-            <i class="fas fa-chevron-down" onclick="minimizeCall()"></i>
-            <i class="fas fa-user-plus"></i>
-        </div>
-
-        <div class="caller-info">
+        <div style="width:100%; text-align:right;"><i class="fas fa-chevron-down" style="color:white; padding:10px;" onclick="minimizeCall()"></i></div>
+        <div style="text-align:center;">
             <div class="caller-avatar" id="call-avatar">U</div>
-            <h2 id="call-name" style="color:white; font-weight:600;">Unknown</h2>
-            <p id="call-status" class="call-status">Calling...</p>
-            <p id="call-timer" style="color:white; font-size:14px; margin-top:5px;"></p>
+            <h2 id="call-name" style="color:white; margin-bottom:10px;">Unknown</h2>
+            <p id="call-status" style="color:#aaa;">Calling...</p>
+            <p id="call-timer" style="color:white; font-size:14px; margin-top:10px;"></p>
         </div>
-
         <div class="call-controls">
-            <button class="control-btn" onclick="toggleSpeaker(this)"><i class="fas fa-volume-up"></i></button>
             <button class="control-btn" onclick="toggleMute(this)"><i class="fas fa-microphone"></i></button>
             <button class="control-btn btn-hangup" onclick="endCall()"><i class="fas fa-phone-slash"></i></button>
+            <button class="control-btn" onclick="toggleSpeaker(this)"><i class="fas fa-volume-up"></i></button>
         </div>
-        
-        <div id="incoming-controls" style="display:none; gap: 40px; margin-bottom:40px;">
-             <button class="control-btn btn-hangup" onclick="rejectCall()"><i class="fas fa-times"></i></button>
-             <button class="control-btn btn-answer" onclick="answerCall()"><i class="fas fa-phone"></i></button>
+        <div id="incoming-controls" style="display:none; gap:30px;">
+            <button class="control-btn btn-hangup" onclick="rejectCall()"><i class="fas fa-times"></i></button>
+            <button class="control-btn btn-answer" onclick="answerCall()"><i class="fas fa-phone"></i></button>
         </div>
     </div>
 
     <script>
-        // --- 1. FIREBASE CONFIGURATION (FROM YOUR SCREENSHOT) ---
+        // --- YOUR FIREBASE CONFIG (Already Correct) ---
         const firebaseConfig = {
             apiKey: "AIzaSyBruCpy7s-J_uRIyJWWXrJ8M6JT2dqpYD4",
             authDomain: "starcall-9b11e.firebaseapp.com",
@@ -252,254 +254,149 @@
             appId: "1:380174170098:web:ad6eceb05beac044cddd6b"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         const auth = firebase.auth();
-        const rtdb = firebase.database(); // Used for Presence (Online/Offline)
 
-        // --- 2. GLOBAL VARIABLES ---
-        let currentUser = null;
-        let localStream = null;
-        let currentCall = null;
-        let peer = null;
-        let callTimerInterval;
+        // VARIABLES
+        let currentUser = null, localStream = null, currentCall = null, peer = null, callTimerInterval;
 
-        // --- 3. LOADER ---
+        // LOADER & AUTH CHECK
         window.onload = function() {
-            // Check if already logged in
             auth.onAuthStateChanged((user) => {
                 setTimeout(() => {
                     document.getElementById('loader').style.opacity = '0';
-                    setTimeout(() => { document.getElementById('loader').style.display = 'none'; }, 500);
-                    
-                    if (user) {
-                        setupUser(user);
-                    } else {
-                        document.getElementById('login-page').style.display = 'flex';
-                    }
+                    setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
+                    if (user) setupUser(user);
+                    else document.getElementById('login-page').style.display = 'flex';
                 }, 2000);
             });
         };
 
-        // --- 4. AUTHENTICATION LOGIC ---
+        // UI FUNCTIONS
         function togglePassword() {
-            const input = document.getElementById('password-input');
-            input.type = input.type === "password" ? "text" : "password";
+            const x = document.getElementById("password-input");
+            x.type = x.type === "password" ? "text" : "password";
         }
 
+        function switchTab(t) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            ['friends','requests','history'].forEach(x => document.getElementById(x+'-list').style.display='none');
+            document.getElementById(t+'-list').style.display='block';
+        }
+
+        // AUTH HANDLER
         async function handleAuth() {
-            const email = document.getElementById('email-input').value;
-            const password = document.getElementById('password-input').value;
-            const username = document.getElementById('username-input').value;
+            const em = document.getElementById('email-input').value;
+            const pw = document.getElementById('password-input').value;
+            const nm = document.getElementById('username-input').value;
             const btn = document.getElementById('login-btn');
-            const errorMsg = document.getElementById('auth-error');
-
-            if(!email || !password) {
-                errorMsg.innerText = "Please enter email and password";
-                errorMsg.style.display = "block";
-                return;
-            }
-
+            
+            if(!em || !pw) return alert("Email & Password required");
             btn.innerText = "Processing...";
-            errorMsg.style.display = "none";
-
+            
             try {
-                // Try Login
-                await auth.signInWithEmailAndPassword(email, password);
-                // If successful, onAuthStateChanged will handle the rest
-            } catch (error) {
-                if(error.code === 'auth/user-not-found') {
-                    // Create New User
-                    if(!username) {
-                        errorMsg.innerText = "Please enter a Name for new account";
-                        errorMsg.style.display = "block";
-                        btn.innerText = "Login / Sign Up";
-                        return;
-                    }
-                    try {
-                        const userCred = await auth.createUserWithEmailAndPassword(email, password);
-                        // Save User to Firestore
-                        await db.collection('users').doc(userCred.user.uid).set({
-                            name: username,
-                            email: email,
-                            uid: userCred.user.uid,
-                            photoURL: "",
-                            status: "online"
-                        });
-                        userCred.user.updateProfile({ displayName: username });
-                    } catch (createError) {
-                        errorMsg.innerText = createError.message;
-                        errorMsg.style.display = "block";
-                    }
+                await auth.signInWithEmailAndPassword(em, pw);
+            } catch(e) {
+                if(e.code === 'auth/user-not-found') {
+                    if(!nm) return alert("Enter Name for new account");
+                    const cred = await auth.createUserWithEmailAndPassword(em, pw);
+                    await db.collection('users').doc(cred.user.uid).set({
+                        name: nm, email: em, uid: cred.user.uid, status: "online"
+                    });
+                    cred.user.updateProfile({ displayName: nm });
                 } else {
-                    errorMsg.innerText = error.message;
-                    errorMsg.style.display = "block";
+                    alert(e.message);
                 }
             }
-            btn.innerText = "Login / Sign Up";
         }
 
         function setupUser(user) {
             currentUser = user;
             document.getElementById('login-page').style.display = 'none';
             document.getElementById('main-page').classList.add('active-page');
+            document.getElementById('display-name').innerText = user.displayName || "User";
+            document.getElementById('my-avatar').innerText = (user.displayName||"U").charAt(0).toUpperCase();
             
-            // UI Update
-            const name = user.displayName || "User";
-            document.getElementById('display-name').innerText = name;
-            document.getElementById('my-avatar').innerHTML = name.charAt(0).toUpperCase() + '<div class="status-dot"></div>';
-
-            // Init PeerJS (For Calls)
             initPeer(user.uid);
-            
-            // Load Friends (All users for now)
             loadUsers();
         }
 
-        function logout() {
-            auth.signOut().then(() => {
-                location.reload();
-            });
-        }
+        function logout() { auth.signOut().then(() => location.reload()); }
 
-        // --- 5. DATA LOADING ---
+        // DATA
         function loadUsers() {
-            const listContainer = document.getElementById('friends-list');
-            
-            db.collection('users').onSnapshot(snapshot => {
-                listContainer.innerHTML = ""; // Clear list
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    if(data.uid !== currentUser.uid) { // Don't show myself
-                        const div = document.createElement('div');
-                        div.className = 'list-item';
-                        div.innerHTML = `
+            db.collection('users').onSnapshot(snap => {
+                const list = document.getElementById('friends-list');
+                list.innerHTML = "";
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    if(d.uid !== currentUser.uid) {
+                        list.innerHTML += `
+                        <div class="list-item">
                             <div style="display:flex; align-items:center; gap:10px;">
-                                <div class="avatar" style="background: linear-gradient(135deg, #ff9f43, #ffc107);">${data.name.charAt(0).toUpperCase()}</div>
-                                <div><b>${data.name}</b><br><small style="color:#aaa;">Available</small></div>
+                                <div class="avatar" style="font-size:16px;">${d.name.charAt(0)}</div>
+                                <div><b>${d.name}</b><br><small style="color:#aaa;">Available</small></div>
                             </div>
-                            <i class="fas fa-phone-alt" style="color:#31a24c; padding:10px; background:#e4f8eb; border-radius:50%; cursor:pointer;" onclick="makeCall('${data.uid}', '${data.name}')"></i>
-                        `;
-                        listContainer.appendChild(div);
+                            <i class="fas fa-phone-alt" style="color:#31a24c; padding:10px; background:#e4f8eb; border-radius:50%;" onclick="makeCall('${d.uid}', '${d.name}')"></i>
+                        </div>`;
                     }
                 });
-                if(listContainer.innerHTML === "") {
-                    listContainer.innerHTML = "<p style='text-align:center;color:#888;margin-top:20px;'>No other users yet.</p>";
-                }
             });
         }
 
-        function searchUsers(val) {
-            // Basic client-side search filter would go here
-            const items = document.querySelectorAll('.list-item');
-            items.forEach(item => {
-                const text = item.innerText.toLowerCase();
-                item.style.display = text.includes(val.toLowerCase()) ? 'flex' : 'none';
-            });
-        }
-
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-            ['friends', 'requests', 'history'].forEach(id => document.getElementById(id+'-list').style.display = 'none');
-            document.getElementById(tabName + '-list').style.display = 'block';
-        }
-
-          // --- 6. CALLING SYSTEM (PeerJS) ---
+        // CALLING
         function initPeer(id) {
-            peer = new Peer(id); // Use Firebase UID as Peer ID
-            
-            peer.on('open', (id) => {
-                console.log('My Peer ID: ' + id);
-            });
-
-            // Incoming Call
+            peer = new Peer(id);
             peer.on('call', (call) => {
-                // Check permissions
                 navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-                    showIncomingCallUI(call);
                     localStream = stream;
-                    
-                    // Wait for user to answer
-                    window.incomingCall = call; // Store globally
-                }).catch(err => alert("Microphone needed!"));
+                    window.incomingCall = call;
+                    document.getElementById('call-screen').style.display = 'flex';
+                    document.getElementById('call-name').innerText = "Incoming...";
+                    document.querySelector('.call-controls').style.display = 'none';
+                    document.getElementById('incoming-controls').style.display = 'flex';
+                    document.getElementById('ringtone').play();
+                });
             });
         }
 
-        // --- UI ACTIONS ---
-        const ringtone = document.getElementById('ringtone');
-        const callingTone = document.getElementById('calling-tone');
-
-        function makeCall(remoteId, name) {
+        function makeCall(id, name) {
             navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
                 localStream = stream;
                 document.getElementById('call-screen').style.display = 'flex';
                 document.getElementById('call-name').innerText = name;
                 document.getElementById('call-avatar').innerText = name.charAt(0);
-                document.getElementById('call-status').innerText = "Ringing...";
                 document.querySelector('.call-controls').style.display = 'flex';
                 document.getElementById('incoming-controls').style.display = 'none';
+                document.getElementById('calling-tone').play();
                 
-                callingTone.play();
-
-                const call = peer.call(remoteId, stream);
+                const call = peer.call(id, stream);
                 currentCall = call;
-
-                call.on('stream', (remoteStream) => {
-                    // Call Connected
-                    callingTone.pause();
-                    startTimer();
+                call.on('stream', (remote) => {
+                    document.getElementById('calling-tone').pause();
                     document.getElementById('call-status').innerText = "Connected";
-                    const audio = new Audio();
-                    audio.srcObject = remoteStream;
-                    audio.play();
+                    const a = new Audio(); a.srcObject = remote; a.play();
+                    startTimer();
                 });
-                
                 call.on('close', endCallUI);
-
-            }).catch(err => alert("Mic Error: " + err));
-        }
-
-        function showIncomingCallUI(call) {
-            document.getElementById('call-screen').style.display = 'flex';
-            document.getElementById('call-name').innerText = "Incoming Call...";
-            document.getElementById('call-status').innerText = "StartCall Audio...";
-            document.querySelector('.call-controls').style.display = 'none';
-            document.getElementById('incoming-controls').style.display = 'flex';
-            
-            ringtone.play();
-            if(navigator.vibrate) navigator.vibrate([1000, 500, 1000]);
+            });
         }
 
         function answerCall() {
-            if(window.incomingCall) {
-                ringtone.pause();
-                navigator.vibrate(0);
-                
-                window.incomingCall.answer(localStream);
-                currentCall = window.incomingCall;
-                
-                document.getElementById('incoming-controls').style.display = 'none';
-                document.querySelector('.call-controls').style.display = 'flex';
-                document.getElementById('call-status').innerText = "Connected";
+            document.getElementById('ringtone').pause();
+            window.incomingCall.answer(localStream);
+            currentCall = window.incomingCall;
+            document.getElementById('incoming-controls').style.display = 'none';
+            document.querySelector('.call-controls').style.display = 'flex';
+            document.getElementById('call-status').innerText = "Connected";
+            
+            window.incomingCall.on('stream', (remote) => {
+                const a = new Audio(); a.srcObject = remote; a.play();
                 startTimer();
-
-                window.incomingCall.on('stream', (remoteStream) => {
-                    const audio = new Audio();
-                    audio.srcObject = remoteStream;
-                    audio.play();
-                });
-
-                window.incomingCall.on('close', endCallUI);
-            }
-        }
-
-        function rejectCall() {
-            if(window.incomingCall) {
-                window.incomingCall.close();
-            }
-            endCallUI();
+            });
+            window.incomingCall.on('close', endCallUI);
         }
 
         function endCall() {
@@ -510,33 +407,28 @@
 
         function endCallUI() {
             document.getElementById('call-screen').style.display = 'none';
-            ringtone.pause();
-            callingTone.pause();
-            if(localStream) localStream.getTracks().forEach(track => track.stop());
-            clearInterval(callTimerInterval);
-            document.getElementById('call-timer').innerText = "";
+            document.getElementById('ringtone').pause();
+            document.getElementById('calling-tone').pause();
             document.getElementById('end-tone').play();
-        }
-
-        function toggleMute(btn) {
-            if(localStream) {
-                const track = localStream.getAudioTracks()[0];
-                track.enabled = !track.enabled;
-                btn.classList.toggle('mute-active');
-            }
+            if(localStream) localStream.getTracks().forEach(t => t.stop());
+            clearInterval(callTimerInterval);
         }
 
         function startTimer() {
-            let seconds = 0;
+            let s = 0;
             callTimerInterval = setInterval(() => {
-                seconds++;
-                let mins = Math.floor(seconds / 60);
-                let secs = seconds % 60;
-                document.getElementById('call-timer').innerText = 
-                    (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
+                s++;
+                let m = Math.floor(s/60), sec = s%60;
+                document.getElementById('call-timer').innerText = (m<10?"0"+m:m)+":"+(sec<10?"0"+sec:sec);
             }, 1000);
         }
-
+        
+        function toggleMute(btn) {
+            let t = localStream.getAudioTracks()[0];
+            t.enabled = !t.enabled;
+            btn.style.background = t.enabled ? "rgba(255,255,255,0.2)" : "white";
+            btn.style.color = t.enabled ? "white" : "black";
+        }
     </script>
 </body>
 </html>
