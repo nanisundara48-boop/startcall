@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NC StartCall</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+
+    <style>
+        :root {
+            /* Updated Colors based on your NC Logo Image */
+            --primary-gradient: linear-gradient(135deg, #0055ff, #00d4ff);
+            --bg-light: #f0f2f5;
+            --text-light: #1c1e21;
+            --card-light: #ffffff;
+            --bg-dark: #0a0a0a;
+            --text-dark: #e4e6eb;
+            --card-dark: #18191a;
+            --mute-active: #ff3b30;
+            --call-accept: #30d158;
+            --call-reject: #ff453a;
+        }
+
+        /* Auto Theme Detection */
+        @media (prefers-color-scheme: dark) {
+            body { background-color: var(--bg-dark); color: var(--text-dark); }
+            .card, .nav-bar, .modal-content, .list-item { background-color: var(--card-dark) !important; color: var(--text-dark) !important; }
+            input { background-color: #3a3b3c !important; color: white !important; border: none !important; }
+            .header i { color: #e4e6eb !important; }
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        body { background-color: var(--bg-light); color: var(--text-light); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+        /* --- LOADER --- */
+        #loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: black; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+        .nc-logo {
+            font-size: 80px; font-weight: 800; font-style: italic;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: -5px; animation: glow 2s infinite alternate;
+            position: relative;
+        }
+        /* Adding the swoosh underline effect from your logo */
+        .nc-logo::after {
+            content: ''; position: absolute; bottom: 10px; left: -10px; width: 120%; height: 5px;
+            background: var(--primary-gradient); border-radius: 50%;
+            transform: rotate(-5deg); box-shadow: 0 0 10px #00d4ff;
+        }
+        
+        .app-name-load { font-size: 20px; color: #fff; letter-spacing: 2px; margin-top: 10px; }
+        .creator-tag {
+            position: absolute; bottom: 30px; font-size: 12px; color: #888; letter-spacing: 1px;
+        }
+        @keyframes glow { from { filter: drop-shadow(0 0 5px #0055ff); } to { filter: drop-shadow(0 0 20px #00d4ff); } }
+
+        /* --- AUTH & PAGES --- */
+        .page { display: none; width: 100%; height: 100%; padding: 20px; overflow-y: auto; }
+        .active-page { display: flex; flex-direction: column; }
+
+        /* Login Screen */
+        .auth-container { justify-content: center; align-items: center; text-align: center; }
+        .input-group { position: relative; margin: 15px 0; width: 100%; max-width: 350px; }
+        .input-group input {
+            width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #ddd; outline: none; font-size: 16px;
+        }
+        .input-group i {
+            position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #888;
+        }
+        .btn-primary {
+            background: var(--primary-gradient); color: white; padding: 15px; width: 100%; max-width: 350px;
+            border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(0, 85, 255, 0.4);
+        }
+        .error-msg { color: #ff453a; font-size: 12px; margin-top: 5px; display: none; }
+
+        /* --- MAIN DASHBOARD --- */
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; margin-bottom: 20px; }
+        .user-profile { display: flex; align-items: center; gap: 10px; }
+        .avatar {
+            width: 45px; height: 45px; border-radius: 50%; background: var(--primary-gradient);
+            display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; font-size: 20px;
+            box-shadow: 0 2px 10px rgba(0, 212, 255, 0.3);
+        }
+        .status-dot { width: 12px; height: 12px; background: #31a24c; border-radius: 50%; position: absolute; bottom: 0; right: 0; border: 2px solid white; }
+        
+        /* Tabs */
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; background: rgba(0,0,0,0.05); padding: 5px; border-radius: 15px; }
+        .tab-btn { flex: 1; padding: 10px; border-radius: 12px; border: none; font-weight: 500; cursor: pointer; background: transparent; color: inherit; }
+        .tab-btn.active { background: white; shadow: 0 2px 5px rgba(0,0,0,0.1); color: #0055ff; }
+
+        /* Lists */
+        .list-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 15px; background: white; border-radius: 15px; margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: transform 0.1s;
+        }
+        .list-item:active { transform: scale(0.98); }
+
+        /* --- CALL INTERFACE (OVERLAY) --- */
+        #call-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #0f1014; z-index: 1000; display: none;
+            flex-direction: column; align-items: center; justify-content: space-between; padding: 40px 20px;
+        }
+        .caller-info { text-align: center; margin-top: 50px; }
+        .caller-avatar { width: 120px; height: 120px; border-radius: 50%; background: #333; margin: 0 auto 20px; border: 3px solid #00d4ff; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 50px; color: white; }
+        
+        .call-controls {
+            display: flex; gap: 25px; justify-content: center; align-items: center; width: 100%; margin-bottom: 40px;
+        }
+        .control-btn {
+            width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 22px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer; color: white;
+            transition: transform 0.2s; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
+        }
+        .control-btn:active { transform: scale(0.9); }
+        .btn-hangup { background: var(--call-reject); width: 70px; height: 70px; font-size: 28px; box-shadow: 0 5px 20px rgba(255, 69, 58, 0.4); }
+        .btn-answer { background: var(--call-accept); width: 70px; height: 70px; animation: pulse 1.5s infinite; }
+        .mute-active { background: white; color: black; }
+
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(48, 209, 88, 0.7); } 70% { box-shadow: 0 0 0 20px rgba(48, 209, 88, 0); } 100% { box-shadow: 0 0 0 0 rgba(48, 209, 88, 0); } }
+
+        /* Popups */
+        .toast {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.8); color: white; padding: 10px 20px; border-radius: 20px; font-size: 12px;
+            display: none; z-index: 2000;
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="ringtone" loop src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+    <audio id="calling-tone" loop src="https://assets.mixkit.co/active_storage/sfx/2870/2870-preview.mp3"></audio>
+    <audio id="end-tone" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
+
+    <div id="loader">
+        <div class="nc-logo">NC</div>
+        <div class="app-name-load">StartCall</div>
+        <div class="creator-tag">Created by - Nani Creations</div>
+    </div>
+
+    <div id="toast" class="toast"><i class="fas fa-check-circle"></i> Request Sent</div>
+
+    <div id="login-page" class="page auth-container">
+        <div class="nc-logo" style="font-size: 60px;">NC</div>
+        <h3>Welcome Back</h3>
+        <p style="color:#888; font-size: 12px; margin-bottom: 30px;">Secure Login with Firebase</p>
+        
+        <div class="input-group">
+            <input type="text" id="username-input" placeholder="Display Name (e.g. Nani)">
+            <i class="fas fa-user"></i>
+        </div>
+        <div class="input-group">
+            <input type="email" id="email-input" placeholder="Email Address">
+            <i class="fas fa-envelope"></i>
+        </div>
+        <div class="input-group">
+            <input type="password" id="password-input" placeholder="Password">
+            <i class="fas fa-eye" onclick="togglePassword()"></i>
+        </div>
+        <p id="auth-error" class="error-msg">Error message here</p>
+        
+        <button id="login-btn" class="btn-primary" onclick="handleAuth()">Login / Sign Up</button>
+        <p style="margin-top: 15px; font-size: 11px; color:#666;">If account doesn't exist, we will create one for you automatically.</p>
+    </div>
+
+    <div id="main-page" class="page">
+        <div class="header">
+            <div class="user-profile">
+                <div class="avatar" id="my-avatar">U<div class="status-dot"></div></div>
+                <div>
+                    <h3 id="display-name">User</h3>
+                    <p style="font-size: 11px; color: #31a24c;">● Online</p>
+                </div>
+            </div>
+            <i class="fas fa-sign-out-alt" onclick="logout()" style="font-size: 20px; color: #888; cursor:pointer;"></i>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('friends')">Friends</button>
+            <button class="tab-btn" onclick="switchTab('history')">History</button>
+            <button class="tab-btn" onclick="switchTab('requests')">Requests</button>
+        </div>
+
+        <div class="input-group" style="max-width: 100%; margin-top:0;">
+            <input type="text" placeholder="Search friends..." onkeyup="searchUsers(this.value)">
+            <i class="fas fa-search"></i>
+        </div>
+
+        <div id="friends-list">
+            <p style="text-align:center; color:#888; margin-top:20px; font-size:12px;">Loading users...</p>
+        </div>
+        
+        <div id="requests-list" style="display:none;">
+            <p style="text-align:center; color:#888; margin-top:20px;">No pending requests</p>
+        </div>
+
+        <div id="history-list" style="display:none;">
+            <p style="text-align:center; color:#888; margin-top:20px;">No recent calls</p>
+        </div>
+    </div>
+
+    <div id="call-screen">
+        <div style="width:100%; display:flex; justify-content:space-between; color:white; padding:10px;">
+            <i class="fas fa-chevron-down" onclick="minimizeCall()"></i>
+            <i class="fas fa-user-plus"></i>
+        </div>
+
+        <div class="caller-info">
+            <div class="caller-avatar" id="call-avatar">U</div>
+            <h2 id="call-name" style="color:white; font-weight:600;">Unknown</h2>
+            <p id="call-status" class="call-status">Calling...</p>
+            <p id="call-timer" style="color:white; font-size:14px; margin-top:5px;"></p>
+        </div>
+
+        <div class="call-controls">
+            <button class="control-btn" onclick="toggleSpeaker(this)"><i class="fas fa-volume-up"></i></button>
+            <button class="control-btn" onclick="toggleMute(this)"><i class="fas fa-microphone"></i></button>
+            <button class="control-btn btn-hangup" onclick="endCall()"><i class="fas fa-phone-slash"></i></button>
+        </div>
+        
+        <div id="incoming-controls" style="display:none; gap: 40px; margin-bottom:40px;">
+             <button class="control-btn btn-hangup" onclick="rejectCall()"><i class="fas fa-times"></i></button>
+             <button class="control-btn btn-answer" onclick="answerCall()"><i class="fas fa-phone"></i></button>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. FIREBASE CONFIGURATION (FROM YOUR SCREENSHOT) ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyBruCpy7s-J_uRIyJWWXrJ8M6JT2dqpYD4",
+            authDomain: "starcall-9b11e.firebaseapp.com",
+            projectId: "starcall-9b11e",
+            storageBucket: "starcall-9b11e.firebasestorage.app",
+            messagingSenderId: "380174170098",
+            appId: "1:380174170098:web:ad6eceb05beac044cddd6b"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+        const rtdb = firebase.database(); // Used for Presence (Online/Offline)
+
+        // --- 2. GLOBAL VARIABLES ---
+        let currentUser = null;
+        let localStream = null;
+        let currentCall = null;
+        let peer = null;
+        let callTimerInterval;
+
+        // --- 3. LOADER ---
+        window.onload = function() {
+            // Check if already logged in
+            auth.onAuthStateChanged((user) => {
+                setTimeout(() => {
+                    document.getElementById('loader').style.opacity = '0';
+                    setTimeout(() => { document.getElementById('loader').style.display = 'none'; }, 500);
+                    
+                    if (user) {
+                        setupUser(user);
+                    } else {
+                        document.getElementById('login-page').style.display = 'flex';
+                    }
+                }, 2000);
+            });
+        };
+
+        // --- 4. AUTHENTICATION LOGIC ---
+        function togglePassword() {
+            const input = document.getElementById('password-input');
+            input.type = input.type === "password" ? "text" : "password";
+        }
+
+        async function handleAuth() {
+            const email = document.getElementById('email-input').value;
+            const password = document.getElementById('password-input').value;
+            const username = document.getElementById('username-input').value;
+            const btn = document.getElementById('login-btn');
+            const errorMsg = document.getElementById('auth-error');
+
+            if(!email || !password) {
+                errorMsg.innerText = "Please enter email and password";
+                errorMsg.style.display = "block";
+                return;
+            }
+
+            btn.innerText = "Processing...";
+            errorMsg.style.display = "none";
+
+            try {
+                // Try Login
+                await auth.signInWithEmailAndPassword(email, password);
+                // If successful, onAuthStateChanged will handle the rest
+            } catch (error) {
+                if(error.code === 'auth/user-not-found') {
+                    // Create New User
+                    if(!username) {
+                        errorMsg.innerText = "Please enter a Name for new account";
+                        errorMsg.style.display = "block";
+                        btn.innerText = "Login / Sign Up";
+                        return;
+                    }
+                    try {
+                        const userCred = await auth.createUserWithEmailAndPassword(email, password);
+                        // Save User to Firestore
+                        await db.collection('users').doc(userCred.user.uid).set({
+                            name: username,
+                            email: email,
+                            uid: userCred.user.uid,
+                            photoURL: "",
+                            status: "online"
+                        });
+                        userCred.user.updateProfile({ displayName: username });
+                    } catch (createError) {
+                        errorMsg.innerText = createError.message;
+                        errorMsg.style.display = "block";
+                    }
+                } else {
+                    errorMsg.innerText = error.message;
+                    errorMsg.style.display = "block";
+                }
+            }
+            btn.innerText = "Login / Sign Up";
+        }
+
+        function setupUser(user) {
+            currentUser = user;
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('main-page').classList.add('active-page');
+            
+            // UI Update
+            const name = user.displayName || "User";
+            document.getElementById('display-name').innerText = name;
+            document.getElementById('my-avatar').innerHTML = name.charAt(0).toUpperCase() + '<div class="status-dot"></div>';
+
+            // Init PeerJS (For Calls)
+            initPeer(user.uid);
+            
+            // Load Friends (All users for now)
+            loadUsers();
+        }
+
+        function logout() {
+            auth.signOut().then(() => {
+                location.reload();
+            });
+        }
+
+        // --- 5. DATA LOADING ---
+        function loadUsers() {
+            const listContainer = document.getElementById('friends-list');
+            
+            db.collection('users').onSnapshot(snapshot => {
+                listContainer.innerHTML = ""; // Clear list
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    if(data.uid !== currentUser.uid) { // Don't show myself
+                        const div = document.createElement('div');
+                        div.className = 'list-item';
+                        div.innerHTML = `
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="avatar" style="background: linear-gradient(135deg, #ff9f43, #ffc107);">${data.name.charAt(0).toUpperCase()}</div>
+                                <div><b>${data.name}</b><br><small style="color:#aaa;">Available</small></div>
+                            </div>
+                            <i class="fas fa-phone-alt" style="color:#31a24c; padding:10px; background:#e4f8eb; border-radius:50%; cursor:pointer;" onclick="makeCall('${data.uid}', '${data.name}')"></i>
+                        `;
+                        listContainer.appendChild(div);
+                    }
+                });
+                if(listContainer.innerHTML === "") {
+                    listContainer.innerHTML = "<p style='text-align:center;color:#888;margin-top:20px;'>No other users yet.</p>";
+                }
+            });
+        }
+
+        function searchUsers(val) {
+            // Basic client-side search filter would go here
+            const items = document.querySelectorAll('.list-item');
+            items.forEach(item => {
+                const text = item.innerText.toLowerCase();
+                item.style.display = text.includes(val.toLowerCase()) ? 'flex' : 'none';
+            });
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            ['friends', 'requests', 'history'].forEach(id => document.getElementById(id+'-list').style.display = 'none');
+            document.getElementById(tabName + '-list').style.display = 'block';
+        }
+
+          // --- 6. CALLING SYSTEM (PeerJS) ---
+        function initPeer(id) {
+            peer = new Peer(id); // Use Firebase UID as Peer ID
+            
+            peer.on('open', (id) => {
+                console.log('My Peer ID: ' + id);
+            });
+
+            // Incoming Call
+            peer.on('call', (call) => {
+                // Check permissions
+                navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+                    showIncomingCallUI(call);
+                    localStream = stream;
+                    
+                    // Wait for user to answer
+                    window.incomingCall = call; // Store globally
+                }).catch(err => alert("Microphone needed!"));
+            });
+        }
+
+        // --- UI ACTIONS ---
+        const ringtone = document.getElementById('ringtone');
+        const callingTone = document.getElementById('calling-tone');
+
+        function makeCall(remoteId, name) {
+            navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+                localStream = stream;
+                document.getElementById('call-screen').style.display = 'flex';
+                document.getElementById('call-name').innerText = name;
+                document.getElementById('call-avatar').innerText = name.charAt(0);
+                document.getElementById('call-status').innerText = "Ringing...";
+                document.querySelector('.call-controls').style.display = 'flex';
+                document.getElementById('incoming-controls').style.display = 'none';
+                
+                callingTone.play();
+
+                const call = peer.call(remoteId, stream);
+                currentCall = call;
+
+                call.on('stream', (remoteStream) => {
+                    // Call Connected
+                    callingTone.pause();
+                    startTimer();
+                    document.getElementById('call-status').innerText = "Connected";
+                    const audio = new Audio();
+                    audio.srcObject = remoteStream;
+                    audio.play();
+                });
+                
+                call.on('close', endCallUI);
+
+            }).catch(err => alert("Mic Error: " + err));
+        }
+
+        function showIncomingCallUI(call) {
+            document.getElementById('call-screen').style.display = 'flex';
+            document.getElementById('call-name').innerText = "Incoming Call...";
+            document.getElementById('call-status').innerText = "StartCall Audio...";
+            document.querySelector('.call-controls').style.display = 'none';
+            document.getElementById('incoming-controls').style.display = 'flex';
+            
+            ringtone.play();
+            if(navigator.vibrate) navigator.vibrate([1000, 500, 1000]);
+        }
+
+        function answerCall() {
+            if(window.incomingCall) {
+                ringtone.pause();
+                navigator.vibrate(0);
+                
+                window.incomingCall.answer(localStream);
+                currentCall = window.incomingCall;
+                
+                document.getElementById('incoming-controls').style.display = 'none';
+                document.querySelector('.call-controls').style.display = 'flex';
+                document.getElementById('call-status').innerText = "Connected";
+                startTimer();
+
+                window.incomingCall.on('stream', (remoteStream) => {
+                    const audio = new Audio();
+                    audio.srcObject = remoteStream;
+                    audio.play();
+                });
+
+                window.incomingCall.on('close', endCallUI);
+            }
+        }
+
+        function rejectCall() {
+            if(window.incomingCall) {
+                window.incomingCall.close();
+            }
+            endCallUI();
+        }
+
+        function endCall() {
+            if(currentCall) currentCall.close();
+            if(window.incomingCall) window.incomingCall.close();
+            endCallUI();
+        }
+
+        function endCallUI() {
+            document.getElementById('call-screen').style.display = 'none';
+            ringtone.pause();
+            callingTone.pause();
+            if(localStream) localStream.getTracks().forEach(track => track.stop());
+            clearInterval(callTimerInterval);
+            document.getElementById('call-timer').innerText = "";
+            document.getElementById('end-tone').play();
+        }
+
+        function toggleMute(btn) {
+            if(localStream) {
+                const track = localStream.getAudioTracks()[0];
+                track.enabled = !track.enabled;
+                btn.classList.toggle('mute-active');
+            }
+        }
+
+        function startTimer() {
+            let seconds = 0;
+            callTimerInterval = setInterval(() => {
+                seconds++;
+                let mins = Math.floor(seconds / 60);
+                let secs = seconds % 60;
+                document.getElementById('call-timer').innerText = 
+                    (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
+            }, 1000);
+        }
+
+    </script>
+</body>
+</html>
