@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NC StartCall Ultimate</title>
+    <title>NC StartCall Ultimate Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     
@@ -22,12 +22,13 @@
             --success: #00c853;
             --danger: #ff1744;
             --badge: #ff3d00;
+            --warning: #ffcc00;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--dark-bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-        /* --- UI HELPERS --- */
+        /* UI ELEMENTS */
         .btn {
             width: 100%; padding: 14px; border: none; border-radius: 12px;
             font-size: 16px; font-weight: 600; cursor: pointer;
@@ -43,19 +44,16 @@
             border: 1px solid #333; border-radius: 12px; color: white; outline: none;
         }
 
-        /* --- SCREENS --- */
+        /* SCREENS */
         .screen { display: none; height: 100%; flex-direction: column; padding: 20px; }
         .screen.active { display: flex; animation: fadeIn 0.3s ease; }
 
-        /* --- DASHBOARD HEADER --- */
+        /* TABS */
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .profile-sec { display: flex; align-items: center; gap: 10px; }
         .my-avatar {
             width: 45px; height: 45px; border-radius: 50%; background: #222; border: 2px solid var(--accent);
             display: flex; align-items: center; justify-content: center; font-size: 24px;
         }
-
-        /* --- TABS --- */
         .tabs { display: flex; background: #222; padding: 5px; border-radius: 12px; margin-bottom: 15px; }
         .tab { flex: 1; text-align: center; padding: 10px; color: #888; border-radius: 8px; position: relative; cursor: pointer; }
         .tab.active-tab { background: #333; color: white; font-weight: bold; }
@@ -64,16 +62,15 @@
             position: absolute; top: 5px; right: 20%; display: none; border: 2px solid #222;
         }
 
-        /* --- LISTS --- */
+        /* LISTS */
         .list-container { overflow-y: auto; flex: 1; }
         .user-card {
             display: flex; align-items: center; justify-content: space-between;
             background: var(--card-bg); padding: 12px; border-radius: 12px;
             margin-bottom: 10px; border: 1px solid #222;
         }
-        .actions { display: flex; gap: 8px; }
-
-        /* --- SETTINGS MODAL --- */
+        
+        /* SETTINGS */
         #settings-modal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000;
             display: none; flex-direction: column; padding: 20px;
@@ -82,33 +79,32 @@
         .emoji-opt { font-size: 30px; cursor: pointer; text-align: center; padding: 5px; border-radius: 5px; }
         .emoji-opt.selected { background: var(--primary); }
 
-        /* --- CALL OVERLAY --- */
+        /* CALL OVERLAY */
         #call-overlay {
             position: fixed; inset: 0; background: #000; z-index: 6000;
             display: none; flex-direction: column; align-items: center; justify-content: space-between; padding: 50px 20px;
         }
-        .lock-active { pointer-events: none; opacity: 0.3; }
-        
         .call-actions { display: flex; gap: 20px; }
         .c-btn {
-            width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 24px;
-            color: white; display: flex; align-items: center; justify-content: center; cursor: pointer;
+            width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 20px;
+            color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s;
         }
-
-        /* --- FAB (Group Call) --- */
-        .fab {
-            position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
-            background: linear-gradient(135deg, #ff00cc, #333399); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; font-size: 24px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5); cursor: pointer; z-index: 100;
+        
+        /* STATUS POPUPS */
+        .status-badge {
+            background: rgba(255, 255, 255, 0.1); padding: 5px 15px; border-radius: 20px;
+            font-size: 12px; color: var(--warning); margin-top: 10px; display: none;
         }
+        .hold-active { background: var(--warning); color: black; animation: pulse 1s infinite; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
 
     <audio id="ringtone" loop src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+    <audio id="hold-music" loop src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3"></audio>
 
     <div id="settings-modal">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
@@ -133,7 +129,7 @@
 
     <div id="dashboard" class="screen">
         <div class="header">
-            <div class="profile-sec" onclick="toggleSettings()">
+            <div class="profile-sec" onclick="toggleSettings()" style="display:flex; align-items:center; gap:10px;">
                 <div class="my-avatar" id="my-avatar">😎</div>
                 <div>
                     <h3 id="display-name" style="font-size:16px;">User</h3>
@@ -150,16 +146,10 @@
         </div>
 
         <div id="tab-friends" class="list-container"></div>
-        
         <div id="tab-requests" class="list-container" style="display:none;"></div>
-
         <div id="tab-search" class="list-container" style="display:none;">
-            <input type="text" placeholder="Search users globally..." onkeyup="searchGlobal(this.value)">
+            <input type="text" placeholder="Type 2 letters to search..." onkeyup="searchGlobal(this.value)">
             <div id="search-results"></div>
-        </div>
-
-        <div class="fab" onclick="alert('Group Call Feature coming in next update!')">
-            <i class="fas fa-users"></i>
         </div>
     </div>
 
@@ -168,9 +158,12 @@
             <div class="my-avatar" id="call-avatar" style="width:120px; height:120px; font-size:60px; margin:0 auto 20px auto; border:4px solid var(--accent);">👤</div>
             <h2 id="call-name" style="font-size:24px;">Unknown</h2>
             <p id="call-status" style="color:#888; margin-top:5px;">Connecting...</p>
+            
+            <div id="remote-mute-badge" class="status-badge"><i class="fas fa-microphone-slash"></i> Opponent Muted</div>
+            <div id="remote-hold-badge" class="status-badge"><i class="fas fa-music"></i> Call on Hold</div>
         </div>
 
-        <button onclick="toggleScreenLock()" style="background:rgba(255,255,255,0.1); border:1px solid #555; color:white; padding:10px 20px; border-radius:20px; font-size:12px;">
+        <button id="lock-btn" onclick="toggleScreenLock()" style="background:rgba(255,255,255,0.1); border:1px solid #555; color:white; padding:10px 20px; border-radius:20px; font-size:12px;">
             <i class="fas fa-lock"></i> Prevent Touch
         </button>
 
@@ -182,6 +175,7 @@
         <div id="active-actions" class="call-actions" style="display:none;">
             <button class="c-btn" style="background:rgba(255,255,255,0.2);" onclick="toggleMute(this)"><i class="fas fa-microphone"></i></button>
             <button class="c-btn" style="background:var(--danger);" onclick="endCall()"><i class="fas fa-phone-slash"></i></button>
+            <button id="hold-btn" class="c-btn" style="background:rgba(255,255,255,0.2);" onclick="toggleHold(this)"><i class="fas fa-pause"></i></button>
             <button class="c-btn" style="background:rgba(255,255,255,0.2);" onclick="toggleSpeaker(this)"><i class="fas fa-volume-up"></i></button>
         </div>
     </div>
@@ -201,17 +195,17 @@
         const db = firebase.firestore();
 
         // STATE
-        let currentUser = null, peer = null, localStream = null, currentCall = null, isScreenLocked = false;
-        const emojis = ["😎", "🦊", "🤖", "🦁", "🦄", "👽", "👻", "🐯", "🐼", "🔥", "💎", "⚡", "🎮", "🚀", "🎵"];
+        let currentUser = null, peer = null, localStream = null, currentCall = null;
+        let dataConn = null; // For sending signals (Mute/Hold)
+        let isScreenLocked = false;
+        let isHold = false;
+        
+        const emojis = ["😎", "🦊", "🤖", "🦁", "🦄", "👽", "👻", "🐯", "🐼", "🔥", "💎", "⚡"];
 
         window.onload = () => {
             auth.onAuthStateChanged(user => {
-                if(user) {
-                    currentUser = user;
-                    loadDashboard();
-                } else {
-                    showScreen('auth-screen');
-                }
+                if(user) { currentUser = user; loadDashboard(); } 
+                else { showScreen('auth-screen'); }
             });
             // Emoji Grid
             const grid = document.getElementById('emoji-grid');
@@ -228,42 +222,29 @@
             });
         };
 
-        // --- FIXED AUTH LOGIC ---
+        // --- AUTH ---
         async function handleAuth() {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('pass').value;
             const msg = document.getElementById('auth-msg');
-            
             if(!email || !pass) { msg.innerText = "Enter Email & Password"; return; }
             msg.innerText = "Processing...";
-
             try {
-                // 1. Try Login
                 await auth.signInWithEmailAndPassword(email, pass);
             } catch(e) {
-                // 2. If Login Fails, Try Create Account
-                if(e.code === 'auth/invalid-login-credentials' || e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') {
+                if(e.code.includes('invalid') || e.code.includes('user-not-found')) {
                     try {
                         const cred = await auth.createUserWithEmailAndPassword(email, pass);
                         await db.collection('users').doc(cred.user.uid).set({
                             name: email.split('@')[0], email: email, uid: cred.user.uid, emoji: "👤", friends: []
                         });
                         msg.innerText = "Account Created!";
-                    } catch(createErr) {
-                        if(createErr.code === 'auth/email-already-in-use') {
-                            msg.innerText = "Incorrect Password (Account Exists)";
-                        } else if(createErr.code === 'auth/weak-password') {
-                            msg.innerText = "Password must be at least 6 characters";
-                        } else {
-                            msg.innerText = createErr.message;
-                        }
-                    }
-                } else {
-                    msg.innerText = e.message;
-                }
+                    } catch(err) { msg.innerText = err.message; }
+                } else { msg.innerText = e.message; }
             }
         }
 
+        // --- DASHBOARD & SEARCH (UPDATED) ---
         async function loadDashboard() {
             showScreen('dashboard');
             const doc = await db.collection('users').doc(currentUser.uid).get();
@@ -275,37 +256,86 @@
             loadFriends();
         }
 
-        function toggleSettings() {
-            const modal = document.getElementById('settings-modal');
-            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        async function searchGlobal(query) {
+            // UPDATED: Search starts at 2 letters
+            if(query.length < 2) return;
+            
+            const resContainer = document.getElementById('search-results');
+            resContainer.innerHTML = "<p style='color:#666; text-align:center;'>Searching...</p>";
+            
+            // Note: Firestore limitation allows simpler search by name. 
+            // For production with 'contains' logic, client-side filter is better for small apps.
+            const snap = await db.collection('users').get(); 
+            resContainer.innerHTML = "";
+            
+            let count = 0;
+            snap.forEach(doc => {
+                const u = doc.data();
+                if(u.uid !== currentUser.uid) {
+                    // Check Name OR Email (Case insensitive)
+                    if(u.name.toLowerCase().includes(query.toLowerCase()) || u.email.toLowerCase().includes(query.toLowerCase())) {
+                        count++;
+                        const div = document.createElement('div');
+                        div.className = 'user-card';
+                        div.innerHTML = `
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="my-avatar" style="width:35px; height:35px;">${u.emoji}</div>
+                                <div><b>${u.name}</b><br><small>${u.email}</small></div>
+                            </div>
+                            <button class="btn btn-sm" onclick="sendRequest('${u.uid}')">Add</button>`;
+                        resContainer.appendChild(div);
+                    }
+                }
+            });
+            if(count === 0) resContainer.innerHTML = "<p style='color:#666; text-align:center;'>No results found.</p>";
         }
 
-        async function saveProfile() {
-            const newName = document.getElementById('edit-name').value;
-            const newEmoji = document.getElementById('edit-name').getAttribute('data-emoji');
-            const updateData = {};
-            if(newName) updateData.name = newName;
-            if(newEmoji) updateData.emoji = newEmoji;
-            await db.collection('users').doc(currentUser.uid).update(updateData);
-            toggleSettings();
-            loadDashboard(); 
+        // --- REQUESTS & FRIENDS ---
+        async function sendRequest(targetUid) {
+            await db.collection('users').doc(targetUid).collection('requests').doc(currentUser.uid).set({
+                fromName: document.getElementById('display-name').innerText,
+                fromId: currentUser.uid,
+                fromEmoji: document.getElementById('my-avatar').innerText
+            });
+            alert("Request Sent!");
         }
-
-        function logout() { auth.signOut().then(() => location.reload()); }
-
-        function switchTab(tab) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active-tab'));
-            event.target.classList.add('active-tab');
-            ['friends', 'requests', 'search'].forEach(t => document.getElementById('tab-'+t).style.display = 'none');
-            document.getElementById('tab-'+tab).style.display = 'block';
+        function listenRequests() {
+            db.collection('users').doc(currentUser.uid).collection('requests').onSnapshot(snap => {
+                const dot = document.getElementById('req-dot');
+                const list = document.getElementById('tab-requests');
+                list.innerHTML = "";
+                if(!snap.empty) {
+                    dot.style.display = "block";
+                    snap.forEach(doc => {
+                        const r = doc.data();
+                        const div = document.createElement('div');
+                        div.className = 'user-card';
+                        div.innerHTML = `
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="my-avatar">${r.fromEmoji}</div><b>${r.fromName}</b>
+                            </div>
+                            <div class="actions">
+                                <button class="btn btn-sm" style="background:var(--success)" onclick="acceptRequest('${r.fromId}', '${doc.id}')">Accept</button>
+                                <button class="btn btn-sm btn-danger" onclick="rejectRequest('${doc.id}')">Decline</button>
+                            </div>`;
+                        list.appendChild(div);
+                    });
+                } else { dot.style.display = "none"; list.innerHTML = "<p style='text-align:center; color:#666;'>No requests.</p>"; }
+            });
         }
-
+        async function acceptRequest(fid, rid) {
+            await db.collection('users').doc(currentUser.uid).update({ friends: firebase.firestore.FieldValue.arrayUnion(fid) });
+            await db.collection('users').doc(fid).update({ friends: firebase.firestore.FieldValue.arrayUnion(currentUser.uid) });
+            await rejectRequest(rid);
+            switchTab('friends');
+        }
+        async function rejectRequest(rid) { await db.collection('users').doc(currentUser.uid).collection('requests').doc(rid).delete(); }
+        
         function loadFriends() {
             db.collection('users').doc(currentUser.uid).onSnapshot(doc => {
                 const friends = doc.data().friends || [];
                 const container = document.getElementById('tab-friends');
                 container.innerHTML = "";
-                if(friends.length === 0) container.innerHTML = "<p style='text-align:center; color:#666; margin-top:20px;'>No friends yet.</p>";
                 friends.forEach(fid => {
                     db.collection('users').doc(fid).get().then(fDoc => {
                         const fData = fDoc.data();
@@ -325,87 +355,27 @@
                 });
             });
         }
-
-        async function searchGlobal(query) {
-            if(query.length < 3) return;
-            const resContainer = document.getElementById('search-results');
-            resContainer.innerHTML = "Searching...";
-            const snap = await db.collection('users').where('name', '>=', query).where('name', '<=', query + '\uf8ff').get();
-            resContainer.innerHTML = "";
-            snap.forEach(doc => {
-                const u = doc.data();
-                if(u.uid !== currentUser.uid) {
-                    const div = document.createElement('div');
-                    div.className = 'user-card';
-                    div.innerHTML = `
-                        <div style="display:flex; align-items:center; gap:10px;">
-                            <div class="my-avatar" style="width:35px; height:35px;">${u.emoji}</div>
-                            <div><b>${u.name}</b><br><small>${u.email}</small></div>
-                        </div>
-                        <button class="btn btn-sm" onclick="sendRequest('${u.uid}')">Add Friend</button>`;
-                    resContainer.appendChild(div);
-                }
-            });
-        }
-
-        async function sendRequest(targetUid) {
-            await db.collection('users').doc(targetUid).collection('requests').doc(currentUser.uid).set({
-                fromName: document.getElementById('display-name').innerText,
-                fromId: currentUser.uid,
-                fromEmoji: document.getElementById('my-avatar').innerText
-            });
-            alert("Request Sent!");
-        }
-
-        function listenRequests() {
-            db.collection('users').doc(currentUser.uid).collection('requests').onSnapshot(snap => {
-                const dot = document.getElementById('req-dot');
-                const list = document.getElementById('tab-requests');
-                list.innerHTML = "";
-                if(!snap.empty) {
-                    dot.style.display = "block";
-                    snap.forEach(doc => {
-                        const r = doc.data();
-                        const div = document.createElement('div');
-                        div.className = 'user-card';
-                        div.innerHTML = `
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <div class="my-avatar">${r.fromEmoji}</div>
-                                <b>${r.fromName}</b>
-                            </div>
-                            <div class="actions">
-                                <button class="btn btn-sm" style="background:var(--success)" onclick="acceptRequest('${r.fromId}', '${doc.id}')">Accept</button>
-                                <button class="btn btn-sm btn-danger" onclick="rejectRequest('${doc.id}')">Decline</button>
-                            </div>`;
-                        list.appendChild(div);
-                    });
-                } else {
-                    dot.style.display = "none";
-                    list.innerHTML = "<p style='text-align:center; color:#666;'>No pending requests.</p>";
-                }
-            });
-        }
-
-        async function acceptRequest(fid, rid) {
-            await db.collection('users').doc(currentUser.uid).update({ friends: firebase.firestore.FieldValue.arrayUnion(fid) });
-            await db.collection('users').doc(fid).update({ friends: firebase.firestore.FieldValue.arrayUnion(currentUser.uid) });
-            await rejectRequest(rid);
-            switchTab('friends');
-        }
-
-        async function rejectRequest(rid) { await db.collection('users').doc(currentUser.uid).collection('requests').doc(rid).delete(); }
         async function removeFriend(uid) { if(confirm("Remove Friend?")) await db.collection('users').doc(currentUser.uid).update({ friends: firebase.firestore.FieldValue.arrayRemove(uid) }); }
 
+        // --- CALLING SYSTEM (UPDATED WITH HOLD & SIGNALS) ---
         function initPeer(uid) {
             peer = new Peer(uid);
+            
+            // Handle Incoming Media
             peer.on('call', call => {
-                if(currentCall) { call.close(); return; }
+                if(currentCall) { call.close(); return; } // Busy logic
                 window.incomingCall = call;
                 navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
                     localStream = stream;
                     showCallOverlay("Incoming Call...", false);
                     document.getElementById('ringtone').play();
                 });
+            });
+
+            // Handle Incoming Data (For Mute/Hold Signals)
+            peer.on('connection', conn => {
+                dataConn = conn;
+                setupDataConnection();
             });
         }
 
@@ -414,6 +384,8 @@
                 localStream = stream;
                 showCallOverlay(name, true, emoji);
                 document.getElementById('ringtone').play();
+                
+                // 1. Media Call
                 const call = peer.call(id, stream);
                 currentCall = call;
                 call.on('stream', remote => {
@@ -422,6 +394,14 @@
                     const a = new Audio(); a.srcObject = remote; a.play();
                 });
                 call.on('close', endCallUI);
+
+                // 2. Data Connection (For Signals)
+                const conn = peer.connect(id);
+                conn.on('open', () => {
+                    dataConn = conn;
+                    setupDataConnection();
+                });
+
             }).catch(e => alert("Mic Error"));
         }
 
@@ -432,31 +412,108 @@
             document.getElementById('incoming-actions').style.display = 'none';
             document.getElementById('active-actions').style.display = 'flex';
             document.getElementById('call-status').innerText = "Connected";
+            
             window.incomingCall.on('stream', remote => { const a = new Audio(); a.srcObject = remote; a.play(); });
             window.incomingCall.on('close', endCallUI);
         }
 
+        // --- SIGNAL HANDLING (MUTE / HOLD) ---
+        function setupDataConnection() {
+            dataConn.on('data', data => {
+                if(data.type === 'mute') {
+                    const badge = document.getElementById('remote-mute-badge');
+                    badge.style.display = data.val ? 'block' : 'none';
+                }
+                if(data.type === 'hold') {
+                    const badge = document.getElementById('remote-hold-badge');
+                    const music = document.getElementById('hold-music');
+                    
+                    if(data.val) {
+                        badge.style.display = 'block';
+                        document.getElementById('call-status').innerText = "Call on Hold";
+                        music.play();
+                    } else {
+                        badge.style.display = 'none';
+                        document.getElementById('call-status').innerText = "Connected";
+                        music.pause();
+                        music.currentTime = 0;
+                    }
+                }
+            });
+        }
+
+        function sendSignal(type, val) {
+            if(dataConn && dataConn.open) {
+                dataConn.send({ type: type, val: val });
+            }
+        }
+
+        // --- CALL CONTROLS ---
         function endCall() {
             if(currentCall) currentCall.close();
             if(window.incomingCall) window.incomingCall.close();
+            if(dataConn) dataConn.close();
             endCallUI();
         }
 
         function endCallUI() {
             document.getElementById('call-overlay').style.display = 'none';
             document.getElementById('ringtone').pause();
+            document.getElementById('hold-music').pause();
             if(localStream) localStream.getTracks().forEach(t => t.stop());
             currentCall = null;
             isScreenLocked = false;
+            isHold = false;
+            // Reset UI
+            document.getElementById('remote-mute-badge').style.display = 'none';
+            document.getElementById('remote-hold-badge').style.display = 'none';
+            document.getElementById('hold-btn').classList.remove('hold-active');
+        }
+
+        function toggleHold(btn) {
+            isHold = !isHold;
+            
+            // 1. Visual Update
+            if(isHold) {
+                btn.classList.add('hold-active');
+                document.getElementById('call-status').innerText = "You placed call on Hold";
+            } else {
+                btn.classList.remove('hold-active');
+                document.getElementById('call-status').innerText = "Connected";
+            }
+
+            // 2. Logic (Mute Mic)
+            let t = localStream.getAudioTracks()[0];
+            t.enabled = !isHold;
+
+            // 3. Signal Peer
+            sendSignal('hold', isHold);
+        }
+
+        function toggleMute(btn) {
+            if(isHold) return; // Can't mute if on hold
+            let t = localStream.getAudioTracks()[0];
+            t.enabled = !t.enabled;
+            
+            // Visual
+            btn.style.background = t.enabled ? "rgba(255,255,255,0.2)" : "white";
+            btn.style.color = t.enabled ? "white" : "black";
+            
+            // Signal
+            sendSignal('mute', !t.enabled);
+        }
+
+        function toggleSpeaker(btn) {
+            btn.style.background = btn.style.background.includes("white") ? "rgba(255,255,255,0.2)" : "white";
+            btn.style.color = btn.style.color === "black" ? "white" : "black";
         }
 
         function toggleScreenLock() {
             const overlay = document.getElementById('call-overlay');
-            const btn = overlay.querySelector('button');
+            const btn = document.getElementById('lock-btn');
             if(!isScreenLocked) {
-                overlay.style.background = "#000";
                 document.getElementById('active-actions').style.pointerEvents = "none";
-                document.getElementById('active-actions').style.opacity = "0.1";
+                document.getElementById('active-actions').style.opacity = "0.2";
                 btn.innerHTML = "<i class='fas fa-unlock'></i> Unlock";
                 btn.style.background = "var(--primary)";
                 isScreenLocked = true;
@@ -468,23 +525,32 @@
                 isScreenLocked = false;
             }
         }
-        
-        function toggleMute(btn) {
-            let t = localStream.getAudioTracks()[0];
-            t.enabled = !t.enabled;
-            btn.style.background = t.enabled ? "rgba(255,255,255,0.2)" : "white";
-            btn.style.color = t.enabled ? "white" : "black";
-        }
-        function toggleSpeaker(btn) {
-            btn.style.background = btn.style.background.includes("white") ? "rgba(255,255,255,0.2)" : "white";
-            btn.style.color = btn.style.color === "black" ? "white" : "black";
-        }
 
+        // HELPERS
+        function toggleSettings() {
+            const modal = document.getElementById('settings-modal');
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        }
+        async function saveProfile() {
+            const newName = document.getElementById('edit-name').value;
+            const newEmoji = document.getElementById('edit-name').getAttribute('data-emoji');
+            const updateData = {};
+            if(newName) updateData.name = newName;
+            if(newEmoji) updateData.emoji = newEmoji;
+            await db.collection('users').doc(currentUser.uid).update(updateData);
+            toggleSettings(); loadDashboard(); 
+        }
+        function logout() { auth.signOut().then(() => location.reload()); }
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
         }
-        
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active-tab'));
+            event.target.classList.add('active-tab');
+            ['friends', 'requests', 'search'].forEach(t => document.getElementById('tab-'+t).style.display = 'none');
+            document.getElementById('tab-'+tab).style.display = 'block';
+        }
         function showCallOverlay(name, isOutgoing, emoji="👤") {
             document.getElementById('call-overlay').style.display = 'flex';
             document.getElementById('call-name').innerText = name;
