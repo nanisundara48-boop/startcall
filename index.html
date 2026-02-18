@@ -87,7 +87,7 @@
             position: fixed; inset: 0; background: #000; z-index: 6000;
             display: none; flex-direction: column; align-items: center; justify-content: space-between; padding: 50px 20px;
         }
-        .lock-active { pointer-events: none; opacity: 0.3; } /* Screen Lock */
+        .lock-active { pointer-events: none; opacity: 0.3; }
         
         .call-actions { display: flex; gap: 20px; }
         .c-btn {
@@ -109,7 +109,6 @@
 <body>
 
     <audio id="ringtone" loop src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
-    <audio id="busy-tone" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
 
     <div id="settings-modal">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
@@ -118,8 +117,7 @@
         </div>
         <input type="text" id="edit-name" placeholder="Change Display Name">
         <p style="color:#888;">Select Avatar:</p>
-        <div class="emoji-grid" id="emoji-grid">
-            </div>
+        <div class="emoji-grid" id="emoji-grid"></div>
         <button class="btn" onclick="saveProfile()">Save Changes</button>
         <button class="btn btn-danger" style="margin-top:20px;" onclick="logout()">Logout</button>
     </div>
@@ -128,9 +126,9 @@
         <div style="font-size:60px; font-weight:800; font-style:italic; background:linear-gradient(to right, #2962ff, #00d4ff); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">NC</div>
         <h2 style="margin-bottom:30px;">StartCall Ultimate</h2>
         <input type="email" id="email" placeholder="Email">
-        <input type="password" id="pass" placeholder="Password">
+        <input type="password" id="pass" placeholder="Password (Min 6 Chars)">
         <button class="btn" onclick="handleAuth()">Login / Create Account</button>
-        <p id="auth-msg" style="color:red; margin-top:10px; font-size:12px;"></p>
+        <p id="auth-msg" style="color:var(--danger); margin-top:15px; font-size:14px;"></p>
     </div>
 
     <div id="dashboard" class="screen">
@@ -203,16 +201,9 @@
         const db = firebase.firestore();
 
         // STATE
-        let currentUser = null;
-        let peer = null;
-        let localStream = null;
-        let currentCall = null;
-        let isScreenLocked = false;
-        
-        // EMOJIS
+        let currentUser = null, peer = null, localStream = null, currentCall = null, isScreenLocked = false;
         const emojis = ["😎", "🦊", "🤖", "🦁", "🦄", "👽", "👻", "🐯", "🐼", "🔥", "💎", "⚡", "🎮", "🚀", "🎵"];
 
-        // --- AUTH ---
         window.onload = () => {
             auth.onAuthStateChanged(user => {
                 if(user) {
@@ -222,7 +213,7 @@
                     showScreen('auth-screen');
                 }
             });
-            // Setup Emoji Grid
+            // Emoji Grid
             const grid = document.getElementById('emoji-grid');
             emojis.forEach(e => {
                 const span = document.createElement('div');
@@ -237,42 +228,53 @@
             });
         };
 
+        // --- FIXED AUTH LOGIC ---
         async function handleAuth() {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('pass').value;
             const msg = document.getElementById('auth-msg');
             
+            if(!email || !pass) { msg.innerText = "Enter Email & Password"; return; }
+            msg.innerText = "Processing...";
+
             try {
+                // 1. Try Login
                 await auth.signInWithEmailAndPassword(email, pass);
             } catch(e) {
-                if(e.code.includes('user-not-found')) {
+                // 2. If Login Fails, Try Create Account
+                if(e.code === 'auth/invalid-login-credentials' || e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') {
                     try {
                         const cred = await auth.createUserWithEmailAndPassword(email, pass);
                         await db.collection('users').doc(cred.user.uid).set({
                             name: email.split('@')[0], email: email, uid: cred.user.uid, emoji: "👤", friends: []
                         });
-                        loadDashboard();
-                    } catch(err) { msg.innerText = err.message; }
-                } else { msg.innerText = e.message; }
+                        msg.innerText = "Account Created!";
+                    } catch(createErr) {
+                        if(createErr.code === 'auth/email-already-in-use') {
+                            msg.innerText = "Incorrect Password (Account Exists)";
+                        } else if(createErr.code === 'auth/weak-password') {
+                            msg.innerText = "Password must be at least 6 characters";
+                        } else {
+                            msg.innerText = createErr.message;
+                        }
+                    }
+                } else {
+                    msg.innerText = e.message;
+                }
             }
         }
 
-        // --- DATA LOADING ---
         async function loadDashboard() {
             showScreen('dashboard');
-            // Fetch Profile
             const doc = await db.collection('users').doc(currentUser.uid).get();
             const data = doc.data();
-            
             document.getElementById('display-name').innerText = data.name || "User";
             document.getElementById('my-avatar').innerText = data.emoji || "👤";
-            
             initPeer(currentUser.uid);
             listenRequests();
             loadFriends();
         }
 
-        // --- SETTINGS ---
         function toggleSettings() {
             const modal = document.getElementById('settings-modal');
             modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
@@ -281,37 +283,31 @@
         async function saveProfile() {
             const newName = document.getElementById('edit-name').value;
             const newEmoji = document.getElementById('edit-name').getAttribute('data-emoji');
-            
             const updateData = {};
             if(newName) updateData.name = newName;
             if(newEmoji) updateData.emoji = newEmoji;
-            
             await db.collection('users').doc(currentUser.uid).update(updateData);
             toggleSettings();
-            loadDashboard(); // Refresh
+            loadDashboard(); 
         }
 
         function logout() { auth.signOut().then(() => location.reload()); }
 
-        // --- TABS & LISTS ---
         function switchTab(tab) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active-tab'));
-            event.target.classList.add('active-tab'); // Fix: target logic might vary
+            event.target.classList.add('active-tab');
             ['friends', 'requests', 'search'].forEach(t => document.getElementById('tab-'+t).style.display = 'none');
             document.getElementById('tab-'+tab).style.display = 'block';
         }
 
-        // --- 1. FRIENDS LOGIC ---
         function loadFriends() {
             db.collection('users').doc(currentUser.uid).onSnapshot(doc => {
                 const friends = doc.data().friends || [];
                 const container = document.getElementById('tab-friends');
                 container.innerHTML = "";
-                
-                if(friends.length === 0) container.innerHTML = "<p style='text-align:center; color:#666; margin-top:20px;'>No friends yet. Search to add!</p>";
-
-                friends.forEach(friendId => {
-                    db.collection('users').doc(friendId).get().then(fDoc => {
+                if(friends.length === 0) container.innerHTML = "<p style='text-align:center; color:#666; margin-top:20px;'>No friends yet.</p>";
+                friends.forEach(fid => {
+                    db.collection('users').doc(fid).get().then(fDoc => {
                         const fData = fDoc.data();
                         const div = document.createElement('div');
                         div.className = 'user-card';
@@ -323,23 +319,19 @@
                             <div class="actions">
                                 <button class="btn btn-sm" onclick="startCall('${fData.uid}', '${fData.name}', '${fData.emoji}')"><i class="fas fa-phone"></i></button>
                                 <button class="btn btn-sm btn-danger" onclick="removeFriend('${fData.uid}')"><i class="fas fa-trash"></i></button>
-                            </div>
-                        `;
+                            </div>`;
                         container.appendChild(div);
                     });
                 });
             });
         }
 
-        // --- 2. SEARCH & REQUESTS ---
         async function searchGlobal(query) {
             if(query.length < 3) return;
             const resContainer = document.getElementById('search-results');
             resContainer.innerHTML = "Searching...";
-            
             const snap = await db.collection('users').where('name', '>=', query).where('name', '<=', query + '\uf8ff').get();
             resContainer.innerHTML = "";
-            
             snap.forEach(doc => {
                 const u = doc.data();
                 if(u.uid !== currentUser.uid) {
@@ -350,8 +342,7 @@
                             <div class="my-avatar" style="width:35px; height:35px;">${u.emoji}</div>
                             <div><b>${u.name}</b><br><small>${u.email}</small></div>
                         </div>
-                        <button class="btn btn-sm" onclick="sendRequest('${u.uid}')">Add Friend</button>
-                    `;
+                        <button class="btn btn-sm" onclick="sendRequest('${u.uid}')">Add Friend</button>`;
                     resContainer.appendChild(div);
                 }
             });
@@ -371,7 +362,6 @@
                 const dot = document.getElementById('req-dot');
                 const list = document.getElementById('tab-requests');
                 list.innerHTML = "";
-                
                 if(!snap.empty) {
                     dot.style.display = "block";
                     snap.forEach(doc => {
@@ -386,8 +376,7 @@
                             <div class="actions">
                                 <button class="btn btn-sm" style="background:var(--success)" onclick="acceptRequest('${r.fromId}', '${doc.id}')">Accept</button>
                                 <button class="btn btn-sm btn-danger" onclick="rejectRequest('${doc.id}')">Decline</button>
-                            </div>
-                        `;
+                            </div>`;
                         list.appendChild(div);
                     });
                 } else {
@@ -397,42 +386,20 @@
             });
         }
 
-        async function acceptRequest(friendUid, reqDocId) {
-            // Add to My Friends
-            await db.collection('users').doc(currentUser.uid).update({
-                friends: firebase.firestore.FieldValue.arrayUnion(friendUid)
-            });
-            // Add Me to Their Friends
-            await db.collection('users').doc(friendUid).update({
-                friends: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
-            });
-            // Delete Request
-            await rejectRequest(reqDocId);
+        async function acceptRequest(fid, rid) {
+            await db.collection('users').doc(currentUser.uid).update({ friends: firebase.firestore.FieldValue.arrayUnion(fid) });
+            await db.collection('users').doc(fid).update({ friends: firebase.firestore.FieldValue.arrayUnion(currentUser.uid) });
+            await rejectRequest(rid);
             switchTab('friends');
         }
 
-        async function rejectRequest(reqDocId) {
-            await db.collection('users').doc(currentUser.uid).collection('requests').doc(reqDocId).delete();
-        }
-        
-        async function removeFriend(uid) {
-             if(confirm("Remove this friend?")) {
-                 await db.collection('users').doc(currentUser.uid).update({
-                    friends: firebase.firestore.FieldValue.arrayRemove(uid)
-                });
-             }
-        }
+        async function rejectRequest(rid) { await db.collection('users').doc(currentUser.uid).collection('requests').doc(rid).delete(); }
+        async function removeFriend(uid) { if(confirm("Remove Friend?")) await db.collection('users').doc(currentUser.uid).update({ friends: firebase.firestore.FieldValue.arrayRemove(uid) }); }
 
-        // --- CALLING (PRIVACY & LOCK) ---
         function initPeer(uid) {
             peer = new Peer(uid);
             peer.on('call', call => {
-                // Privacy: 3rd Person Block
-                if(currentCall) {
-                    call.close(); // Busy signal
-                    return; 
-                }
-                
+                if(currentCall) { call.close(); return; }
                 window.incomingCall = call;
                 navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
                     localStream = stream;
@@ -446,11 +413,9 @@
             navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
                 localStream = stream;
                 showCallOverlay(name, true, emoji);
-                document.getElementById('ringtone').play(); // Calling tone simulation
-                
+                document.getElementById('ringtone').play();
                 const call = peer.call(id, stream);
                 currentCall = call;
-                
                 call.on('stream', remote => {
                     document.getElementById('ringtone').pause();
                     document.getElementById('call-status').innerText = "Connected";
@@ -464,14 +429,10 @@
             document.getElementById('ringtone').pause();
             window.incomingCall.answer(localStream);
             currentCall = window.incomingCall;
-            
             document.getElementById('incoming-actions').style.display = 'none';
             document.getElementById('active-actions').style.display = 'flex';
             document.getElementById('call-status').innerText = "Connected";
-            
-            window.incomingCall.on('stream', remote => {
-                const a = new Audio(); a.srcObject = remote; a.play();
-            });
+            window.incomingCall.on('stream', remote => { const a = new Audio(); a.srcObject = remote; a.play(); });
             window.incomingCall.on('close', endCallUI);
         }
 
@@ -489,24 +450,17 @@
             isScreenLocked = false;
         }
 
-        // Prevent Accidental Touch
         function toggleScreenLock() {
             const overlay = document.getElementById('call-overlay');
-            const btn = overlay.querySelector('button'); // Lock button
-            
+            const btn = overlay.querySelector('button');
             if(!isScreenLocked) {
-                // LOCK
                 overlay.style.background = "#000";
-                overlay.children[0].style.opacity = "0.1"; // Dim avatar
                 document.getElementById('active-actions').style.pointerEvents = "none";
                 document.getElementById('active-actions').style.opacity = "0.1";
-                btn.innerHTML = "<i class='fas fa-unlock'></i> Unlock Screen";
+                btn.innerHTML = "<i class='fas fa-unlock'></i> Unlock";
                 btn.style.background = "var(--primary)";
                 isScreenLocked = true;
             } else {
-                // UNLOCK
-                overlay.style.background = "#000"; // Reset
-                overlay.children[0].style.opacity = "1";
                 document.getElementById('active-actions').style.pointerEvents = "auto";
                 document.getElementById('active-actions').style.opacity = "1";
                 btn.innerHTML = "<i class='fas fa-lock'></i> Prevent Touch";
@@ -520,6 +474,10 @@
             t.enabled = !t.enabled;
             btn.style.background = t.enabled ? "rgba(255,255,255,0.2)" : "white";
             btn.style.color = t.enabled ? "white" : "black";
+        }
+        function toggleSpeaker(btn) {
+            btn.style.background = btn.style.background.includes("white") ? "rgba(255,255,255,0.2)" : "white";
+            btn.style.color = btn.style.color === "black" ? "white" : "black";
         }
 
         function showScreen(id) {
