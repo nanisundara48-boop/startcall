@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NC StartCall Pro</title>
+    <title>NC StartCall Ultimate</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     
@@ -14,186 +14,182 @@
 
     <style>
         :root {
-            --primary: #0066ff;
+            --primary: #2962ff;
             --accent: #00d4ff;
             --dark-bg: #050505;
-            --card-bg: rgba(30, 30, 30, 0.6);
-            --glass: rgba(255, 255, 255, 0.1);
+            --card-bg: #151515;
             --text: #ffffff;
-            --success: #00b894;
-            --danger: #ff7675;
+            --success: #00c853;
+            --danger: #ff1744;
+            --badge: #ff3d00;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
-        
         body { background-color: var(--dark-bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-        /* --- UI COMPONENTS --- */
+        /* --- UI HELPERS --- */
         .btn {
-            width: 100%; padding: 16px; border: none; border-radius: 12px;
-            font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s;
+            width: 100%; padding: 14px; border: none; border-radius: 12px;
+            font-size: 16px; font-weight: 600; cursor: pointer;
             background: linear-gradient(135deg, var(--primary), var(--accent)); color: white;
-            box-shadow: 0 4px 15px rgba(0, 102, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(41, 98, 255, 0.3); transition: transform 0.2s;
         }
-        .btn:active { transform: scale(0.98); }
-        .btn-outline { background: transparent; border: 2px solid #333; color: #aaa; margin-top: 10px; }
+        .btn:active { transform: scale(0.96); }
+        .btn-sm { padding: 8px 16px; font-size: 12px; width: auto; }
+        .btn-danger { background: var(--danger); box-shadow: none; }
         
         input {
-            width: 100%; padding: 15px; margin-bottom: 15px; background: #1a1a1a;
-            border: 1px solid #333; border-radius: 12px; color: white; font-size: 16px; outline: none;
-        }
-        input:focus { border-color: var(--primary); }
-
-        /* --- LOADER --- */
-        #loader {
-            position: fixed; inset: 0; background: black; z-index: 9999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-        .nc-logo {
-            font-size: 80px; font-weight: 800; font-style: italic;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: pulse 2s infinite;
+            width: 100%; padding: 15px; margin-bottom: 12px; background: #222;
+            border: 1px solid #333; border-radius: 12px; color: white; outline: none;
         }
 
-        /* --- WELCOME & AUTH --- */
-        #welcome-screen, #auth-screen {
-            display: none; height: 100%; flex-direction: column; 
-            justify-content: center; align-items: center; padding: 30px;
-        }
-        .screen-active { display: flex !important; animation: fadeIn 0.4s ease; }
+        /* --- SCREENS --- */
+        .screen { display: none; height: 100%; flex-direction: column; padding: 20px; }
+        .screen.active { display: flex; animation: fadeIn 0.3s ease; }
 
-        /* --- DASHBOARD --- */
-        #dashboard { display: none; height: 100%; flex-direction: column; padding: 20px; }
-        
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .search-bar {
-            position: relative; margin-bottom: 20px;
+        /* --- DASHBOARD HEADER --- */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .profile-sec { display: flex; align-items: center; gap: 10px; }
+        .my-avatar {
+            width: 45px; height: 45px; border-radius: 50%; background: #222; border: 2px solid var(--accent);
+            display: flex; align-items: center; justify-content: center; font-size: 24px;
         }
-        .search-bar i { position: absolute; left: 15px; top: 15px; color: #666; }
-        .search-bar input { padding-left: 45px; margin-bottom: 0; background: #111; border: none; }
 
+        /* --- TABS --- */
+        .tabs { display: flex; background: #222; padding: 5px; border-radius: 12px; margin-bottom: 15px; }
+        .tab { flex: 1; text-align: center; padding: 10px; color: #888; border-radius: 8px; position: relative; cursor: pointer; }
+        .tab.active-tab { background: #333; color: white; font-weight: bold; }
+        .red-dot {
+            width: 10px; height: 10px; background: var(--badge); border-radius: 50%;
+            position: absolute; top: 5px; right: 20%; display: none; border: 2px solid #222;
+        }
+
+        /* --- LISTS --- */
+        .list-container { overflow-y: auto; flex: 1; }
         .user-card {
             display: flex; align-items: center; justify-content: space-between;
-            background: var(--card-bg); backdrop-filter: blur(10px);
-            padding: 15px; border-radius: 16px; margin-bottom: 12px;
-            border: 1px solid #333; transition: transform 0.2s;
+            background: var(--card-bg); padding: 12px; border-radius: 12px;
+            margin-bottom: 10px; border: 1px solid #222;
         }
-        .user-card:active { transform: scale(0.98); background: #222; }
-        
-        .avatar {
-            width: 45px; height: 45px; border-radius: 50%; 
-            background: linear-gradient(to bottom right, #333, #111);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold; color: var(--accent); border: 2px solid #333;
+        .actions { display: flex; gap: 8px; }
+
+        /* --- SETTINGS MODAL --- */
+        #settings-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000;
+            display: none; flex-direction: column; padding: 20px;
         }
+        .emoji-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 20px 0; }
+        .emoji-opt { font-size: 30px; cursor: pointer; text-align: center; padding: 5px; border-radius: 5px; }
+        .emoji-opt.selected { background: var(--primary); }
 
         /* --- CALL OVERLAY --- */
         #call-overlay {
-            position: fixed; inset: 0; background: #000; z-index: 2000;
-            display: none; flex-direction: column; align-items: center; justify-content: space-between;
-            padding: 60px 20px;
+            position: fixed; inset: 0; background: #000; z-index: 6000;
+            display: none; flex-direction: column; align-items: center; justify-content: space-between; padding: 50px 20px;
         }
-        .call-avatar-lg {
-            width: 140px; height: 140px; border-radius: 50%; border: 4px solid var(--accent);
-            display: flex; align-items: center; justify-content: center; font-size: 50px;
-            color: white; background: #222; margin-bottom: 20px;
-            box-shadow: 0 0 40px rgba(0, 212, 255, 0.2);
-        }
-        .call-actions { display: flex; gap: 20px; }
-        .action-btn {
-            width: 65px; height: 65px; border-radius: 50%; border: none; font-size: 24px;
-            color: white; cursor: pointer; display: flex; align-items: center; justify-content: center;
-        }
+        .lock-active { pointer-events: none; opacity: 0.3; } /* Screen Lock */
         
-        /* --- TOAST NOTIFICATION --- */
-        #toast {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            background: rgba(30, 30, 30, 0.95); color: white; padding: 12px 24px;
-            border-radius: 50px; font-size: 14px; box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-            display: none; z-index: 3000; white-space: nowrap; border: 1px solid #333;
+        .call-actions { display: flex; gap: 20px; }
+        .c-btn {
+            width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 24px;
+            color: white; display: flex; align-items: center; justify-content: center; cursor: pointer;
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        /* --- FAB (Group Call) --- */
+        .fab {
+            position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
+            background: linear-gradient(135deg, #ff00cc, #333399); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 24px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5); cursor: pointer; z-index: 100;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
     <audio id="ringtone" loop src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
-    <audio id="calling-tone" loop src="https://assets.mixkit.co/active_storage/sfx/2870/2870-preview.mp3"></audio>
+    <audio id="busy-tone" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
 
-    <div id="loader">
-        <div class="nc-logo">NC</div>
-        <p style="color:#666; margin-top:10px; font-size:12px;">StartCall Pro</p>
+    <div id="settings-modal">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2>Customize Profile</h2>
+            <i class="fas fa-times" onclick="toggleSettings()" style="font-size:24px;"></i>
+        </div>
+        <input type="text" id="edit-name" placeholder="Change Display Name">
+        <p style="color:#888;">Select Avatar:</p>
+        <div class="emoji-grid" id="emoji-grid">
+            </div>
+        <button class="btn" onclick="saveProfile()">Save Changes</button>
+        <button class="btn btn-danger" style="margin-top:20px;" onclick="logout()">Logout</button>
     </div>
 
-    <div id="toast">Message Here</div>
-
-    <div id="welcome-screen">
-        <div class="nc-logo" style="font-size:60px; margin-bottom:10px;">NC</div>
-        <h2 style="margin-bottom: 5px;">Welcome Back</h2>
-        <p style="color:#888; margin-bottom: 40px;">Secure calling for everyone.</p>
-        
-        <button class="btn" onclick="showAuth('login')">Login</button>
-        <button class="btn btn-outline" onclick="showAuth('signup')">Create New Account</button>
-        <p style="position:absolute; bottom:30px; color:#444; font-size:10px;">Created by Nani Creations</p>
+    <div id="auth-screen" class="screen active" style="justify-content:center; align-items:center; text-align:center;">
+        <div style="font-size:60px; font-weight:800; font-style:italic; background:linear-gradient(to right, #2962ff, #00d4ff); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">NC</div>
+        <h2 style="margin-bottom:30px;">StartCall Ultimate</h2>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="pass" placeholder="Password">
+        <button class="btn" onclick="handleAuth()">Login / Create Account</button>
+        <p id="auth-msg" style="color:red; margin-top:10px; font-size:12px;"></p>
     </div>
 
-    <div id="auth-screen">
-        <h2 id="auth-title" style="margin-bottom:20px;">Login</h2>
-        <input type="text" id="name-input" placeholder="Full Name" style="display:none;">
-        <input type="email" id="email-input" placeholder="Email Address">
-        <input type="password" id="pass-input" placeholder="Password">
-        
-        <button id="auth-btn" class="btn" onclick="processAuth()">Login</button>
-        <button class="btn-outline" style="border:none; color:var(--primary); margin-top:20px;" onclick="goBackToWelcome()">Back</button>
-    </div>
-
-    <div id="dashboard">
+    <div id="dashboard" class="screen">
         <div class="header">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <div class="avatar" id="my-avatar">U</div>
+            <div class="profile-sec" onclick="toggleSettings()">
+                <div class="my-avatar" id="my-avatar">😎</div>
                 <div>
                     <h3 id="display-name" style="font-size:16px;">User</h3>
-                    <p style="color:var(--success); font-size:11px;">● Online</p>
+                    <p style="font-size:11px; color:var(--success);">● Online</p>
                 </div>
             </div>
-            <i class="fas fa-power-off" onclick="logout()" style="color:#666; padding:10px; cursor:pointer;"></i>
+            <i class="fas fa-cog" onclick="toggleSettings()" style="font-size:20px; color:#888;"></i>
         </div>
 
-        <div class="search-bar">
-            <i class="fas fa-search"></i>
-            <input type="text" placeholder="Search friends..." onkeyup="filterFriends(this.value)">
+        <div class="tabs">
+            <div class="tab active-tab" onclick="switchTab('friends')">Friends</div>
+            <div class="tab" onclick="switchTab('requests')">Requests <div class="red-dot" id="req-dot"></div></div>
+            <div class="tab" onclick="switchTab('search')">Search</div>
         </div>
 
-        <h4 style="color:#666; margin-bottom:15px; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Contacts</h4>
-        <div id="friends-list" style="overflow-y:auto; flex:1;">
-            </div>
+        <div id="tab-friends" class="list-container"></div>
+        
+        <div id="tab-requests" class="list-container" style="display:none;"></div>
+
+        <div id="tab-search" class="list-container" style="display:none;">
+            <input type="text" placeholder="Search users globally..." onkeyup="searchGlobal(this.value)">
+            <div id="search-results"></div>
+        </div>
+
+        <div class="fab" onclick="alert('Group Call Feature coming in next update!')">
+            <i class="fas fa-users"></i>
+        </div>
     </div>
 
     <div id="call-overlay">
         <div style="text-align:center;">
-            <div class="call-avatar-lg" id="call-avatar">U</div>
-            <h2 id="call-name" style="font-size:26px;">Unknown</h2>
+            <div class="my-avatar" id="call-avatar" style="width:120px; height:120px; font-size:60px; margin:0 auto 20px auto; border:4px solid var(--accent);">👤</div>
+            <h2 id="call-name" style="font-size:24px;">Unknown</h2>
             <p id="call-status" style="color:#888; margin-top:5px;">Connecting...</p>
-            <p id="call-timer" style="font-family:monospace; margin-top:10px; font-size:18px;"></p>
         </div>
 
+        <button onclick="toggleScreenLock()" style="background:rgba(255,255,255,0.1); border:1px solid #555; color:white; padding:10px 20px; border-radius:20px; font-size:12px;">
+            <i class="fas fa-lock"></i> Prevent Touch
+        </button>
+
         <div id="incoming-actions" class="call-actions" style="display:none;">
-            <button class="action-btn" style="background:var(--danger);" onclick="endCall()"><i class="fas fa-times"></i></button>
-            <button class="action-btn" style="background:var(--success);" onclick="answerCall()"><i class="fas fa-phone"></i></button>
+            <button class="c-btn" style="background:var(--danger);" onclick="endCall()"><i class="fas fa-times"></i></button>
+            <button class="c-btn" style="background:var(--success);" onclick="answerCall()"><i class="fas fa-phone"></i></button>
         </div>
 
         <div id="active-actions" class="call-actions" style="display:none;">
-            <button class="action-btn" style="background:rgba(255,255,255,0.1);" onclick="toggleMute(this)"><i class="fas fa-microphone"></i></button>
-            <button class="action-btn" style="background:var(--danger);" onclick="endCall()"><i class="fas fa-phone-slash"></i></button>
-            <button class="action-btn" style="background:rgba(255,255,255,0.1);" onclick="toggleSpeaker(this)"><i class="fas fa-volume-up"></i></button>
+            <button class="c-btn" style="background:rgba(255,255,255,0.2);" onclick="toggleMute(this)"><i class="fas fa-microphone"></i></button>
+            <button class="c-btn" style="background:var(--danger);" onclick="endCall()"><i class="fas fa-phone-slash"></i></button>
+            <button class="c-btn" style="background:rgba(255,255,255,0.2);" onclick="toggleSpeaker(this)"><i class="fas fa-volume-up"></i></button>
         </div>
     </div>
 
     <script>
-        // --- CONFIG ---
+        // CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyBruCpy7s-J_uRIyJWWXrJ8M6JT2dqpYD4",
             authDomain: "starcall-9b11e.firebaseapp.com",
@@ -206,148 +202,262 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // State
-        let currentUser, localStream, currentCall, peer, timerInt;
-        let isSignup = false;
+        // STATE
+        let currentUser = null;
+        let peer = null;
+        let localStream = null;
+        let currentCall = null;
+        let isScreenLocked = false;
+        
+        // EMOJIS
+        const emojis = ["😎", "🦊", "🤖", "🦁", "🦄", "👽", "👻", "🐯", "🐼", "🔥", "💎", "⚡", "🎮", "🚀", "🎵"];
 
-        // --- INIT ---
+        // --- AUTH ---
         window.onload = () => {
             auth.onAuthStateChanged(user => {
-                const loader = document.getElementById('loader');
-                setTimeout(() => {
-                    loader.style.display = 'none';
-                    if (user) {
-                        setupDashboard(user);
-                    } else {
-                        switchScreen('welcome-screen');
-                    }
-                }, 1500);
+                if(user) {
+                    currentUser = user;
+                    loadDashboard();
+                } else {
+                    showScreen('auth-screen');
+                }
+            });
+            // Setup Emoji Grid
+            const grid = document.getElementById('emoji-grid');
+            emojis.forEach(e => {
+                const span = document.createElement('div');
+                span.className = 'emoji-opt';
+                span.innerText = e;
+                span.onclick = () => {
+                    document.querySelectorAll('.emoji-opt').forEach(el => el.classList.remove('selected'));
+                    span.classList.add('selected');
+                    document.getElementById('edit-name').setAttribute('data-emoji', e);
+                };
+                grid.appendChild(span);
             });
         };
 
-        // --- AUTH LOGIC ---
-        function showAuth(type) {
-            isSignup = (type === 'signup');
-            document.getElementById('auth-title').innerText = isSignup ? "Create Account" : "Login";
-            document.getElementById('auth-btn').innerText = isSignup ? "Sign Up" : "Login";
-            document.getElementById('name-input').style.display = isSignup ? "block" : "none";
-            switchScreen('auth-screen');
-        }
-
-        function goBackToWelcome() {
-            switchScreen('welcome-screen');
-        }
-
-        async function processAuth() {
-            const email = document.getElementById('email-input').value;
-            const pass = document.getElementById('pass-input').value;
-            const name = document.getElementById('name-input').value;
-
-            if(!email || !pass) return showToast("Please fill all fields");
-            if(isSignup && !name) return showToast("Name is required");
-
-            const btn = document.getElementById('auth-btn');
-            btn.innerText = "Processing...";
-
-            try {
-                if (isSignup) {
-                    const cred = await auth.createUserWithEmailAndPassword(email, pass);
-                    await db.collection('users').doc(cred.user.uid).set({
-                        name: name, email: email, uid: cred.user.uid
-                    });
-                    cred.user.updateProfile({ displayName: name });
-                    setupDashboard(cred.user);
-                } else {
-                    await auth.signInWithEmailAndPassword(email, pass);
-                    // onAuthStateChanged handles the rest
-                }
-            } catch (e) {
-                showToast(e.message);
-                btn.innerText = isSignup ? "Sign Up" : "Login";
-            }
-        }
-
-        function logout() {
-            if(confirm("Are you sure you want to logout?")) {
-                auth.signOut().then(() => location.reload());
-            }
-        }
-
-        // --- DASHBOARD ---
-        function setupDashboard(user) {
-            currentUser = user;
-            switchScreen('dashboard');
-            document.getElementById('display-name').innerText = user.displayName || "User";
-            document.getElementById('my-avatar').innerText = (user.displayName || "U").charAt(0).toUpperCase();
-
-            // Init Peer
-            peer = new Peer(user.uid);
-            peer.on('call', handleIncomingCall);
+        async function handleAuth() {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('pass').value;
+            const msg = document.getElementById('auth-msg');
             
-            loadUsers();
+            try {
+                await auth.signInWithEmailAndPassword(email, pass);
+            } catch(e) {
+                if(e.code.includes('user-not-found')) {
+                    try {
+                        const cred = await auth.createUserWithEmailAndPassword(email, pass);
+                        await db.collection('users').doc(cred.user.uid).set({
+                            name: email.split('@')[0], email: email, uid: cred.user.uid, emoji: "👤", friends: []
+                        });
+                        loadDashboard();
+                    } catch(err) { msg.innerText = err.message; }
+                } else { msg.innerText = e.message; }
+            }
         }
 
-        function loadUsers() {
-            db.collection('users').onSnapshot(snap => {
-                const list = document.getElementById('friends-list');
-                list.innerHTML = "";
-                snap.forEach(doc => {
-                    const data = doc.data();
-                    if(data.uid !== currentUser.uid) {
-                        const card = document.createElement('div');
-                        card.className = "user-card";
-                        card.setAttribute('data-name', data.name.toLowerCase());
-                        card.innerHTML = `
-                            <div style="display:flex; align-items:center; gap:12px;">
-                                <div class="avatar">${data.name.charAt(0).toUpperCase()}</div>
-                                <div><b>${data.name}</b><br><small style="color:#888;">Available</small></div>
+        // --- DATA LOADING ---
+        async function loadDashboard() {
+            showScreen('dashboard');
+            // Fetch Profile
+            const doc = await db.collection('users').doc(currentUser.uid).get();
+            const data = doc.data();
+            
+            document.getElementById('display-name').innerText = data.name || "User";
+            document.getElementById('my-avatar').innerText = data.emoji || "👤";
+            
+            initPeer(currentUser.uid);
+            listenRequests();
+            loadFriends();
+        }
+
+        // --- SETTINGS ---
+        function toggleSettings() {
+            const modal = document.getElementById('settings-modal');
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        async function saveProfile() {
+            const newName = document.getElementById('edit-name').value;
+            const newEmoji = document.getElementById('edit-name').getAttribute('data-emoji');
+            
+            const updateData = {};
+            if(newName) updateData.name = newName;
+            if(newEmoji) updateData.emoji = newEmoji;
+            
+            await db.collection('users').doc(currentUser.uid).update(updateData);
+            toggleSettings();
+            loadDashboard(); // Refresh
+        }
+
+        function logout() { auth.signOut().then(() => location.reload()); }
+
+        // --- TABS & LISTS ---
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active-tab'));
+            event.target.classList.add('active-tab'); // Fix: target logic might vary
+            ['friends', 'requests', 'search'].forEach(t => document.getElementById('tab-'+t).style.display = 'none');
+            document.getElementById('tab-'+tab).style.display = 'block';
+        }
+
+        // --- 1. FRIENDS LOGIC ---
+        function loadFriends() {
+            db.collection('users').doc(currentUser.uid).onSnapshot(doc => {
+                const friends = doc.data().friends || [];
+                const container = document.getElementById('tab-friends');
+                container.innerHTML = "";
+                
+                if(friends.length === 0) container.innerHTML = "<p style='text-align:center; color:#666; margin-top:20px;'>No friends yet. Search to add!</p>";
+
+                friends.forEach(friendId => {
+                    db.collection('users').doc(friendId).get().then(fDoc => {
+                        const fData = fDoc.data();
+                        const div = document.createElement('div');
+                        div.className = 'user-card';
+                        div.innerHTML = `
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="my-avatar" style="width:35px; height:35px; font-size:18px;">${fData.emoji}</div>
+                                <div><b>${fData.name}</b></div>
                             </div>
-                            <i class="fas fa-phone-alt" style="color:var(--success); padding:10px; background:rgba(0,184,148,0.1); border-radius:50%;" onclick="startCall('${data.uid}', '${data.name}')"></i>
+                            <div class="actions">
+                                <button class="btn btn-sm" onclick="startCall('${fData.uid}', '${fData.name}', '${fData.emoji}')"><i class="fas fa-phone"></i></button>
+                                <button class="btn btn-sm btn-danger" onclick="removeFriend('${fData.uid}')"><i class="fas fa-trash"></i></button>
+                            </div>
                         `;
-                        list.appendChild(card);
-                    }
+                        container.appendChild(div);
+                    });
                 });
             });
         }
 
-        // --- SEARCH FUNCTION ---
-        function filterFriends(text) {
-            const cards = document.querySelectorAll('.user-card');
-            cards.forEach(card => {
-                const name = card.getAttribute('data-name');
-                card.style.display = name.includes(text.toLowerCase()) ? "flex" : "none";
+        // --- 2. SEARCH & REQUESTS ---
+        async function searchGlobal(query) {
+            if(query.length < 3) return;
+            const resContainer = document.getElementById('search-results');
+            resContainer.innerHTML = "Searching...";
+            
+            const snap = await db.collection('users').where('name', '>=', query).where('name', '<=', query + '\uf8ff').get();
+            resContainer.innerHTML = "";
+            
+            snap.forEach(doc => {
+                const u = doc.data();
+                if(u.uid !== currentUser.uid) {
+                    const div = document.createElement('div');
+                    div.className = 'user-card';
+                    div.innerHTML = `
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div class="my-avatar" style="width:35px; height:35px;">${u.emoji}</div>
+                            <div><b>${u.name}</b><br><small>${u.email}</small></div>
+                        </div>
+                        <button class="btn btn-sm" onclick="sendRequest('${u.uid}')">Add Friend</button>
+                    `;
+                    resContainer.appendChild(div);
+                }
             });
         }
 
-        // --- CALLING ---
-        function startCall(id, name) {
+        async function sendRequest(targetUid) {
+            await db.collection('users').doc(targetUid).collection('requests').doc(currentUser.uid).set({
+                fromName: document.getElementById('display-name').innerText,
+                fromId: currentUser.uid,
+                fromEmoji: document.getElementById('my-avatar').innerText
+            });
+            alert("Request Sent!");
+        }
+
+        function listenRequests() {
+            db.collection('users').doc(currentUser.uid).collection('requests').onSnapshot(snap => {
+                const dot = document.getElementById('req-dot');
+                const list = document.getElementById('tab-requests');
+                list.innerHTML = "";
+                
+                if(!snap.empty) {
+                    dot.style.display = "block";
+                    snap.forEach(doc => {
+                        const r = doc.data();
+                        const div = document.createElement('div');
+                        div.className = 'user-card';
+                        div.innerHTML = `
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="my-avatar">${r.fromEmoji}</div>
+                                <b>${r.fromName}</b>
+                            </div>
+                            <div class="actions">
+                                <button class="btn btn-sm" style="background:var(--success)" onclick="acceptRequest('${r.fromId}', '${doc.id}')">Accept</button>
+                                <button class="btn btn-sm btn-danger" onclick="rejectRequest('${doc.id}')">Decline</button>
+                            </div>
+                        `;
+                        list.appendChild(div);
+                    });
+                } else {
+                    dot.style.display = "none";
+                    list.innerHTML = "<p style='text-align:center; color:#666;'>No pending requests.</p>";
+                }
+            });
+        }
+
+        async function acceptRequest(friendUid, reqDocId) {
+            // Add to My Friends
+            await db.collection('users').doc(currentUser.uid).update({
+                friends: firebase.firestore.FieldValue.arrayUnion(friendUid)
+            });
+            // Add Me to Their Friends
+            await db.collection('users').doc(friendUid).update({
+                friends: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
+            });
+            // Delete Request
+            await rejectRequest(reqDocId);
+            switchTab('friends');
+        }
+
+        async function rejectRequest(reqDocId) {
+            await db.collection('users').doc(currentUser.uid).collection('requests').doc(reqDocId).delete();
+        }
+        
+        async function removeFriend(uid) {
+             if(confirm("Remove this friend?")) {
+                 await db.collection('users').doc(currentUser.uid).update({
+                    friends: firebase.firestore.FieldValue.arrayRemove(uid)
+                });
+             }
+        }
+
+        // --- CALLING (PRIVACY & LOCK) ---
+        function initPeer(uid) {
+            peer = new Peer(uid);
+            peer.on('call', call => {
+                // Privacy: 3rd Person Block
+                if(currentCall) {
+                    call.close(); // Busy signal
+                    return; 
+                }
+                
+                window.incomingCall = call;
+                navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+                    localStream = stream;
+                    showCallOverlay("Incoming Call...", false);
+                    document.getElementById('ringtone').play();
+                });
+            });
+        }
+
+        function startCall(id, name, emoji) {
             navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
                 localStream = stream;
-                showCallOverlay(name, true);
-                document.getElementById('calling-tone').play();
-
+                showCallOverlay(name, true, emoji);
+                document.getElementById('ringtone').play(); // Calling tone simulation
+                
                 const call = peer.call(id, stream);
                 currentCall = call;
                 
-                call.on('stream', remoteStream => {
-                    document.getElementById('calling-tone').pause();
+                call.on('stream', remote => {
+                    document.getElementById('ringtone').pause();
                     document.getElementById('call-status').innerText = "Connected";
-                    startTimer();
-                    const audio = new Audio();
-                    audio.srcObject = remoteStream;
-                    audio.play();
+                    const a = new Audio(); a.srcObject = remote; a.play();
                 });
-                call.on('close', cleanupCall);
-            }).catch(e => showToast("Microphone Access Denied"));
-        }
-
-        function handleIncomingCall(call) {
-            navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-                localStream = stream;
-                window.incomingCall = call;
-                showCallOverlay("Incoming Call...", false);
-                document.getElementById('ringtone').play();
-            });
+                call.on('close', endCallUI);
+            }).catch(e => alert("Mic Error"));
         }
 
         function answerCall() {
@@ -359,67 +469,71 @@
             document.getElementById('active-actions').style.display = 'flex';
             document.getElementById('call-status').innerText = "Connected";
             
-            window.incomingCall.on('stream', remoteStream => {
-                const audio = new Audio();
-                audio.srcObject = remoteStream;
-                audio.play();
-                startTimer();
+            window.incomingCall.on('stream', remote => {
+                const a = new Audio(); a.srcObject = remote; a.play();
             });
-            window.incomingCall.on('close', cleanupCall);
+            window.incomingCall.on('close', endCallUI);
         }
 
         function endCall() {
             if(currentCall) currentCall.close();
             if(window.incomingCall) window.incomingCall.close();
-            cleanupCall();
+            endCallUI();
         }
 
-        function cleanupCall() {
+        function endCallUI() {
             document.getElementById('call-overlay').style.display = 'none';
             document.getElementById('ringtone').pause();
-            document.getElementById('calling-tone').pause();
             if(localStream) localStream.getTracks().forEach(t => t.stop());
-            clearInterval(timerInt);
+            currentCall = null;
+            isScreenLocked = false;
         }
 
-        // --- HELPERS ---
-        function switchScreen(id) {
-            ['welcome-screen', 'auth-screen', 'dashboard'].forEach(s => document.getElementById(s).classList.remove('screen-active'));
-            document.getElementById(id).classList.add('screen-active');
-        }
-
-        function showCallOverlay(name, isOutgoing) {
-            document.getElementById('call-overlay').style.display = 'flex';
-            document.getElementById('call-name').innerText = name;
-            document.getElementById('call-avatar').innerText = name.charAt(0);
-            document.getElementById('call-timer').innerText = "";
-            document.getElementById('call-status').innerText = isOutgoing ? "Calling..." : "Incoming Call...";
+        // Prevent Accidental Touch
+        function toggleScreenLock() {
+            const overlay = document.getElementById('call-overlay');
+            const btn = overlay.querySelector('button'); // Lock button
             
-            document.getElementById('incoming-actions').style.display = isOutgoing ? 'none' : 'flex';
-            document.getElementById('active-actions').style.display = isOutgoing ? 'flex' : 'none';
+            if(!isScreenLocked) {
+                // LOCK
+                overlay.style.background = "#000";
+                overlay.children[0].style.opacity = "0.1"; // Dim avatar
+                document.getElementById('active-actions').style.pointerEvents = "none";
+                document.getElementById('active-actions').style.opacity = "0.1";
+                btn.innerHTML = "<i class='fas fa-unlock'></i> Unlock Screen";
+                btn.style.background = "var(--primary)";
+                isScreenLocked = true;
+            } else {
+                // UNLOCK
+                overlay.style.background = "#000"; // Reset
+                overlay.children[0].style.opacity = "1";
+                document.getElementById('active-actions').style.pointerEvents = "auto";
+                document.getElementById('active-actions').style.opacity = "1";
+                btn.innerHTML = "<i class='fas fa-lock'></i> Prevent Touch";
+                btn.style.background = "rgba(255,255,255,0.1)";
+                isScreenLocked = false;
+            }
         }
-
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.innerText = msg;
-            t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 3000);
-        }
-
-        function startTimer() {
-            let s = 0;
-            timerInt = setInterval(() => {
-                s++;
-                let m = Math.floor(s/60), sec = s%60;
-                document.getElementById('call-timer').innerText = (m<10?"0"+m:m)+":"+(sec<10?"0"+sec:sec);
-            }, 1000);
-        }
-
+        
         function toggleMute(btn) {
             let t = localStream.getAudioTracks()[0];
             t.enabled = !t.enabled;
-            btn.style.background = t.enabled ? "rgba(255,255,255,0.1)" : "white";
+            btn.style.background = t.enabled ? "rgba(255,255,255,0.2)" : "white";
             btn.style.color = t.enabled ? "white" : "black";
+        }
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+        
+        function showCallOverlay(name, isOutgoing, emoji="👤") {
+            document.getElementById('call-overlay').style.display = 'flex';
+            document.getElementById('call-name').innerText = name;
+            document.getElementById('call-avatar').innerText = emoji;
+            document.getElementById('incoming-actions').style.display = isOutgoing ? 'none' : 'flex';
+            document.getElementById('active-actions').style.display = isOutgoing ? 'flex' : 'none';
+            document.getElementById('call-status').innerText = isOutgoing ? "Ringing..." : "Incoming Call...";
         }
     </script>
 </body>
