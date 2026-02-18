@@ -10,154 +10,114 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     
     <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
 
     <style>
         :root {
-            --primary-gradient: linear-gradient(135deg, #0055ff, #00d4ff);
-            --bg-light: #f0f2f5;
-            --text-light: #1c1e21;
-            --card-light: #ffffff;
-            --bg-dark: #0a0a0a;
-            --text-dark: #e4e6eb;
-            --card-dark: #18191a;
-            --call-reject: #ff453a;
-            --call-accept: #30d158;
+            --primary-gradient: linear-gradient(135deg, #0066ff, #00ccff);
+            --bg-dark: #050505;
+            --card-dark: #1a1a1a;
+            --text-color: #ffffff;
+            --call-accept: #2ecc71;
+            --call-reject: #e74c3c;
         }
 
-        /* RESET & BASICS */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
         
         body { 
-            background-color: var(--bg-light); 
-            color: var(--text-light); 
+            background-color: var(--bg-dark); 
+            color: var(--text-color); 
             height: 100vh; 
             overflow: hidden; 
             display: flex; 
             flex-direction: column; 
         }
 
-        /* --- LOADER (FIXED) --- */
+        /* --- LOADER --- */
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: black; z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 0.5s ease;
         }
-        .nc-logo {
-            font-size: 70px; font-weight: 800; font-style: italic;
+        .nc-logo-lg {
+            font-size: 80px; font-weight: 900; font-style: italic;
             background: var(--primary-gradient);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            position: relative; margin-bottom: 10px;
-            /* Fix for logo rendering */
-            display: inline-block;
+            text-shadow: 0 0 20px rgba(0, 204, 255, 0.3);
+            animation: pulseLogo 2s infinite;
         }
-        /* Swoosh effect */
-        .nc-logo::after {
-            content: ''; position: absolute; bottom: 8px; left: -5px; width: 110%; height: 4px;
-            background: var(--primary-gradient); border-radius: 50%;
-            transform: rotate(-3deg); box-shadow: 0 0 10px #00d4ff;
-        }
+        .app-title { font-size: 24px; letter-spacing: 2px; margin-top: -10px; color: #fff; }
+        @keyframes pulseLogo { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
-        /* --- AUTH CONTAINER (MAJOR FIX HERE) --- */
-        .auth-container { 
-            display: flex; 
-            flex-direction: column; /* Forces vertical stacking */
-            justify-content: center; 
-            align-items: center; 
-            text-align: center;
-            width: 100%;
-            height: 100%;
-            padding: 20px;
+        /* --- AUTH PAGE --- */
+        #auth-page {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100%; padding: 30px; text-align: center;
         }
-
-        .auth-container h3 { font-size: 24px; margin-bottom: 5px; }
-        .auth-container p { margin-bottom: 30px; }
-
-        .input-group { 
-            position: relative; 
-            margin: 10px 0; 
-            width: 100%; 
-            max-width: 320px; /* Limits width on big screens */
+        .input-box {
+            width: 100%; max-width: 320px; background: #222; border: 1px solid #333;
+            padding: 15px; margin: 10px 0; border-radius: 12px; color: white; font-size: 16px; outline: none;
         }
-        
-        .input-group input {
-            width: 100%; 
-            padding: 15px 45px 15px 15px; /* Right padding for icon */
-            border-radius: 12px; 
-            border: 1px solid #ddd; 
-            outline: none; 
-            font-size: 16px;
-            background: white; /* Force white background */
-            color: #333;
-        }
-        
-        .input-group i {
-            position: absolute; 
-            right: 15px; 
-            top: 50%; 
-            transform: translateY(-50%); 
-            cursor: pointer; 
-            color: #888;
-            z-index: 2;
-        }
-
         .btn-primary {
-            background: var(--primary-gradient); 
-            color: white; 
-            padding: 15px; 
-            width: 100%; 
-            max-width: 320px;
-            border: none; 
-            border-radius: 12px; 
-            font-size: 16px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(0, 85, 255, 0.4);
+            width: 100%; max-width: 320px; padding: 15px; margin-top: 20px;
+            background: var(--primary-gradient); border: none; border-radius: 12px;
+            color: white; font-size: 18px; font-weight: bold; cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 102, 255, 0.4);
         }
 
-        /* --- DASHBOARD STYLES --- */
-        .page { display: none; width: 100%; height: 100%; padding: 20px; overflow-y: auto; }
-        .active-page { display: flex; flex-direction: column; }
+        /* --- MAIN DASHBOARD --- */
+        #main-page { display: none; height: 100%; flex-direction: column; padding: 20px; }
         
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; margin-bottom: 15px; }
-        .user-profile { display: flex; align-items: center; gap: 10px; }
-        .avatar {
-            width: 45px; height: 45px; border-radius: 50%; background: var(--primary-gradient);
-            display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; font-size: 20px;
+        .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; }
+        .profile { display: flex; align-items: center; gap: 12px; }
+        .avatar { 
+            width: 50px; height: 50px; border-radius: 50%; background: var(--primary-gradient);
+            display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold;
         }
         
-        .tabs { display: flex; gap: 10px; margin-bottom: 15px; background: rgba(0,0,0,0.05); padding: 5px; border-radius: 15px; }
-        .tab-btn { flex: 1; padding: 10px; border-radius: 12px; border: none; font-weight: 500; cursor: pointer; background: transparent; }
-        .tab-btn.active { background: white; color: #0055ff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .tabs { display: flex; background: #222; padding: 5px; border-radius: 15px; margin-bottom: 20px; }
+        .tab { flex: 1; padding: 10px; text-align: center; color: #888; cursor: pointer; border-radius: 10px; transition: 0.3s; }
+        .tab.active { background: #333; color: #00ccff; font-weight: bold; }
 
-        .list-item {
+        .user-list { overflow-y: auto; flex: 1; }
+        .user-card {
             display: flex; align-items: center; justify-content: space-between;
-            padding: 15px; background: white; border-radius: 15px; margin-bottom: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            background: #1a1a1a; padding: 15px; border-radius: 15px; margin-bottom: 10px;
+            border-left: 4px solid #0066ff;
+        }
+        .call-btn-icon {
+            width: 40px; height: 40px; border-radius: 50%; background: rgba(0, 255, 136, 0.1);
+            color: var(--call-accept); display: flex; align-items: center; justify-content: center;
+            font-size: 18px; cursor: pointer;
         }
 
-        /* --- CALL SCREEN --- */
+        /* --- CALL SCREEN (OVERLAY) --- */
         #call-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #0f1014; z-index: 2000; display: none;
-            flex-direction: column; align-items: center; justify-content: space-between; padding: 40px 20px;
+            background: linear-gradient(to bottom, #111, #000); z-index: 2000;
+            display: none; flex-direction: column; align-items: center; justify-content: space-between;
+            padding: 60px 20px;
         }
-        .caller-avatar { width: 120px; height: 120px; border-radius: 50%; background: #333; margin: 0 auto 20px; border: 3px solid #00d4ff; display: flex; align-items: center; justify-content: center; font-size: 40px; color: white; }
-        .call-controls { display: flex; gap: 20px; }
-        .control-btn { width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 24px; color: white; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); cursor: pointer; }
-        .btn-hangup { background: var(--call-reject); }
-        .btn-answer { background: var(--call-accept); }
+        .caller-pic {
+            width: 150px; height: 150px; border-radius: 50%; border: 4px solid #00ccff;
+            background: #222; display: flex; align-items: center; justify-content: center;
+            font-size: 60px; margin-bottom: 20px; box-shadow: 0 0 30px rgba(0, 204, 255, 0.2);
+        }
+        .controls { display: flex; gap: 25px; }
+        .ctrl-btn {
+            width: 65px; height: 65px; border-radius: 50%; border: none; font-size: 24px; color: white;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+        }
+        .btn-mute { background: rgba(255,255,255,0.2); }
+        .btn-end { background: var(--call-reject); box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4); }
+        .btn-answer { background: var(--call-accept); box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4); animation: shake 1s infinite; }
+        
+        @keyframes shake { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(5deg); } 75% { transform: rotate(-5deg); } }
 
-        /* DARK MODE SUPPORT */
-        @media (prefers-color-scheme: dark) {
-            body { background-color: var(--bg-dark); color: var(--text-dark); }
-            .input-group input { background-color: #333; color: white; border: 1px solid #555; }
-            .list-item, .tab-btn.active { background-color: var(--card-dark); color: white; }
-        }
+        /* Mute Active State */
+        .mute-active { background: white; color: black; }
     </style>
 </head>
 <body>
@@ -167,84 +127,70 @@
     <audio id="end-tone" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
 
     <div id="loader">
-        <div class="nc-logo">NC</div>
-        <div class="app-name-load">StartCall</div>
-        <p style="color:#888; font-size:12px; position:absolute; bottom:30px;">Created by - Nani Creations</p>
+        <div class="nc-logo-lg">NC</div>
+        <div class="app-title">StartCall</div>
+        <p style="color:#555; position:absolute; bottom:30px; font-size:12px;">Created by - Nani Creations</p>
     </div>
 
-    <div id="login-page" class="page auth-container">
-        <div class="nc-logo">NC</div>
-        <h3>Welcome Back</h3>
-        <p style="color:#888; font-size: 12px;">Login to connect instantly</p>
+    <div id="auth-page" style="display:none;">
+        <div class="nc-logo-lg" style="font-size:60px;">NC</div>
+        <h3 style="margin-bottom:30px;">Welcome</h3>
         
-        <div class="input-group">
-            <input type="text" id="username-input" placeholder="Display Name">
-            <i class="fas fa-user"></i>
-        </div>
-        <div class="input-group">
-            <input type="email" id="email-input" placeholder="Email Address">
-            <i class="fas fa-envelope"></i>
-        </div>
-        <div class="input-group">
-            <input type="password" id="password-input" placeholder="Password">
-            <i class="fas fa-eye" onclick="togglePassword()"></i>
-        </div>
-        <p id="auth-error" style="color:red; font-size:12px; display:none; margin-top:5px;"></p>
+        <input type="text" id="reg-name" class="input-box" placeholder="Your Name (For Sign Up)">
+        <input type="email" id="email" class="input-box" placeholder="Email Address">
+        <input type="password" id="pass" class="input-box" placeholder="Password (Min 6 chars)">
         
-        <button id="login-btn" class="btn-primary" onclick="handleAuth()">Login / Sign Up</button>
+        <button class="btn-primary" onclick="handleAuth()">Login / Sign Up</button>
+        <p id="error-msg" style="color:red; margin-top:15px; font-size:12px;"></p>
     </div>
 
-    <div id="main-page" class="page">
+    <div id="main-page">
         <div class="header">
-            <div class="user-profile">
+            <div class="profile">
                 <div class="avatar" id="my-avatar">U</div>
                 <div>
-                    <h3 id="display-name" style="font-size:16px;">User</h3>
-                    <p style="font-size: 11px; color: #31a24c;">● Online</p>
+                    <h3 id="display-name">User</h3>
+                    <p style="font-size:12px; color:#00ccff;">● Online</p>
                 </div>
             </div>
-            <i class="fas fa-sign-out-alt" onclick="logout()" style="color:#888; font-size:18px;"></i>
+            <i class="fas fa-sign-out-alt" onclick="logout()" style="font-size:20px; color:#666; cursor:pointer;"></i>
         </div>
 
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('friends')">Friends</button>
-            <button class="tab-btn" onclick="switchTab('requests')">Requests</button>
-            <button class="tab-btn" onclick="switchTab('history')">History</button>
+            <div class="tab active" onclick="switchTab('friends')">Friends</div>
+            <div class="tab" onclick="switchTab('history')">History</div>
         </div>
 
-        <div class="input-group" style="width:100%; margin-top:0;">
-            <input type="text" placeholder="Search friends..." onkeyup="searchUsers(this.value)">
-            <i class="fas fa-search"></i>
+        <div id="friends-list" class="user-list">
+            <p style="text-align:center; margin-top:50px; color:#444;">Loading users...</p>
         </div>
-
-        <div id="friends-list" style="margin-top:10px;">
-            <p style="text-align:center; color:#888; font-size:12px;">Loading users...</p>
+        <div id="history-list" class="user-list" style="display:none;">
+            <p style="text-align:center; margin-top:50px; color:#444;">No recent calls</p>
         </div>
-        <div id="requests-list" style="display:none; margin-top:10px;"></div>
-        <div id="history-list" style="display:none; margin-top:10px;"></div>
     </div>
 
     <div id="call-screen">
-        <div style="width:100%; text-align:right;"><i class="fas fa-chevron-down" style="color:white; padding:10px;" onclick="minimizeCall()"></i></div>
-        <div style="text-align:center;">
-            <div class="caller-avatar" id="call-avatar">U</div>
-            <h2 id="call-name" style="color:white; margin-bottom:10px;">Unknown</h2>
-            <p id="call-status" style="color:#aaa;">Calling...</p>
-            <p id="call-timer" style="color:white; font-size:14px; margin-top:10px;"></p>
+        <div style="text-align:center; width:100%;">
+            <div class="caller-pic" id="call-avatar">U</div>
+            <h2 id="call-name" style="font-size:28px; margin-bottom:10px;">Unknown</h2>
+            <p id="call-status" style="color:#888; font-size:16px;">Calling...</p>
+            <p id="call-timer" style="color:white; font-size:20px; margin-top:15px; font-weight:bold;"></p>
         </div>
-        <div class="call-controls">
-            <button class="control-btn" onclick="toggleMute(this)"><i class="fas fa-microphone"></i></button>
-            <button class="control-btn btn-hangup" onclick="endCall()"><i class="fas fa-phone-slash"></i></button>
-            <button class="control-btn" onclick="toggleSpeaker(this)"><i class="fas fa-volume-up"></i></button>
+
+        <div id="active-controls" class="controls">
+            <button class="ctrl-btn btn-mute" onclick="toggleMute(this)"><i class="fas fa-microphone"></i></button>
+            <button class="ctrl-btn btn-end" onclick="endCall()"><i class="fas fa-phone-slash"></i></button>
+            <button class="ctrl-btn btn-mute" onclick="toggleSpeaker(this)"><i class="fas fa-volume-up"></i></button>
         </div>
-        <div id="incoming-controls" style="display:none; gap:30px;">
-            <button class="control-btn btn-hangup" onclick="rejectCall()"><i class="fas fa-times"></i></button>
-            <button class="control-btn btn-answer" onclick="answerCall()"><i class="fas fa-phone"></i></button>
+
+        <div id="incoming-controls" class="controls" style="display:none;">
+            <button class="ctrl-btn btn-end" onclick="endCall()"><i class="fas fa-times"></i></button>
+            <button class="ctrl-btn btn-answer" onclick="answerCall()"><i class="fas fa-phone"></i></button>
         </div>
     </div>
 
     <script>
-        // --- YOUR FIREBASE CONFIG (Already Correct) ---
+        // --- FIREBASE CONFIG (CORRECT KEYS FROM SCREENSHOT) ---
         const firebaseConfig = {
             apiKey: "AIzaSyBruCpy7s-J_uRIyJWWXrJ8M6JT2dqpYD4",
             authDomain: "starcall-9b11e.firebaseapp.com",
@@ -253,181 +199,206 @@
             messagingSenderId: "380174170098",
             appId: "1:380174170098:web:ad6eceb05beac044cddd6b"
         };
-
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
         const auth = firebase.auth();
+        const db = firebase.firestore();
 
         // VARIABLES
-        let currentUser = null, localStream = null, currentCall = null, peer = null, callTimerInterval;
+        let currentUser = null;
+        let localStream = null;
+        let currentCall = null;
+        let peer = null;
+        let timerInt;
 
-        // LOADER & AUTH CHECK
+        // 1. LOADER & AUTH CHECK
         window.onload = function() {
             auth.onAuthStateChanged((user) => {
                 setTimeout(() => {
                     document.getElementById('loader').style.opacity = '0';
                     setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
-                    if (user) setupUser(user);
-                    else document.getElementById('login-page').style.display = 'flex';
+                    
+                    if (user) {
+                        setupUser(user);
+                    } else {
+                        document.getElementById('auth-page').style.display = 'flex';
+                    }
                 }, 2000);
             });
         };
 
-        // UI FUNCTIONS
-        function togglePassword() {
-            const x = document.getElementById("password-input");
-            x.type = x.type === "password" ? "text" : "password";
-        }
-
-        function switchTab(t) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-            ['friends','requests','history'].forEach(x => document.getElementById(x+'-list').style.display='none');
-            document.getElementById(t+'-list').style.display='block';
-        }
-
-        // AUTH HANDLER
+        // 2. AUTH FUNCTIONS (Login/Signup Mixed)
         async function handleAuth() {
-            const em = document.getElementById('email-input').value;
-            const pw = document.getElementById('password-input').value;
-            const nm = document.getElementById('username-input').value;
-            const btn = document.getElementById('login-btn');
-            
-            if(!em || !pw) return alert("Email & Password required");
-            btn.innerText = "Processing...";
-            
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('pass').value;
+            const name = document.getElementById('reg-name').value;
+            const errBox = document.getElementById('error-msg');
+
+            if(!email || !pass) return errBox.innerText = "Email & Password required";
+            errBox.innerText = "Processing...";
+
             try {
-                await auth.signInWithEmailAndPassword(em, pw);
-            } catch(e) {
-                if(e.code === 'auth/user-not-found') {
-                    if(!nm) return alert("Enter Name for new account");
-                    const cred = await auth.createUserWithEmailAndPassword(em, pw);
-                    await db.collection('users').doc(cred.user.uid).set({
-                        name: nm, email: em, uid: cred.user.uid, status: "online"
-                    });
-                    cred.user.updateProfile({ displayName: nm });
+                // Try Login First
+                await auth.signInWithEmailAndPassword(email, pass);
+            } catch (error) {
+                // If User Not Found, Try Sign Up
+                if(error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+                    if(!name) return errBox.innerText = "New user? Enter Name to Sign Up.";
+                    try {
+                        const cred = await auth.createUserWithEmailAndPassword(email, pass);
+                        // Save User Data
+                        await db.collection('users').doc(cred.user.uid).set({
+                            name: name, email: email, uid: cred.user.uid
+                        });
+                        cred.user.updateProfile({ displayName: name });
+                        setupUser(cred.user);
+                    } catch (suErr) {
+                        errBox.innerText = suErr.message;
+                    }
                 } else {
-                    alert(e.message);
+                    errBox.innerText = error.message;
                 }
             }
         }
 
         function setupUser(user) {
             currentUser = user;
-            document.getElementById('login-page').style.display = 'none';
-            document.getElementById('main-page').classList.add('active-page');
-            document.getElementById('display-name').innerText = user.displayName || "User";
-            document.getElementById('my-avatar').innerText = (user.displayName||"U").charAt(0).toUpperCase();
+            document.getElementById('auth-page').style.display = 'none';
+            document.getElementById('main-page').style.display = 'flex';
             
-            initPeer(user.uid);
+            const username = user.displayName || user.email.split('@')[0];
+            document.getElementById('display-name').innerText = username;
+            document.getElementById('my-avatar').innerText = username.charAt(0).toUpperCase();
+
+            // Init PeerJS
+            peer = new Peer(user.uid);
+            peer.on('open', (id) => console.log("Connected to Calling Server: " + id));
+            
+            // Handle Incoming Call
+            peer.on('call', (call) => {
+                navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+                    localStream = stream;
+                    window.incomingCall = call;
+                    showCallScreen("Incoming Call...", false);
+                    document.getElementById('active-controls').style.display = 'none';
+                    document.getElementById('incoming-controls').style.display = 'flex';
+                    document.getElementById('ringtone').play();
+                });
+            });
+
             loadUsers();
         }
 
         function logout() { auth.signOut().then(() => location.reload()); }
 
-        // DATA
+        // 3. LOAD FRIENDS
         function loadUsers() {
             db.collection('users').onSnapshot(snap => {
                 const list = document.getElementById('friends-list');
                 list.innerHTML = "";
                 snap.forEach(doc => {
-                    const d = doc.data();
-                    if(d.uid !== currentUser.uid) {
+                    const data = doc.data();
+                    if(data.uid !== currentUser.uid) {
                         list.innerHTML += `
-                        <div class="list-item">
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <div class="avatar" style="font-size:16px;">${d.name.charAt(0)}</div>
-                                <div><b>${d.name}</b><br><small style="color:#aaa;">Available</small></div>
+                        <div class="user-card">
+                            <div style="display:flex; align-items:center; gap:15px;">
+                                <div class="avatar" style="font-size:16px; background:#333;">${data.name.charAt(0).toUpperCase()}</div>
+                                <div><b>${data.name}</b><br><span style="color:#aaa; font-size:12px;">Available</span></div>
                             </div>
-                            <i class="fas fa-phone-alt" style="color:#31a24c; padding:10px; background:#e4f8eb; border-radius:50%;" onclick="makeCall('${d.uid}', '${d.name}')"></i>
+                            <div class="call-btn-icon" onclick="makeCall('${data.uid}', '${data.name}')"><i class="fas fa-phone"></i></div>
                         </div>`;
                     }
                 });
             });
         }
 
-        // CALLING
-        function initPeer(id) {
-            peer = new Peer(id);
-            peer.on('call', (call) => {
-                navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-                    localStream = stream;
-                    window.incomingCall = call;
-                    document.getElementById('call-screen').style.display = 'flex';
-                    document.getElementById('call-name').innerText = "Incoming...";
-                    document.querySelector('.call-controls').style.display = 'none';
-                    document.getElementById('incoming-controls').style.display = 'flex';
-                    document.getElementById('ringtone').play();
-                });
-            });
-        }
-
+        // 4. CALLING LOGIC
         function makeCall(id, name) {
             navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
                 localStream = stream;
-                document.getElementById('call-screen').style.display = 'flex';
-                document.getElementById('call-name').innerText = name;
-                document.getElementById('call-avatar').innerText = name.charAt(0);
-                document.querySelector('.call-controls').style.display = 'flex';
-                document.getElementById('incoming-controls').style.display = 'none';
+                showCallScreen(name, true);
                 document.getElementById('calling-tone').play();
                 
                 const call = peer.call(id, stream);
                 currentCall = call;
-                call.on('stream', (remote) => {
+
+                call.on('stream', (remoteStream) => {
                     document.getElementById('calling-tone').pause();
                     document.getElementById('call-status').innerText = "Connected";
-                    const a = new Audio(); a.srcObject = remote; a.play();
                     startTimer();
+                    const audio = new Audio();
+                    audio.srcObject = remoteStream;
+                    audio.play();
                 });
-                call.on('close', endCallUI);
-            });
+
+                call.on('close', endCallCleanUp);
+            }).catch(err => alert("Mic Permission Denied"));
         }
 
         function answerCall() {
             document.getElementById('ringtone').pause();
             window.incomingCall.answer(localStream);
             currentCall = window.incomingCall;
+            
             document.getElementById('incoming-controls').style.display = 'none';
-            document.querySelector('.call-controls').style.display = 'flex';
+            document.getElementById('active-controls').style.display = 'flex';
             document.getElementById('call-status').innerText = "Connected";
             
             window.incomingCall.on('stream', (remote) => {
                 const a = new Audio(); a.srcObject = remote; a.play();
                 startTimer();
             });
-            window.incomingCall.on('close', endCallUI);
+            window.incomingCall.on('close', endCallCleanUp);
         }
 
         function endCall() {
             if(currentCall) currentCall.close();
             if(window.incomingCall) window.incomingCall.close();
-            endCallUI();
+            endCallCleanUp();
         }
 
-        function endCallUI() {
+        function endCallCleanUp() {
             document.getElementById('call-screen').style.display = 'none';
             document.getElementById('ringtone').pause();
             document.getElementById('calling-tone').pause();
             document.getElementById('end-tone').play();
             if(localStream) localStream.getTracks().forEach(t => t.stop());
-            clearInterval(callTimerInterval);
+            clearInterval(timerInt);
+        }
+
+        // UI HELPERS
+        function showCallScreen(name, isOutgoing) {
+            document.getElementById('call-screen').style.display = 'flex';
+            document.getElementById('call-name').innerText = name;
+            document.getElementById('call-avatar').innerText = name.charAt(0);
+            document.getElementById('call-timer').innerText = "";
+            document.getElementById('call-status').innerText = isOutgoing ? "Ringing..." : "Incoming Call...";
+            
+            if(isOutgoing) {
+                document.getElementById('active-controls').style.display = 'flex';
+                document.getElementById('incoming-controls').style.display = 'none';
+            }
         }
 
         function startTimer() {
             let s = 0;
-            callTimerInterval = setInterval(() => {
+            timerInt = setInterval(() => {
                 s++;
                 let m = Math.floor(s/60), sec = s%60;
                 document.getElementById('call-timer').innerText = (m<10?"0"+m:m)+":"+(sec<10?"0"+sec:sec);
             }, 1000);
         }
-        
+
         function toggleMute(btn) {
-            let t = localStream.getAudioTracks()[0];
-            t.enabled = !t.enabled;
-            btn.style.background = t.enabled ? "rgba(255,255,255,0.2)" : "white";
-            btn.style.color = t.enabled ? "white" : "black";
+            let track = localStream.getAudioTracks()[0];
+            track.enabled = !track.enabled;
+            btn.classList.toggle('mute-active');
+        }
+        
+        function switchTab(t) {
+            document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('friends-list').style.display = t === 'friends' ? 'block' : 'none';
+            document.getElementById('history-list').style.display = t === 'history' ? 'block' : 'none';
         }
     </script>
 </body>
