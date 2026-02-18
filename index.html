@@ -3,194 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NC StartCall</title>
+    <title>NC StartCall Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    
     <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
 
     <style>
         :root {
-            --primary-gradient: linear-gradient(135deg, #0066ff, #00ccff);
-            --bg-dark: #050505;
-            --card-dark: #1a1a1a;
-            --text-color: #ffffff;
-            --call-accept: #2ecc71;
-            --call-reject: #e74c3c;
+            --primary: #0066ff;
+            --accent: #00d4ff;
+            --dark-bg: #050505;
+            --card-bg: rgba(30, 30, 30, 0.6);
+            --glass: rgba(255, 255, 255, 0.1);
+            --text: #ffffff;
+            --success: #00b894;
+            --danger: #ff7675;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        body { 
-            background-color: var(--bg-dark); 
-            color: var(--text-color); 
-            height: 100vh; 
-            overflow: hidden; 
-            display: flex; 
-            flex-direction: column; 
+        body { background-color: var(--dark-bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+        /* --- UI COMPONENTS --- */
+        .btn {
+            width: 100%; padding: 16px; border: none; border-radius: 12px;
+            font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s;
+            background: linear-gradient(135deg, var(--primary), var(--accent)); color: white;
+            box-shadow: 0 4px 15px rgba(0, 102, 255, 0.3);
         }
+        .btn:active { transform: scale(0.98); }
+        .btn-outline { background: transparent; border: 2px solid #333; color: #aaa; margin-top: 10px; }
+        
+        input {
+            width: 100%; padding: 15px; margin-bottom: 15px; background: #1a1a1a;
+            border: 1px solid #333; border-radius: 12px; color: white; font-size: 16px; outline: none;
+        }
+        input:focus { border-color: var(--primary); }
 
         /* --- LOADER --- */
         #loader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: black; z-index: 9999;
+            position: fixed; inset: 0; background: black; z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.5s ease;
         }
-        .nc-logo-lg {
-            font-size: 80px; font-weight: 900; font-style: italic;
-            background: var(--primary-gradient);
+        .nc-logo {
+            font-size: 80px; font-weight: 800; font-style: italic;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(0, 204, 255, 0.3);
-            animation: pulseLogo 2s infinite;
-        }
-        .app-title { font-size: 24px; letter-spacing: 2px; margin-top: -10px; color: #fff; }
-        @keyframes pulseLogo { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-
-        /* --- AUTH PAGE --- */
-        #auth-page {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100%; padding: 30px; text-align: center;
-        }
-        .input-box {
-            width: 100%; max-width: 320px; background: #222; border: 1px solid #333;
-            padding: 15px; margin: 10px 0; border-radius: 12px; color: white; font-size: 16px; outline: none;
-        }
-        .btn-primary {
-            width: 100%; max-width: 320px; padding: 15px; margin-top: 20px;
-            background: var(--primary-gradient); border: none; border-radius: 12px;
-            color: white; font-size: 18px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0, 102, 255, 0.4);
+            animation: pulse 2s infinite;
         }
 
-        /* --- MAIN DASHBOARD --- */
-        #main-page { display: none; height: 100%; flex-direction: column; padding: 20px; }
+        /* --- WELCOME & AUTH --- */
+        #welcome-screen, #auth-screen {
+            display: none; height: 100%; flex-direction: column; 
+            justify-content: center; align-items: center; padding: 30px;
+        }
+        .screen-active { display: flex !important; animation: fadeIn 0.4s ease; }
+
+        /* --- DASHBOARD --- */
+        #dashboard { display: none; height: 100%; flex-direction: column; padding: 20px; }
         
-        .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; }
-        .profile { display: flex; align-items: center; gap: 12px; }
-        .avatar { 
-            width: 50px; height: 50px; border-radius: 50%; background: var(--primary-gradient);
-            display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold;
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .search-bar {
+            position: relative; margin-bottom: 20px;
         }
-        
-        .tabs { display: flex; background: #222; padding: 5px; border-radius: 15px; margin-bottom: 20px; }
-        .tab { flex: 1; padding: 10px; text-align: center; color: #888; cursor: pointer; border-radius: 10px; transition: 0.3s; }
-        .tab.active { background: #333; color: #00ccff; font-weight: bold; }
+        .search-bar i { position: absolute; left: 15px; top: 15px; color: #666; }
+        .search-bar input { padding-left: 45px; margin-bottom: 0; background: #111; border: none; }
 
-        .user-list { overflow-y: auto; flex: 1; }
         .user-card {
             display: flex; align-items: center; justify-content: space-between;
-            background: #1a1a1a; padding: 15px; border-radius: 15px; margin-bottom: 10px;
-            border-left: 4px solid #0066ff;
+            background: var(--card-bg); backdrop-filter: blur(10px);
+            padding: 15px; border-radius: 16px; margin-bottom: 12px;
+            border: 1px solid #333; transition: transform 0.2s;
         }
-        .call-btn-icon {
-            width: 40px; height: 40px; border-radius: 50%; background: rgba(0, 255, 136, 0.1);
-            color: var(--call-accept); display: flex; align-items: center; justify-content: center;
-            font-size: 18px; cursor: pointer;
+        .user-card:active { transform: scale(0.98); background: #222; }
+        
+        .avatar {
+            width: 45px; height: 45px; border-radius: 50%; 
+            background: linear-gradient(to bottom right, #333, #111);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; color: var(--accent); border: 2px solid #333;
         }
 
-        /* --- CALL SCREEN (OVERLAY) --- */
-        #call-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, #111, #000); z-index: 2000;
+        /* --- CALL OVERLAY --- */
+        #call-overlay {
+            position: fixed; inset: 0; background: #000; z-index: 2000;
             display: none; flex-direction: column; align-items: center; justify-content: space-between;
             padding: 60px 20px;
         }
-        .caller-pic {
-            width: 150px; height: 150px; border-radius: 50%; border: 4px solid #00ccff;
-            background: #222; display: flex; align-items: center; justify-content: center;
-            font-size: 60px; margin-bottom: 20px; box-shadow: 0 0 30px rgba(0, 204, 255, 0.2);
+        .call-avatar-lg {
+            width: 140px; height: 140px; border-radius: 50%; border: 4px solid var(--accent);
+            display: flex; align-items: center; justify-content: center; font-size: 50px;
+            color: white; background: #222; margin-bottom: 20px;
+            box-shadow: 0 0 40px rgba(0, 212, 255, 0.2);
         }
-        .controls { display: flex; gap: 25px; }
-        .ctrl-btn {
-            width: 65px; height: 65px; border-radius: 50%; border: none; font-size: 24px; color: white;
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
+        .call-actions { display: flex; gap: 20px; }
+        .action-btn {
+            width: 65px; height: 65px; border-radius: 50%; border: none; font-size: 24px;
+            color: white; cursor: pointer; display: flex; align-items: center; justify-content: center;
         }
-        .btn-mute { background: rgba(255,255,255,0.2); }
-        .btn-end { background: var(--call-reject); box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4); }
-        .btn-answer { background: var(--call-accept); box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4); animation: shake 1s infinite; }
         
-        @keyframes shake { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(5deg); } 75% { transform: rotate(-5deg); } }
+        /* --- TOAST NOTIFICATION --- */
+        #toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: rgba(30, 30, 30, 0.95); color: white; padding: 12px 24px;
+            border-radius: 50px; font-size: 14px; box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            display: none; z-index: 3000; white-space: nowrap; border: 1px solid #333;
+        }
 
-        /* Mute Active State */
-        .mute-active { background: white; color: black; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
 
     <audio id="ringtone" loop src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
     <audio id="calling-tone" loop src="https://assets.mixkit.co/active_storage/sfx/2870/2870-preview.mp3"></audio>
-    <audio id="end-tone" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
 
     <div id="loader">
-        <div class="nc-logo-lg">NC</div>
-        <div class="app-title">StartCall</div>
-        <p style="color:#555; position:absolute; bottom:30px; font-size:12px;">Created by - Nani Creations</p>
+        <div class="nc-logo">NC</div>
+        <p style="color:#666; margin-top:10px; font-size:12px;">StartCall Pro</p>
     </div>
 
-    <div id="auth-page" style="display:none;">
-        <div class="nc-logo-lg" style="font-size:60px;">NC</div>
-        <h3 style="margin-bottom:30px;">Welcome</h3>
+    <div id="toast">Message Here</div>
+
+    <div id="welcome-screen">
+        <div class="nc-logo" style="font-size:60px; margin-bottom:10px;">NC</div>
+        <h2 style="margin-bottom: 5px;">Welcome Back</h2>
+        <p style="color:#888; margin-bottom: 40px;">Secure calling for everyone.</p>
         
-        <input type="text" id="reg-name" class="input-box" placeholder="Your Name (For Sign Up)">
-        <input type="email" id="email" class="input-box" placeholder="Email Address">
-        <input type="password" id="pass" class="input-box" placeholder="Password (Min 6 chars)">
-        
-        <button class="btn-primary" onclick="handleAuth()">Login / Sign Up</button>
-        <p id="error-msg" style="color:red; margin-top:15px; font-size:12px;"></p>
+        <button class="btn" onclick="showAuth('login')">Login</button>
+        <button class="btn btn-outline" onclick="showAuth('signup')">Create New Account</button>
+        <p style="position:absolute; bottom:30px; color:#444; font-size:10px;">Created by Nani Creations</p>
     </div>
 
-    <div id="main-page">
+    <div id="auth-screen">
+        <h2 id="auth-title" style="margin-bottom:20px;">Login</h2>
+        <input type="text" id="name-input" placeholder="Full Name" style="display:none;">
+        <input type="email" id="email-input" placeholder="Email Address">
+        <input type="password" id="pass-input" placeholder="Password">
+        
+        <button id="auth-btn" class="btn" onclick="processAuth()">Login</button>
+        <button class="btn-outline" style="border:none; color:var(--primary); margin-top:20px;" onclick="goBackToWelcome()">Back</button>
+    </div>
+
+    <div id="dashboard">
         <div class="header">
-            <div class="profile">
+            <div style="display:flex; align-items:center; gap:10px;">
                 <div class="avatar" id="my-avatar">U</div>
                 <div>
-                    <h3 id="display-name">User</h3>
-                    <p style="font-size:12px; color:#00ccff;">● Online</p>
+                    <h3 id="display-name" style="font-size:16px;">User</h3>
+                    <p style="color:var(--success); font-size:11px;">● Online</p>
                 </div>
             </div>
-            <i class="fas fa-sign-out-alt" onclick="logout()" style="font-size:20px; color:#666; cursor:pointer;"></i>
+            <i class="fas fa-power-off" onclick="logout()" style="color:#666; padding:10px; cursor:pointer;"></i>
         </div>
 
-        <div class="tabs">
-            <div class="tab active" onclick="switchTab('friends')">Friends</div>
-            <div class="tab" onclick="switchTab('history')">History</div>
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search friends..." onkeyup="filterFriends(this.value)">
         </div>
 
-        <div id="friends-list" class="user-list">
-            <p style="text-align:center; margin-top:50px; color:#444;">Loading users...</p>
-        </div>
-        <div id="history-list" class="user-list" style="display:none;">
-            <p style="text-align:center; margin-top:50px; color:#444;">No recent calls</p>
-        </div>
+        <h4 style="color:#666; margin-bottom:15px; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Contacts</h4>
+        <div id="friends-list" style="overflow-y:auto; flex:1;">
+            </div>
     </div>
 
-    <div id="call-screen">
-        <div style="text-align:center; width:100%;">
-            <div class="caller-pic" id="call-avatar">U</div>
-            <h2 id="call-name" style="font-size:28px; margin-bottom:10px;">Unknown</h2>
-            <p id="call-status" style="color:#888; font-size:16px;">Calling...</p>
-            <p id="call-timer" style="color:white; font-size:20px; margin-top:15px; font-weight:bold;"></p>
+    <div id="call-overlay">
+        <div style="text-align:center;">
+            <div class="call-avatar-lg" id="call-avatar">U</div>
+            <h2 id="call-name" style="font-size:26px;">Unknown</h2>
+            <p id="call-status" style="color:#888; margin-top:5px;">Connecting...</p>
+            <p id="call-timer" style="font-family:monospace; margin-top:10px; font-size:18px;"></p>
         </div>
 
-        <div id="active-controls" class="controls">
-            <button class="ctrl-btn btn-mute" onclick="toggleMute(this)"><i class="fas fa-microphone"></i></button>
-            <button class="ctrl-btn btn-end" onclick="endCall()"><i class="fas fa-phone-slash"></i></button>
-            <button class="ctrl-btn btn-mute" onclick="toggleSpeaker(this)"><i class="fas fa-volume-up"></i></button>
+        <div id="incoming-actions" class="call-actions" style="display:none;">
+            <button class="action-btn" style="background:var(--danger);" onclick="endCall()"><i class="fas fa-times"></i></button>
+            <button class="action-btn" style="background:var(--success);" onclick="answerCall()"><i class="fas fa-phone"></i></button>
         </div>
 
-        <div id="incoming-controls" class="controls" style="display:none;">
-            <button class="ctrl-btn btn-end" onclick="endCall()"><i class="fas fa-times"></i></button>
-            <button class="ctrl-btn btn-answer" onclick="answerCall()"><i class="fas fa-phone"></i></button>
+        <div id="active-actions" class="call-actions" style="display:none;">
+            <button class="action-btn" style="background:rgba(255,255,255,0.1);" onclick="toggleMute(this)"><i class="fas fa-microphone"></i></button>
+            <button class="action-btn" style="background:var(--danger);" onclick="endCall()"><i class="fas fa-phone-slash"></i></button>
+            <button class="action-btn" style="background:rgba(255,255,255,0.1);" onclick="toggleSpeaker(this)"><i class="fas fa-volume-up"></i></button>
         </div>
     </div>
 
     <script>
-        // --- FIREBASE CONFIG (CORRECT KEYS FROM SCREENSHOT) ---
+        // --- CONFIG ---
         const firebaseConfig = {
             apiKey: "AIzaSyBruCpy7s-J_uRIyJWWXrJ8M6JT2dqpYD4",
             authDomain: "starcall-9b11e.firebaseapp.com",
@@ -203,94 +206,87 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // VARIABLES
-        let currentUser = null;
-        let localStream = null;
-        let currentCall = null;
-        let peer = null;
-        let timerInt;
+        // State
+        let currentUser, localStream, currentCall, peer, timerInt;
+        let isSignup = false;
 
-        // 1. LOADER & AUTH CHECK
-        window.onload = function() {
-            auth.onAuthStateChanged((user) => {
+        // --- INIT ---
+        window.onload = () => {
+            auth.onAuthStateChanged(user => {
+                const loader = document.getElementById('loader');
                 setTimeout(() => {
-                    document.getElementById('loader').style.opacity = '0';
-                    setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
-                    
+                    loader.style.display = 'none';
                     if (user) {
-                        setupUser(user);
+                        setupDashboard(user);
                     } else {
-                        document.getElementById('auth-page').style.display = 'flex';
+                        switchScreen('welcome-screen');
                     }
-                }, 2000);
+                }, 1500);
             });
         };
 
-        // 2. AUTH FUNCTIONS (Login/Signup Mixed)
-        async function handleAuth() {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('pass').value;
-            const name = document.getElementById('reg-name').value;
-            const errBox = document.getElementById('error-msg');
+        // --- AUTH LOGIC ---
+        function showAuth(type) {
+            isSignup = (type === 'signup');
+            document.getElementById('auth-title').innerText = isSignup ? "Create Account" : "Login";
+            document.getElementById('auth-btn').innerText = isSignup ? "Sign Up" : "Login";
+            document.getElementById('name-input').style.display = isSignup ? "block" : "none";
+            switchScreen('auth-screen');
+        }
 
-            if(!email || !pass) return errBox.innerText = "Email & Password required";
-            errBox.innerText = "Processing...";
+        function goBackToWelcome() {
+            switchScreen('welcome-screen');
+        }
+
+        async function processAuth() {
+            const email = document.getElementById('email-input').value;
+            const pass = document.getElementById('pass-input').value;
+            const name = document.getElementById('name-input').value;
+
+            if(!email || !pass) return showToast("Please fill all fields");
+            if(isSignup && !name) return showToast("Name is required");
+
+            const btn = document.getElementById('auth-btn');
+            btn.innerText = "Processing...";
 
             try {
-                // Try Login First
-                await auth.signInWithEmailAndPassword(email, pass);
-            } catch (error) {
-                // If User Not Found, Try Sign Up
-                if(error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-                    if(!name) return errBox.innerText = "New user? Enter Name to Sign Up.";
-                    try {
-                        const cred = await auth.createUserWithEmailAndPassword(email, pass);
-                        // Save User Data
-                        await db.collection('users').doc(cred.user.uid).set({
-                            name: name, email: email, uid: cred.user.uid
-                        });
-                        cred.user.updateProfile({ displayName: name });
-                        setupUser(cred.user);
-                    } catch (suErr) {
-                        errBox.innerText = suErr.message;
-                    }
+                if (isSignup) {
+                    const cred = await auth.createUserWithEmailAndPassword(email, pass);
+                    await db.collection('users').doc(cred.user.uid).set({
+                        name: name, email: email, uid: cred.user.uid
+                    });
+                    cred.user.updateProfile({ displayName: name });
+                    setupDashboard(cred.user);
                 } else {
-                    errBox.innerText = error.message;
+                    await auth.signInWithEmailAndPassword(email, pass);
+                    // onAuthStateChanged handles the rest
                 }
+            } catch (e) {
+                showToast(e.message);
+                btn.innerText = isSignup ? "Sign Up" : "Login";
             }
         }
 
-        function setupUser(user) {
+        function logout() {
+            if(confirm("Are you sure you want to logout?")) {
+                auth.signOut().then(() => location.reload());
+            }
+        }
+
+        // --- DASHBOARD ---
+        function setupDashboard(user) {
             currentUser = user;
-            document.getElementById('auth-page').style.display = 'none';
-            document.getElementById('main-page').style.display = 'flex';
-            
-            const username = user.displayName || user.email.split('@')[0];
-            document.getElementById('display-name').innerText = username;
-            document.getElementById('my-avatar').innerText = username.charAt(0).toUpperCase();
+            switchScreen('dashboard');
+            document.getElementById('display-name').innerText = user.displayName || "User";
+            document.getElementById('my-avatar').innerText = (user.displayName || "U").charAt(0).toUpperCase();
 
-            // Init PeerJS
+            // Init Peer
             peer = new Peer(user.uid);
-            peer.on('open', (id) => console.log("Connected to Calling Server: " + id));
+            peer.on('call', handleIncomingCall);
             
-            // Handle Incoming Call
-            peer.on('call', (call) => {
-                navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-                    localStream = stream;
-                    window.incomingCall = call;
-                    showCallScreen("Incoming Call...", false);
-                    document.getElementById('active-controls').style.display = 'none';
-                    document.getElementById('incoming-controls').style.display = 'flex';
-                    document.getElementById('ringtone').play();
-                });
-            });
-
             loadUsers();
         }
 
-        function logout() { auth.signOut().then(() => location.reload()); }
-
-        // 3. LOAD FRIENDS
         function loadUsers() {
             db.collection('users').onSnapshot(snap => {
                 const list = document.getElementById('friends-list');
@@ -298,30 +294,42 @@
                 snap.forEach(doc => {
                     const data = doc.data();
                     if(data.uid !== currentUser.uid) {
-                        list.innerHTML += `
-                        <div class="user-card">
-                            <div style="display:flex; align-items:center; gap:15px;">
-                                <div class="avatar" style="font-size:16px; background:#333;">${data.name.charAt(0).toUpperCase()}</div>
-                                <div><b>${data.name}</b><br><span style="color:#aaa; font-size:12px;">Available</span></div>
+                        const card = document.createElement('div');
+                        card.className = "user-card";
+                        card.setAttribute('data-name', data.name.toLowerCase());
+                        card.innerHTML = `
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <div class="avatar">${data.name.charAt(0).toUpperCase()}</div>
+                                <div><b>${data.name}</b><br><small style="color:#888;">Available</small></div>
                             </div>
-                            <div class="call-btn-icon" onclick="makeCall('${data.uid}', '${data.name}')"><i class="fas fa-phone"></i></div>
-                        </div>`;
+                            <i class="fas fa-phone-alt" style="color:var(--success); padding:10px; background:rgba(0,184,148,0.1); border-radius:50%;" onclick="startCall('${data.uid}', '${data.name}')"></i>
+                        `;
+                        list.appendChild(card);
                     }
                 });
             });
         }
 
-        // 4. CALLING LOGIC
-        function makeCall(id, name) {
-            navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+        // --- SEARCH FUNCTION ---
+        function filterFriends(text) {
+            const cards = document.querySelectorAll('.user-card');
+            cards.forEach(card => {
+                const name = card.getAttribute('data-name');
+                card.style.display = name.includes(text.toLowerCase()) ? "flex" : "none";
+            });
+        }
+
+        // --- CALLING ---
+        function startCall(id, name) {
+            navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
                 localStream = stream;
-                showCallScreen(name, true);
+                showCallOverlay(name, true);
                 document.getElementById('calling-tone').play();
-                
+
                 const call = peer.call(id, stream);
                 currentCall = call;
-
-                call.on('stream', (remoteStream) => {
+                
+                call.on('stream', remoteStream => {
                     document.getElementById('calling-tone').pause();
                     document.getElementById('call-status').innerText = "Connected";
                     startTimer();
@@ -329,9 +337,17 @@
                     audio.srcObject = remoteStream;
                     audio.play();
                 });
+                call.on('close', cleanupCall);
+            }).catch(e => showToast("Microphone Access Denied"));
+        }
 
-                call.on('close', endCallCleanUp);
-            }).catch(err => alert("Mic Permission Denied"));
+        function handleIncomingCall(call) {
+            navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+                localStream = stream;
+                window.incomingCall = call;
+                showCallOverlay("Incoming Call...", false);
+                document.getElementById('ringtone').play();
+            });
         }
 
         function answerCall() {
@@ -339,44 +355,55 @@
             window.incomingCall.answer(localStream);
             currentCall = window.incomingCall;
             
-            document.getElementById('incoming-controls').style.display = 'none';
-            document.getElementById('active-controls').style.display = 'flex';
+            document.getElementById('incoming-actions').style.display = 'none';
+            document.getElementById('active-actions').style.display = 'flex';
             document.getElementById('call-status').innerText = "Connected";
             
-            window.incomingCall.on('stream', (remote) => {
-                const a = new Audio(); a.srcObject = remote; a.play();
+            window.incomingCall.on('stream', remoteStream => {
+                const audio = new Audio();
+                audio.srcObject = remoteStream;
+                audio.play();
                 startTimer();
             });
-            window.incomingCall.on('close', endCallCleanUp);
+            window.incomingCall.on('close', cleanupCall);
         }
 
         function endCall() {
             if(currentCall) currentCall.close();
             if(window.incomingCall) window.incomingCall.close();
-            endCallCleanUp();
+            cleanupCall();
         }
 
-        function endCallCleanUp() {
-            document.getElementById('call-screen').style.display = 'none';
+        function cleanupCall() {
+            document.getElementById('call-overlay').style.display = 'none';
             document.getElementById('ringtone').pause();
             document.getElementById('calling-tone').pause();
-            document.getElementById('end-tone').play();
             if(localStream) localStream.getTracks().forEach(t => t.stop());
             clearInterval(timerInt);
         }
 
-        // UI HELPERS
-        function showCallScreen(name, isOutgoing) {
-            document.getElementById('call-screen').style.display = 'flex';
+        // --- HELPERS ---
+        function switchScreen(id) {
+            ['welcome-screen', 'auth-screen', 'dashboard'].forEach(s => document.getElementById(s).classList.remove('screen-active'));
+            document.getElementById(id).classList.add('screen-active');
+        }
+
+        function showCallOverlay(name, isOutgoing) {
+            document.getElementById('call-overlay').style.display = 'flex';
             document.getElementById('call-name').innerText = name;
             document.getElementById('call-avatar').innerText = name.charAt(0);
             document.getElementById('call-timer').innerText = "";
-            document.getElementById('call-status').innerText = isOutgoing ? "Ringing..." : "Incoming Call...";
+            document.getElementById('call-status').innerText = isOutgoing ? "Calling..." : "Incoming Call...";
             
-            if(isOutgoing) {
-                document.getElementById('active-controls').style.display = 'flex';
-                document.getElementById('incoming-controls').style.display = 'none';
-            }
+            document.getElementById('incoming-actions').style.display = isOutgoing ? 'none' : 'flex';
+            document.getElementById('active-actions').style.display = isOutgoing ? 'flex' : 'none';
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 3000);
         }
 
         function startTimer() {
@@ -389,16 +416,10 @@
         }
 
         function toggleMute(btn) {
-            let track = localStream.getAudioTracks()[0];
-            track.enabled = !track.enabled;
-            btn.classList.toggle('mute-active');
-        }
-        
-        function switchTab(t) {
-            document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-            document.getElementById('friends-list').style.display = t === 'friends' ? 'block' : 'none';
-            document.getElementById('history-list').style.display = t === 'history' ? 'block' : 'none';
+            let t = localStream.getAudioTracks()[0];
+            t.enabled = !t.enabled;
+            btn.style.background = t.enabled ? "rgba(255,255,255,0.1)" : "white";
+            btn.style.color = t.enabled ? "white" : "black";
         }
     </script>
 </body>
