@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NC StartCall Ultimate Fixed</title>
+    <title>StartCall Ultimate Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     
@@ -13,204 +13,245 @@
     <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
 
     <style>
+        /* --- THEME VARIABLES --- */
         :root {
-            --primary: #2962ff;
-            --accent: #00d4ff;
-            --dark-bg: #050505;
-            --card-bg: #151515;
-            --text: #ffffff;
-            --success: #00c853;
-            --danger: #ff1744;
-            --badge: #ff3d00;
-            --warning: #ffcc00;
+            --primary: #2962ff; --accent: #00d4ff; --bg: #050505; --card: #151515; --text: #fff;
         }
+        /* Theme Classes */
+        body.theme-1 { --primary: #2962ff; --accent: #00d4ff; --bg: #050505; --card: #151515; } /* Default */
+        body.theme-2 { --primary: #ff0055; --accent: #ffcc00; --bg: #1a0005; --card: #2b0009; } /* Cyber Pink */
+        body.theme-3 { --primary: #00c853; --accent: #64dd17; --bg: #001b05; --card: #00290a; } /* Matrix Green */
+        body.theme-4 { --primary: #6200ea; --accent: #b388ff; --bg: #0a001a; --card: #12002e; } /* Royal Purple */
+        body.theme-5 { --primary: #ff6d00; --accent: #ffab40; --bg: #1a0a00; --card: #2e1200; } /* Sunset */
+        
+        /* Animated Backgrounds */
+        .anim-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.3; pointer-events: none; }
+        .particle { position: absolute; background: var(--accent); border-radius: 50%; animation: floatUp 10s infinite linear; }
+        @keyframes floatUp { 0% { transform: translateY(100vh) scale(0); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-10vh) scale(1); opacity: 0; } }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--dark-bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        body { background-color: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; transition: background 0.3s; }
 
-        /* UI ELEMENTS */
+        /* --- UI COMPONENTS --- */
         .btn {
             width: 100%; padding: 14px; border: none; border-radius: 12px;
             font-size: 16px; font-weight: 600; cursor: pointer;
             background: linear-gradient(135deg, var(--primary), var(--accent)); color: white;
-            box-shadow: 0 4px 15px rgba(41, 98, 255, 0.3); transition: transform 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: transform 0.2s;
         }
         .btn:active { transform: scale(0.96); }
         .btn-sm { padding: 8px 16px; font-size: 12px; width: auto; }
-        .btn-danger { background: var(--danger); box-shadow: none; }
+        .btn-danger { background: #ff1744; }
         
         input {
-            width: 100%; padding: 15px; margin-bottom: 12px; background: #222;
-            border: 1px solid #333; border-radius: 12px; color: white; outline: none;
+            width: 100%; padding: 15px; margin-bottom: 12px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; outline: none;
         }
 
-        /* SCREENS & ANIMATIONS */
-        .screen { display: none; height: 100%; flex-direction: column; padding: 20px; }
-        .screen.active { display: flex; animation: slideUp 0.4s ease; }
-        
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .screen { display: none; height: 100%; flex-direction: column; padding: 20px; position: relative; }
+        .screen.active { display: flex; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* HEADER & TABS */
+        /* Header */
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .my-avatar {
             width: 45px; height: 45px; border-radius: 50%; background: #222; border: 2px solid var(--accent);
             display: flex; align-items: center; justify-content: center; font-size: 24px;
         }
-        .tabs { display: flex; background: #222; padding: 5px; border-radius: 12px; margin-bottom: 15px; }
-        .tab { flex: 1; text-align: center; padding: 10px; color: #888; border-radius: 8px; position: relative; cursor: pointer; transition: 0.3s; }
-        .tab.active-tab { background: #333; color: white; font-weight: bold; }
-        .red-dot {
-            width: 10px; height: 10px; background: var(--badge); border-radius: 50%;
-            position: absolute; top: 5px; right: 20%; display: none; border: 2px solid #222;
-        }
 
-        /* LISTS */
-        .list-container { overflow-y: auto; flex: 1; }
+        /* Tabs */
+        .tabs { display: flex; background: rgba(255,255,255,0.05); padding: 5px; border-radius: 12px; margin-bottom: 15px; }
+        .tab { flex: 1; text-align: center; padding: 10px; color: #888; border-radius: 8px; cursor: pointer; }
+        .tab.active-tab { background: rgba(255,255,255,0.1); color: white; font-weight: bold; }
+
+        /* Lists */
+        .list-container { overflow-y: auto; flex: 1; padding-bottom: 80px; }
         .user-card {
             display: flex; align-items: center; justify-content: space-between;
-            background: var(--card-bg); padding: 12px; border-radius: 12px;
-            margin-bottom: 10px; border: 1px solid #222;
+            background: var(--card); padding: 12px; border-radius: 12px;
+            margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05);
+        }
+        .online-dot { width: 10px; height: 10px; background: #00c853; border-radius: 50%; margin-left: 5px; box-shadow: 0 0 5px #00c853; }
+        .offline-dot { width: 10px; height: 10px; background: #555; border-radius: 50%; margin-left: 5px; }
+
+        /* Floating Buttons */
+        .fab-group {
+            position: fixed; bottom: 90px; right: 20px;
+            width: 55px; height: 55px; border-radius: 50%;
+            background: linear-gradient(135deg, #ff00cc, #333399);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            z-index: 100; cursor: pointer;
+        }
+        .game-icon {
+            position: fixed; bottom: 20px; left: 20px; width: 50px; height: 50px;
+            background: #ff9100; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            font-size: 24px; z-index: 90; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
-        /* SETTINGS */
-        #settings-modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000;
-            display: none; flex-direction: column; padding: 20px;
-        }
-        .emoji-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 20px 0; }
-        .emoji-opt { font-size: 30px; cursor: pointer; text-align: center; padding: 5px; border-radius: 5px; }
-        .emoji-opt.selected { background: var(--primary); }
-
-        /* CALL OVERLAY & ANIMATIONS */
+        /* Call Overlay & Video */
         #call-overlay {
             position: fixed; inset: 0; background: #000; z-index: 6000;
-            display: none; flex-direction: column; align-items: center; justify-content: space-between; padding: 50px 20px;
+            display: none; flex-direction: column;
+        }
+        .video-container {
+            flex: 1; position: relative; background: #000; display: flex; justify-content: center; align-items: center; overflow: hidden;
+        }
+        #remote-video { width: 100%; height: 100%; object-fit: cover; }
+        #local-video {
+            position: absolute; bottom: 120px; right: 20px; width: 100px; height: 140px;
+            background: #222; border-radius: 10px; border: 2px solid var(--accent); object-fit: cover; z-index: 2;
         }
         
-        /* New Ripple Animation for Call Avatar */
-        .call-avatar-container {
-            position: relative; width: 120px; height: 120px; margin: 0 auto 20px auto;
+        .call-controls {
+            padding: 30px 20px; background: rgba(0,0,0,0.8); border-top-left-radius: 20px; border-top-right-radius: 20px;
+            display: flex; flex-direction: column; align-items: center; gap: 20px; position: absolute; bottom: 0; width: 100%;
         }
-        .call-avatar-img {
-            width: 100%; height: 100%; border-radius: 50%; border: 4px solid var(--accent);
-            display: flex; align-items: center; justify-content: center; font-size: 60px;
-            position: relative; z-index: 2; background: #000;
-        }
-        .ripple {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            border-radius: 50%; border: 2px solid var(--accent);
-            animation: ripple-anim 2s infinite; z-index: 1; opacity: 0;
-        }
-        .ripple:nth-child(2) { animation-delay: 0.5s; }
-        .ripple:nth-child(3) { animation-delay: 1s; }
-        
-        @keyframes ripple-anim {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(2); opacity: 0; }
-        }
-
-        .call-actions { display: flex; gap: 20px; }
+        .control-row { display: flex; gap: 20px; justify-content: center; width: 100%; }
         .c-btn {
-            width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 20px;
-            color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s;
+            width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 22px;
+            color: white; display: flex; align-items: center; justify-content: center; cursor: pointer;
+            background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
         }
-        
-        /* STATUS POPUPS */
-        .status-badge {
-            background: rgba(255, 255, 255, 0.1); padding: 8px 20px; border-radius: 20px;
-            font-size: 14px; color: var(--warning); margin-top: 15px; display: none;
-            border: 1px solid var(--warning);
+        .btn-end { background: #ff1744 !important; }
+        .btn-ans { background: #00c853 !important; }
+        .btn-active { background: white !important; color: black !important; }
+
+        /* Game Modal */
+        #game-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 7000;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
         }
-        .hold-active { background: var(--warning); color: black; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        canvas { border: 2px solid var(--accent); background: #000; border-radius: 8px; }
+
+        /* Settings Modal */
+        #settings-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 8000;
+            display: none; flex-direction: column; padding: 20px; overflow-y: auto;
+        }
+        .theme-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+        .theme-opt { height: 40px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; }
+        .theme-opt.selected { border-color: white; }
     </style>
 </head>
-<body>
+<body class="theme-1">
+
+    <div id="anim-container" class="anim-bg"></div>
 
     <audio id="ringtone" loop src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
-    <audio id="hold-music" loop src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3"></audio>
+    <audio id="end-tone" src="https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3"></audio>
 
-    <div id="settings-modal">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h2>Customize Profile</h2>
-            <i class="fas fa-times" onclick="toggleSettings()" style="font-size:24px;"></i>
-        </div>
-        <input type="text" id="edit-name" placeholder="Change Display Name">
-        <p style="color:#888;">Select Avatar:</p>
-        <div class="emoji-grid" id="emoji-grid"></div>
-        <button class="btn" onclick="saveProfile()">Save Changes</button>
-        <button class="btn btn-danger" style="margin-top:20px;" onclick="logout()">Logout</button>
-    </div>
-
-    <div id="auth-screen" class="screen active" style="justify-content:center; align-items:center; text-align:center;">
-        <div style="font-size:60px; font-weight:800; font-style:italic; background:linear-gradient(to right, #2962ff, #00d4ff); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">NC</div>
-        <h2 style="margin-bottom:30px;">StartCall Ultimate</h2>
-        <input type="text" id="name" placeholder="Your Name (For Sign Up)" style="border: 1px solid var(--accent);">
+    <div id="auth-screen" class="screen active" style="justify-content:center; align-items:center;">
+        <div style="font-size:60px; margin-bottom:20px;">💎</div>
+        <h2>StartCall Pro</h2>
+        <p style="color:#888; margin-bottom:30px;">Video & Audio Calls</p>
+        <input type="text" id="name" placeholder="Your Name">
         <input type="email" id="email" placeholder="Email">
-        <input type="password" id="pass" placeholder="Password (Min 6 Chars)">
-        <button class="btn" onclick="handleAuth()">Login / Create Account</button>
-        <p id="auth-msg" style="color:var(--danger); margin-top:15px; font-size:14px;"></p>
+        <input type="password" id="pass" placeholder="Password">
+        <button class="btn" onclick="handleAuth()">Login / Sign Up</button>
+        <p id="auth-msg" style="color:#ff1744; margin-top:10px; font-size:12px;"></p>
     </div>
 
     <div id="dashboard" class="screen">
         <div class="header">
-            <div class="profile-sec" onclick="toggleSettings()" style="display:flex; align-items:center; gap:10px;">
-                <div class="my-avatar" id="my-avatar">😎</div>
+            <div onclick="toggleSettings()" style="display:flex; align-items:center; gap:10px;">
+                <div class="my-avatar" id="my-avatar">👤</div>
                 <div>
-                    <h3 id="display-name" style="font-size:16px;">User</h3>
-                    <p style="font-size:11px; color:var(--success);">● Online</p>
+                    <h3 id="display-name">User</h3>
+                    <p style="font-size:11px; color:var(--accent);">● Online</p>
                 </div>
             </div>
-            <i class="fas fa-cog" onclick="toggleSettings()" style="font-size:20px; color:#888;"></i>
+            <div style="display:flex; gap:15px;">
+                <i class="fas fa-share-alt" onclick="shareApp()" style="font-size:20px;"></i>
+                <i class="fas fa-cog" onclick="toggleSettings()" style="font-size:20px;"></i>
+            </div>
         </div>
 
         <div class="tabs">
             <div class="tab active-tab" onclick="switchTab('friends')">Friends</div>
-            <div class="tab" onclick="switchTab('requests')">Requests <div class="red-dot" id="req-dot"></div></div>
+            <div class="tab" onclick="switchTab('requests')">Requests <span id="req-dot" style="color:red;display:none;">●</span></div>
             <div class="tab" onclick="switchTab('search')">Search</div>
         </div>
 
         <div id="tab-friends" class="list-container"></div>
         <div id="tab-requests" class="list-container" style="display:none;"></div>
         <div id="tab-search" class="list-container" style="display:none;">
-            <input type="text" placeholder="Type 2 letters to search..." onkeyup="searchGlobal(this.value)">
+            <input type="text" placeholder="Search users..." onkeyup="searchGlobal(this.value)">
             <div id="search-results"></div>
+        </div>
+
+        <div class="game-icon" onclick="openGame()">🎮</div>
+        <div class="fab-group" onclick="alert('Group Call Feature coming in next update!')">
+            <i class="fas fa-users"></i>
         </div>
     </div>
 
     <div id="call-overlay">
-        <div style="text-align:center;">
-            <div class="call-avatar-container">
-                <div class="call-avatar-img" id="call-avatar">👤</div>
-                <div class="ripple"></div>
-                <div class="ripple"></div>
-            </div>
-            <h2 id="call-name" style="font-size:24px;">Unknown</h2>
-            <p id="call-status" style="color:#888; margin-top:5px;">Connecting...</p>
+        <div class="video-container">
+            <video id="remote-video" autoplay playsinline></video>
+            <video id="local-video" autoplay playsinline muted></video>
             
-            <div id="remote-mute-badge" class="status-badge"><i class="fas fa-microphone-slash"></i> Opponent Muted</div>
-            <div id="remote-hold-badge" class="status-badge"><i class="fas fa-music"></i> Call on Hold</div>
+            <div id="audio-ui" style="position:absolute; text-align:center; display:none;">
+                <div class="my-avatar" id="call-avatar-disp" style="width:100px; height:100px; font-size:40px; margin:0 auto 20px;">👤</div>
+                <h2 id="call-name">Unknown</h2>
+                <p id="call-status">Connecting...</p>
+            </div>
         </div>
 
-        <button id="lock-btn" onclick="toggleScreenLock()" style="background:rgba(255,255,255,0.1); border:1px solid #555; color:white; padding:10px 20px; border-radius:20px; font-size:12px;">
-            <i class="fas fa-lock"></i> Prevent Touch
-        </button>
+        <div class="call-controls">
+            <div id="incoming-actions" class="control-row" style="display:none;">
+                <button class="c-btn btn-end" onclick="endCall()"><i class="fas fa-phone-slash"></i></button>
+                <button class="c-btn btn-ans" onclick="answerCall()"><i class="fas fa-video"></i></button>
+            </div>
 
-        <div id="incoming-actions" class="call-actions" style="display:none;">
-            <button class="c-btn" style="background:var(--danger);" onclick="endCall()"><i class="fas fa-times"></i></button>
-            <button class="c-btn" style="background:var(--success);" onclick="answerCall()"><i class="fas fa-phone"></i></button>
-        </div>
-
-        <div id="active-actions" class="call-actions" style="display:none;">
-            <button class="c-btn" style="background:rgba(255,255,255,0.2);" onclick="toggleMute(this)"><i class="fas fa-microphone"></i></button>
-            <button class="c-btn" style="background:var(--danger);" onclick="endCall()"><i class="fas fa-phone-slash"></i></button>
-            <button id="hold-btn" class="c-btn" style="background:rgba(255,255,255,0.2);" onclick="toggleHold(this)"><i class="fas fa-pause"></i></button>
-            <button class="c-btn" style="background:rgba(255,255,255,0.2);" onclick="toggleSpeaker(this)"><i class="fas fa-volume-up"></i></button>
+            <div id="active-actions" class="control-row" style="display:none; flex-wrap:wrap;">
+                <button class="c-btn" onclick="toggleMute(this)"><i class="fas fa-microphone"></i></button>
+                <button class="c-btn" onclick="toggleVideo(this)"><i class="fas fa-video"></i></button>
+                <button class="c-btn" onclick="toggleSpeaker(this)"><i class="fas fa-volume-up"></i></button>
+                <button class="c-btn" onclick="switchCamera()"><i class="fas fa-sync"></i></button>
+                <button class="c-btn" style="background:#444;" onclick="toggleHold(this)"><i class="fas fa-pause"></i></button>
+                <button class="c-btn btn-end" onclick="endCall()"><i class="fas fa-phone-slash"></i></button>
+            </div>
         </div>
     </div>
 
+    <div id="settings-modal">
+        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+            <h2>Settings</h2>
+            <i class="fas fa-times" onclick="toggleSettings()" style="font-size:24px;"></i>
+        </div>
+        
+        <h4>Color Theme</h4>
+        <div class="theme-grid">
+            <div class="theme-opt" style="background:#2962ff;" onclick="setTheme(1)"></div>
+            <div class="theme-opt" style="background:#ff0055;" onclick="setTheme(2)"></div>
+            <div class="theme-opt" style="background:#00c853;" onclick="setTheme(3)"></div>
+            <div class="theme-opt" style="background:#6200ea;" onclick="setTheme(4)"></div>
+            <div class="theme-opt" style="background:#ff6d00;" onclick="setTheme(5)"></div>
+        </div>
+
+        <h4 style="margin-top:20px;">Particle Effects</h4>
+        <div style="display:flex; gap:10px; margin-top:10px;">
+            <button class="btn btn-sm" onclick="setParticles(true)">On</button>
+            <button class="btn btn-sm" style="background:#333;" onclick="setParticles(false)">Off</button>
+        </div>
+
+        <div style="margin-top:40px;">
+            <input type="text" id="edit-name" placeholder="Change Name">
+            <button class="btn" onclick="saveProfile()">Save Profile</button>
+            <button class="btn btn-danger" style="margin-top:10px;" onclick="auth.signOut();location.reload()">Logout</button>
+        </div>
+    </div>
+
+    <div id="game-modal">
+        <h2 style="color:var(--accent); margin-bottom:10px;">Neon Dodge</h2>
+        <p>Score: <span id="game-score">0</span></p>
+        <canvas id="gameCanvas" width="300" height="400"></canvas>
+        <button class="btn" style="margin-top:20px; width:200px;" onclick="closeGame()">Close Game</button>
+    </div>
+
     <script>
-        // --- 1. CONFIG (WITH STUN SERVERS FOR MOBILE DATA) ---
+        // --- CONFIG ---
         const firebaseConfig = {
             apiKey: "AIzaSyBruCpy7s-J_uRIyJWWXrJ8M6JT2dqpYD4",
             authDomain: "starcall-9b11e.firebaseapp.com",
@@ -223,117 +264,90 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // --- 2. GLOBAL STATE ---
-        let currentUser = null, peer = null, localStream = null, currentCall = null;
-        let dataConn = null; 
-        let isScreenLocked = false;
-        let isHold = false;
-        
-        const emojis = ["😎", "🦊", "🤖", "🦁", "🦄", "👽", "👻", "🐯", "🐼", "🔥", "💎", "⚡"];
+        let currentUser = null, peer = null, localStream = null, currentCall = null, dataConn = null;
+        let isSpeaker = false, currentCamera = 'user';
 
-        // --- 3. INITIALIZATION ---
+        // --- AUTH & INIT ---
         window.onload = () => {
+            const savedTheme = localStorage.getItem('theme') || 1;
+            setTheme(savedTheme);
+            if(localStorage.getItem('particles') === 'true') setParticles(true);
+
             auth.onAuthStateChanged(user => {
-                if(user) { 
-                    currentUser = user; 
-                    loadDashboard(); 
-                } else { 
-                    showScreen('auth-screen'); 
+                if(user) {
+                    currentUser = user;
+                    requestPermissions(); // Ask permissions immediately
+                    loadDashboard();
+                    updateStatus(true);
+                } else {
+                    showScreen('auth-screen');
                 }
-            });
-            // Emoji Grid Logic
-            const grid = document.getElementById('emoji-grid');
-            emojis.forEach(e => {
-                const span = document.createElement('div');
-                span.className = 'emoji-opt';
-                span.innerText = e;
-                span.onclick = () => {
-                    document.querySelectorAll('.emoji-opt').forEach(el => el.classList.remove('selected'));
-                    span.classList.add('selected');
-                    document.getElementById('edit-name').setAttribute('data-emoji', e);
-                };
-                grid.appendChild(span);
             });
         };
 
-        // --- 4. SMART AUTH (FIXED NAME ISSUE) ---
+        // Ask for permissions on login
+        async function requestPermissions() {
+            try {
+                await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+            } catch(e) { console.log("Permissions denied initially"); }
+        }
+
         async function handleAuth() {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('pass').value;
-            const nameInput = document.getElementById('name').value; // Get the name!
+            const name = document.getElementById('name').value;
             const msg = document.getElementById('auth-msg');
-            
-            if(!email || !pass) { msg.innerText = "Enter Email & Password"; return; }
-            msg.innerText = "Processing...";
 
             try {
-                // Try Login
                 await auth.signInWithEmailAndPassword(email, pass);
             } catch(e) {
-                // If Login Fails, Try Signup
-                if(e.code === 'auth/invalid-login-credentials' || e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') {
-                    if(!nameInput) {
-                        msg.innerText = "New User? Please enter your Name above to Sign Up.";
-                        return;
-                    }
+                if(e.code.includes('user-not-found') || e.code.includes('invalid-credential')) {
+                    if(!name) { msg.innerText = "Enter Name to Register"; return; }
                     try {
                         const cred = await auth.createUserWithEmailAndPassword(email, pass);
-                        // Save Name Immediately
                         await db.collection('users').doc(cred.user.uid).set({
-                            name: nameInput, email: email, uid: cred.user.uid, emoji: "👤", friends: []
+                            name: name, email: email, uid: cred.user.uid, emoji: "😎", friends: [], isOnline: true
                         });
-                        await cred.user.updateProfile({ displayName: nameInput });
-                        msg.innerText = "Account Created!";
-                    } catch(createErr) {
-                        msg.innerText = createErr.message;
-                    }
-                } else {
-                    msg.innerText = "Error: " + e.message;
-                }
+                        msg.innerText = "Welcome!";
+                    } catch(err) { msg.innerText = err.message; }
+                } else { msg.innerText = e.message; }
             }
         }
 
-        // --- 5. DASHBOARD & PEER INIT ---
-        async function loadDashboard() {
+        // --- DASHBOARD & PEER ---
+        function loadDashboard() {
             showScreen('dashboard');
-            
-            // Fetch User Data from Firestore to fix "User" name issue
-            try {
-                const doc = await db.collection('users').doc(currentUser.uid).get();
-                if (doc.exists) {
-                    const data = doc.data();
-                    document.getElementById('display-name').innerText = data.name || "User";
-                    document.getElementById('my-avatar').innerText = data.emoji || "👤";
-                }
-            } catch (err) { console.log("Error loading profile", err); }
-
-            initPeer(currentUser.uid);
-            listenRequests();
+            db.collection('users').doc(currentUser.uid).get().then(doc => {
+                document.getElementById('display-name').innerText = doc.data().name;
+            });
+            initPeer();
             loadFriends();
+            listenRequests();
+            
+            // Online Status Heartbeat
+            setInterval(() => updateStatus(true), 30000);
+            window.onbeforeunload = () => updateStatus(false);
         }
 
-        function initPeer(uid) {
-            // FIX: Added Google STUN Servers for Mobile Data Connection
-            peer = new Peer(uid, {
-                config: {
-                    iceServers: [
-                        { urls: 'stun:stun.l.google.com:19302' },
-                        { urls: 'stun:global.stun.twilio.com:3478' }
-                    ]
-                }
+        function updateStatus(status) {
+            if(currentUser) db.collection('users').doc(currentUser.uid).update({ isOnline: status });
+        }
+
+        function initPeer() {
+            peer = new Peer(currentUser.uid, {
+                config: { iceServers: [ { urls: 'stun:stun.l.google.com:19302' } ] }
             });
-            
+
             peer.on('call', call => {
-                if(currentCall) { call.close(); return; }
                 window.incomingCall = call;
-                // FIX: Better Mic Request
-                navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-                    localStream = stream;
-                    showCallOverlay("Incoming Call...", false);
-                    document.getElementById('ringtone').play();
-                }).catch(err => {
-                    alert("Mic Error! Please allow microphone permission in Browser Settings.");
-                });
+                document.getElementById('call-name').innerText = "Incoming Video Call...";
+                document.getElementById('call-avatar-disp').innerText = "📞";
+                document.getElementById('call-overlay').style.display = 'flex';
+                document.getElementById('incoming-actions').style.display = 'flex';
+                document.getElementById('active-actions').style.display = 'none';
+                document.getElementById('audio-ui').style.display = 'block'; // Show UI until answered
+                document.getElementById('local-video').style.display = 'none';
+                document.getElementById('ringtone').play();
             });
 
             peer.on('connection', conn => {
@@ -342,266 +356,268 @@
             });
         }
 
-        // --- 6. CALL LOGIC ---
-        function startCall(id, name, emoji) {
-            // FIX: Added playsinline for mobile browsers
-            navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-                localStream = stream;
-                showCallOverlay(name, true, emoji);
-                document.getElementById('ringtone').play();
+        // --- CALL LOGIC (SYNC FIX & VIDEO) ---
+        async function startCall(uid, name, emoji) {
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: { facingMode: 'user' } });
+                document.getElementById('local-video').srcObject = localStream;
+                document.getElementById('local-video').style.display = 'block';
+                document.getElementById('audio-ui').style.display = 'none';
+
+                const call = peer.call(uid, localStream);
+                setupCallUI(call, name, emoji);
                 
-                const call = peer.call(id, stream);
-                currentCall = call;
-                call.on('stream', remote => {
-                    document.getElementById('ringtone').pause();
-                    document.getElementById('call-status').innerText = "Connected";
-                    const a = new Audio(); 
-                    a.srcObject = remote; 
-                    a.playsInline = true; // IMPORTANT for Mobile
-                    a.play();
-                });
-                call.on('close', endCallUI);
-
-                // Data Connection for signals
-                const conn = peer.connect(id);
+                // Establish Data Connection for Hangup Sync
+                const conn = peer.connect(uid);
                 conn.on('open', () => { dataConn = conn; setupDataConnection(); });
-
-            }).catch(e => {
-                alert("Mic Access Denied. Check Browser Settings > Site Settings > Microphone.");
-            });
+                
+            } catch(e) { alert("Could not access Camera/Mic"); }
         }
 
-        function answerCall() {
+        async function answerCall() {
             document.getElementById('ringtone').pause();
-            window.incomingCall.answer(localStream);
-            currentCall = window.incomingCall;
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: { facingMode: 'user' } });
+                document.getElementById('local-video').srcObject = localStream;
+                document.getElementById('local-video').style.display = 'block';
+                document.getElementById('audio-ui').style.display = 'none';
+                
+                window.incomingCall.answer(localStream);
+                setupCallUI(window.incomingCall, "Connected", "");
+            } catch(e) { alert("Error answering"); endCall(); }
+        }
+
+        function setupCallUI(call, name, emoji) {
+            currentCall = call;
+            document.getElementById('call-overlay').style.display = 'flex';
             document.getElementById('incoming-actions').style.display = 'none';
             document.getElementById('active-actions').style.display = 'flex';
-            document.getElementById('call-status').innerText = "Connected";
-            
-            window.incomingCall.on('stream', remote => { 
-                const a = new Audio(); 
-                a.srcObject = remote; 
-                a.playsInline = true;
-                a.play(); 
+            document.getElementById('call-name').innerText = name;
+            document.getElementById('call-avatar-disp').innerText = emoji;
+
+            call.on('stream', remoteStream => {
+                document.getElementById('remote-video').srcObject = remoteStream;
             });
-            window.incomingCall.on('close', endCallUI);
+            call.on('close', () => endCall(false)); // False means don't send signal again
         }
 
-        // --- 7. UTILS & HELPERS ---
-        async function searchGlobal(query) {
-            if(query.length < 2) return;
-            const resContainer = document.getElementById('search-results');
-            resContainer.innerHTML = "<p style='color:#666; text-align:center;'>Searching...</p>";
-            
-            const snap = await db.collection('users').get(); 
-            resContainer.innerHTML = "";
-            let count = 0;
-            snap.forEach(doc => {
-                const u = doc.data();
-                if(u.uid !== currentUser.uid) {
-                    if(u.name.toLowerCase().includes(query.toLowerCase()) || u.email.toLowerCase().includes(query.toLowerCase())) {
-                        count++;
-                        const div = document.createElement('div');
-                        div.className = 'user-card';
-                        div.innerHTML = `
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <div class="my-avatar" style="width:35px; height:35px;">${u.emoji}</div>
-                                <div><b>${u.name}</b><br><small>${u.email}</small></div>
-                            </div>
-                            <button class="btn btn-sm" onclick="sendRequest('${u.uid}')">Add</button>`;
-                        resContainer.appendChild(div);
-                    }
-                }
-            });
-            if(count === 0) resContainer.innerHTML = "<p style='color:#666; text-align:center;'>No results found.</p>";
-        }
-
+        // --- DATA SYNC (HANGUP) ---
         function setupDataConnection() {
             dataConn.on('data', data => {
-                if(data.type === 'mute') {
-                    document.getElementById('remote-mute-badge').style.display = data.val ? 'block' : 'none';
-                }
-                if(data.type === 'hold') {
-                    const badge = document.getElementById('remote-hold-badge');
-                    const music = document.getElementById('hold-music');
-                    if(data.val) {
-                        badge.style.display = 'block';
-                        document.getElementById('call-status').innerText = "Call on Hold";
-                        music.play();
-                    } else {
-                        badge.style.display = 'none';
-                        document.getElementById('call-status').innerText = "Connected";
-                        music.pause();
-                        music.currentTime = 0;
-                    }
-                }
+                if(data.type === 'end') endCall(false); // Remote ended call
             });
         }
-        function sendSignal(type, val) { if(dataConn && dataConn.open) dataConn.send({ type: type, val: val }); }
 
-        function endCall() {
+        function endCall(sendSignal = true) {
+            if(sendSignal && dataConn && dataConn.open) {
+                dataConn.send({ type: 'end' }); // Tell other person to hangup
+            }
             if(currentCall) currentCall.close();
             if(window.incomingCall) window.incomingCall.close();
-            if(dataConn) dataConn.close();
-            endCallUI();
-        }
-
-        function endCallUI() {
+            if(localStream) localStream.getTracks().forEach(t => t.stop());
+            
             document.getElementById('call-overlay').style.display = 'none';
             document.getElementById('ringtone').pause();
-            document.getElementById('hold-music').pause();
-            if(localStream) localStream.getTracks().forEach(t => t.stop());
+            document.getElementById('end-tone').play();
             currentCall = null;
-            isScreenLocked = false;
-            isHold = false;
-            document.getElementById('remote-mute-badge').style.display = 'none';
-            document.getElementById('remote-hold-badge').style.display = 'none';
-            document.getElementById('hold-btn').classList.remove('hold-active');
         }
 
-        function toggleHold(btn) {
-            isHold = !isHold;
-            if(isHold) {
-                btn.classList.add('hold-active');
-                document.getElementById('call-status').innerText = "You placed call on Hold";
-            } else {
-                btn.classList.remove('hold-active');
-                document.getElementById('call-status').innerText = "Connected";
-            }
-            let t = localStream.getAudioTracks()[0];
-            t.enabled = !isHold;
-            sendSignal('hold', isHold);
-        }
-
+        // --- CALL FEATURES ---
         function toggleMute(btn) {
-            if(isHold) return;
-            let t = localStream.getAudioTracks()[0];
-            t.enabled = !t.enabled;
-            btn.style.background = t.enabled ? "rgba(255,255,255,0.2)" : "white";
-            btn.style.color = t.enabled ? "white" : "black";
-            sendSignal('mute', !t.enabled);
+            const track = localStream.getAudioTracks()[0];
+            track.enabled = !track.enabled;
+            btn.style.background = track.enabled ? "rgba(255,255,255,0.15)" : "#ff1744";
         }
-
+        function toggleVideo(btn) {
+            const track = localStream.getVideoTracks()[0];
+            track.enabled = !track.enabled;
+            btn.style.background = track.enabled ? "rgba(255,255,255,0.15)" : "#ff1744";
+        }
         function toggleSpeaker(btn) {
-            btn.style.background = btn.style.background.includes("white") ? "rgba(255,255,255,0.2)" : "white";
-            btn.style.color = btn.style.color === "black" ? "white" : "black";
+            isSpeaker = !isSpeaker;
+            btn.style.color = isSpeaker ? "#00d4ff" : "white";
+            // Note: Browsers block forceful Speaker/Earpiece switching in standard JS.
+            // We set output to default, but often requires native wrapper to fully control.
+            const remoteVid = document.getElementById('remote-video');
+            if(remoteVid.setSinkId) {
+                // Try to toggle if browser supports sinkId
+                // Empty '' usually defaults to earpiece on some mobile browsers or default out
+                remoteVid.setSinkId(isSpeaker ? 'default' : '').catch(e => console.log(e));
+            }
         }
-
-        function toggleScreenLock() {
-            const overlay = document.getElementById('call-overlay');
-            const btn = document.getElementById('lock-btn');
-            if(!isScreenLocked) {
-                document.getElementById('active-actions').style.pointerEvents = "none";
-                document.getElementById('active-actions').style.opacity = "0.2";
-                btn.innerHTML = "<i class='fas fa-unlock'></i> Unlock";
-                btn.style.background = "var(--primary)";
-                isScreenLocked = true;
-            } else {
-                document.getElementById('active-actions').style.pointerEvents = "auto";
-                document.getElementById('active-actions').style.opacity = "1";
-                btn.innerHTML = "<i class='fas fa-lock'></i> Prevent Touch";
-                btn.style.background = "rgba(255,255,255,0.1)";
-                isScreenLocked = false;
+        async function switchCamera() {
+            if(currentCall) {
+                currentCamera = currentCamera === 'user' ? 'environment' : 'user';
+                localStream.getVideoTracks()[0].stop();
+                const newStream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: true, video: { facingMode: currentCamera } 
+                });
+                const videoTrack = newStream.getVideoTracks()[0];
+                const sender = currentCall.peerConnection.getSenders().find(s => s.track.kind === 'video');
+                sender.replaceTrack(videoTrack);
+                localStream = newStream;
+                document.getElementById('local-video').srcObject = newStream;
             }
         }
 
-        // Standard Helpers
-        function toggleSettings() {
-            const modal = document.getElementById('settings-modal');
-            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
-        }
-        async function saveProfile() {
-            const newName = document.getElementById('edit-name').value;
-            const newEmoji = document.getElementById('edit-name').getAttribute('data-emoji');
-            const updateData = {};
-            if(newName) updateData.name = newName;
-            if(newEmoji) updateData.emoji = newEmoji;
-            await db.collection('users').doc(currentUser.uid).update(updateData);
-            toggleSettings(); loadDashboard(); 
-        }
-        function logout() { auth.signOut().then(() => location.reload()); }
+        // --- UTILS ---
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
         }
-        function switchTab(tab) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active-tab'));
+        function switchTab(t) {
+            document.querySelectorAll('.tab').forEach(e => e.classList.remove('active-tab'));
             event.target.classList.add('active-tab');
-            ['friends', 'requests', 'search'].forEach(t => document.getElementById('tab-'+t).style.display = 'none');
-            document.getElementById('tab-'+tab).style.display = 'block';
+            document.querySelectorAll('.list-container').forEach(l => l.style.display='none');
+            document.getElementById('tab-'+t).style.display='block';
         }
-        async function sendRequest(targetUid) {
-            await db.collection('users').doc(targetUid).collection('requests').doc(currentUser.uid).set({
-                fromName: document.getElementById('display-name').innerText,
-                fromId: currentUser.uid,
-                fromEmoji: document.getElementById('my-avatar').innerText
-            });
-            alert("Request Sent!");
+        function toggleSettings() {
+            const m = document.getElementById('settings-modal');
+            m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
         }
-        function listenRequests() {
-            db.collection('users').doc(currentUser.uid).collection('requests').onSnapshot(snap => {
-                const dot = document.getElementById('req-dot');
-                const list = document.getElementById('tab-requests');
-                list.innerHTML = "";
-                if(!snap.empty) {
-                    dot.style.display = "block";
-                    snap.forEach(doc => {
-                        const r = doc.data();
-                        const div = document.createElement('div');
-                        div.className = 'user-card';
-                        div.innerHTML = `
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <div class="my-avatar">${r.fromEmoji}</div><b>${r.fromName}</b>
-                            </div>
-                            <div class="actions">
-                                <button class="btn btn-sm" style="background:var(--success)" onclick="acceptRequest('${r.fromId}', '${doc.id}')">Accept</button>
-                                <button class="btn btn-sm btn-danger" onclick="rejectRequest('${doc.id}')">Decline</button>
-                            </div>`;
-                        list.appendChild(div);
-                    });
-                } else { dot.style.display = "none"; list.innerHTML = "<p style='text-align:center; color:#666;'>No requests.</p>"; }
-            });
+        function shareApp() {
+            const url = "https://startcall.vercel.app/";
+            const text = "Join me on StartCall Pro for HD Video Calls! Download here: " + url;
+            window.open(`whatsapp://send?text=${encodeURIComponent(text)}`);
         }
-        async function acceptRequest(fid, rid) {
-            await db.collection('users').doc(currentUser.uid).update({ friends: firebase.firestore.FieldValue.arrayUnion(fid) });
-            await db.collection('users').doc(fid).update({ friends: firebase.firestore.FieldValue.arrayUnion(currentUser.uid) });
-            await rejectRequest(rid);
-            switchTab('friends');
+
+        // --- THEMES & PARTICLES ---
+        function setTheme(id) {
+            document.body.className = `theme-${id}`;
+            localStorage.setItem('theme', id);
+            document.querySelectorAll('.theme-opt').forEach(t => t.classList.remove('selected'));
+            document.querySelectorAll('.theme-opt')[id-1].classList.add('selected');
         }
-        async function rejectRequest(rid) { await db.collection('users').doc(currentUser.uid).collection('requests').doc(rid).delete(); }
+        function setParticles(enable) {
+            const container = document.getElementById('anim-container');
+            container.innerHTML = "";
+            localStorage.setItem('particles', enable);
+            if(enable) {
+                for(let i=0; i<15; i++) {
+                    const p = document.createElement('div');
+                    p.className = 'particle';
+                    p.style.left = Math.random()*100 + '%';
+                    p.style.width = p.style.height = (Math.random()*10 + 5) + 'px';
+                    p.style.animationDelay = Math.random()*5 + 's';
+                    container.appendChild(p);
+                }
+            }
+        }
+
+        // --- FRIENDS & SEARCH ---
         function loadFriends() {
             db.collection('users').doc(currentUser.uid).onSnapshot(doc => {
-                const friends = doc.data().friends || [];
-                const container = document.getElementById('tab-friends');
-                container.innerHTML = "";
-                friends.forEach(fid => {
-                    db.collection('users').doc(fid).get().then(fDoc => {
-                        const fData = fDoc.data();
-                        const div = document.createElement('div');
-                        div.className = 'user-card';
-                        div.innerHTML = `
+                const list = document.getElementById('tab-friends');
+                list.innerHTML = "";
+                (doc.data().friends || []).forEach(fid => {
+                    db.collection('users').doc(fid).onSnapshot(fDoc => {
+                        const f = fDoc.data();
+                        const statusClass = f.isOnline ? 'online-dot' : 'offline-dot';
+                        // Check if existing to prevent redraw flicker, else append
+                        let existing = document.getElementById(`u-${f.uid}`);
+                        const html = `
                             <div style="display:flex; align-items:center; gap:10px;">
-                                <div class="my-avatar" style="width:35px; height:35px; font-size:18px;">${fData.emoji}</div>
-                                <div><b>${fData.name}</b></div>
+                                <div class="my-avatar">${f.emoji}</div>
+                                <div><b>${f.name}</b><div class="${statusClass}"></div></div>
                             </div>
-                            <div class="actions">
-                                <button class="btn btn-sm" onclick="startCall('${fData.uid}', '${fData.name}', '${fData.emoji}')"><i class="fas fa-phone"></i></button>
-                                <button class="btn btn-sm btn-danger" onclick="removeFriend('${fData.uid}')"><i class="fas fa-trash"></i></button>
-                            </div>`;
-                        container.appendChild(div);
+                            <button class="btn btn-sm" onclick="startCall('${f.uid}', '${f.name}', '${f.emoji}')"><i class="fas fa-video"></i> Call</button>
+                        `;
+                        if(existing) existing.innerHTML = html;
+                        else {
+                            const d = document.createElement('div');
+                            d.className = 'user-card';
+                            d.id = `u-${f.uid}`;
+                            d.innerHTML = html;
+                            list.appendChild(d);
+                        }
                     });
                 });
             });
         }
-        async function removeFriend(uid) { if(confirm("Remove Friend?")) await db.collection('users').doc(currentUser.uid).update({ friends: firebase.firestore.FieldValue.arrayRemove(uid) }); }
-        function showCallOverlay(name, isOutgoing, emoji="👤") {
-            document.getElementById('call-overlay').style.display = 'flex';
-            document.getElementById('call-name').innerText = name;
-            document.getElementById('call-avatar').innerText = emoji;
-            document.getElementById('incoming-actions').style.display = isOutgoing ? 'none' : 'flex';
-            document.getElementById('active-actions').style.display = isOutgoing ? 'flex' : 'none';
-            document.getElementById('call-status').innerText = isOutgoing ? "Ringing..." : "Incoming Call...";
+        async function searchGlobal(q) {
+            if(q.length < 2) return;
+            const res = document.getElementById('search-results');
+            res.innerHTML = "Searching...";
+            const snap = await db.collection('users').get();
+            res.innerHTML = "";
+            snap.forEach(doc => {
+                const u = doc.data();
+                if(u.uid !== currentUser.uid && u.name.toLowerCase().includes(q.toLowerCase())) {
+                    res.innerHTML += `
+                        <div class="user-card">
+                            <b>${u.name}</b>
+                            <button class="btn btn-sm" onclick="sendReq('${u.uid}')">Add</button>
+                        </div>`;
+                }
+            });
+        }
+        async function sendReq(uid) {
+            await db.collection('users').doc(uid).collection('requests').doc(currentUser.uid).set({
+                fromName: currentUser.displayName || "User", fromId: currentUser.uid
+            });
+            alert("Sent!");
+        }
+        function listenRequests() {
+            db.collection('users').doc(currentUser.uid).collection('requests').onSnapshot(snap => {
+                document.getElementById('req-dot').style.display = snap.empty ? 'none' : 'inline';
+                const list = document.getElementById('tab-requests');
+                list.innerHTML = "";
+                snap.forEach(doc => {
+                    list.innerHTML += `
+                        <div class="user-card">
+                            ${doc.data().fromName}
+                            <button class="btn btn-sm btn-ans" onclick="accept('${doc.data().fromId}', '${doc.id}')">Accept</button>
+                        </div>`;
+                });
+            });
+        }
+        async function accept(fid, rid) {
+            await db.collection('users').doc(currentUser.uid).update({ friends: firebase.firestore.FieldValue.arrayUnion(fid) });
+            await db.collection('users').doc(fid).update({ friends: firebase.firestore.FieldValue.arrayUnion(currentUser.uid) });
+            await db.collection('users').doc(currentUser.uid).collection('requests').doc(rid).delete();
+        }
+
+        // --- MINI GAME (NEON DODGE) ---
+        let gameLoop, score = 0, playerX = 130, obstacles = [];
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function openGame() {
+            document.getElementById('game-modal').style.display = 'flex';
+            score = 0; obstacles = []; playerX = 130;
+            updateGame();
+        }
+        function closeGame() {
+            document.getElementById('game-modal').style.display = 'none';
+            cancelAnimationFrame(gameLoop);
+        }
+        canvas.addEventListener('touchmove', e => {
+            const rect = canvas.getBoundingClientRect();
+            playerX = e.touches[0].clientX - rect.left - 20;
+        });
+
+        function updateGame() {
+            ctx.fillStyle = 'black'; ctx.fillRect(0,0,300,400);
+            
+            // Player
+            ctx.fillStyle = '#00d4ff'; ctx.fillRect(playerX, 350, 40, 40);
+            
+            // Obstacles
+            if(Math.random() < 0.05) obstacles.push({x: Math.random()*260, y:0});
+            ctx.fillStyle = '#ff1744';
+            obstacles.forEach((o, i) => {
+                o.y += 3;
+                ctx.fillRect(o.x, o.y, 40, 40);
+                if(o.y > 400) { obstacles.splice(i,1); score++; document.getElementById('game-score').innerText = score; }
+                // Collision
+                if(o.y > 310 && o.y < 390 && o.x < playerX + 40 && o.x + 40 > playerX) {
+                    alert("Game Over! Score: " + score);
+                    closeGame();
+                }
+            });
+
+            if(document.getElementById('game-modal').style.display === 'flex') 
+                gameLoop = requestAnimationFrame(updateGame);
         }
     </script>
 </body>
