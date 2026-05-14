@@ -3,117 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Together We Run 💖</title>
-    <!-- Firebase SDKs -->
+    <title>True Love Run 💖</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;600&display=swap');
         
+        * { box-sizing: border-box; }
         body {
             margin: 0; padding: 0; font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); color: white;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden;
-            touch-action: none; /* Prevents zooming on mobile */
+            background: radial-gradient(circle at center, #1f4037, #99f2c8); 
+            color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            height: 100vh; overflow: hidden; touch-action: none;
         }
-        .screen { display: none; text-align: center; width: 95%; max-width: 400px; }
+        
+        .screen { display: none; text-align: center; width: 90%; max-width: 400px; animation: slideIn 0.5s ease-out; }
         .active { display: flex; flex-direction: column; align-items: center; }
         
-        h2 { margin: 10px 0; color: #f1c40f; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
-        input, button {
-            width: 90%; padding: 15px; margin: 10px 0; border-radius: 30px; border: none; outline: none; font-size: 16px; font-family: 'Poppins', sans-serif;
+        h1, h2, h3 { font-family: 'Fredoka One', cursive; margin: 10px 0; letter-spacing: 1px; text-shadow: 2px 2px 5px rgba(0,0,0,0.4); }
+        h1 { color: #ffd700; font-size: 32px; }
+        
+        .card {
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px);
+            padding: 25px; border-radius: 20px; border: 2px solid rgba(255,255,255,0.2); width: 100%;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
         }
-        input { text-align: center; color: #333; font-weight: bold; }
-        button { background: #e74c3c; color: white; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4); transition: transform 0.1s; }
+
+        input, select, button {
+            width: 100%; padding: 14px; margin: 10px 0; border-radius: 15px; border: none; 
+            font-size: 16px; font-family: 'Poppins', sans-serif; text-align: center; outline: none;
+        }
+        input, select { background: #fff; color: #333; font-weight: bold; border: 2px solid #ddd; }
+        
+        .btn-primary { background: linear-gradient(45deg, #ff416c, #ff4b2b); color: white; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 75, 43, 0.4); text-transform: uppercase; letter-spacing: 1px; }
+        .btn-secondary { background: linear-gradient(45deg, #11998e, #38ef7d); color: white; font-weight: bold; cursor: pointer; }
         button:active { transform: scale(0.95); }
         
+        .divider { margin: 15px 0; font-weight: bold; color: #ccc; display: flex; align-items: center; }
+        .divider::before, .divider::after { content: ""; flex: 1; border-bottom: 1px solid #ccc; margin: 0 10px; }
+
+        .room-code-box {
+            background: #ffd700; color: #000; font-size: 28px; font-weight: bold; letter-spacing: 5px;
+            padding: 15px; border-radius: 10px; margin: 15px 0; font-family: 'Fredoka One';
+        }
+
         /* Game Area UI */
-        #game-container { position: relative; width: 320px; height: 480px; }
+        #game-container { position: relative; width: 340px; height: 460px; margin-top: 10px; }
         canvas {
-            background: #2ecc71; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 4px solid #fff;
+            background: linear-gradient(to bottom, #2c3e50, #3498db); border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6); border: 5px solid #fff;
         }
         
-        /* Instructions Overlay */
         #instruction-banner {
-            position: absolute; top: 10px; left: 10px; right: 10px; background: rgba(0, 0, 0, 0.7);
-            color: #fff; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 14px; text-align: center;
-            border: 2px solid #f1c40f; z-index: 10; animation: pulse 1s infinite alternate;
+            position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9); color: #e74c3c; padding: 10px 20px; 
+            border-radius: 25px; font-weight: bold; font-size: 15px; white-space: nowrap;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 10; animation: bounce 1s infinite alternate;
         }
 
-        /* Controls */
-        .controls { display: flex; justify-content: space-between; width: 320px; margin-top: 15px; }
-        .ctrl-btn { width: 30%; background: #3498db; font-size: 20px; padding: 15px 0; box-shadow: 0 4px 10px rgba(52, 152, 219, 0.5); }
+        .controls { display: flex; justify-content: space-between; width: 340px; margin-top: 15px; }
+        .ctrl-btn { width: 30%; background: rgba(255,255,255,0.2); backdrop-filter: blur(5px); color: white; font-size: 24px; padding: 15px 0; border: 2px solid rgba(255,255,255,0.5); border-radius: 15px; }
 
         /* Final Heart Animation */
-        #final-screen { position: relative; height: 100vh; width: 100vw; display: none; justify-content: center; align-items: center; flex-direction: column; background: #1a1a1a; }
+        #final-screen { position: absolute; height: 100vh; width: 100vw; background: #000; z-index: 100; justify-content: center; align-items: center; flex-direction: column; }
         .heart {
             color: #ff4757; font-size: 60px; position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%) scale(0); opacity: 0;
-            animation: zoomOutHeart 3s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: explodeHeart 3s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .true-love-text {
-            font-size: 40px; font-weight: bold; color: #ff4757; margin-top: 150px; opacity: 0;
-            animation: fadeIn 2s 2s forwards; text-shadow: 0 0 20px #ff4757;
+            font-size: 45px; font-family: 'Fredoka One'; color: #ff4757; margin-top: 150px; opacity: 0;
+            animation: fadeIn 2s 2s forwards; text-shadow: 0 0 20px #ff4757, 0 0 40px #ff4757;
         }
         .names-text {
-            font-size: 28px; color: #fff; margin-top: 10px; opacity: 0; font-weight: bold;
-            animation: fadeIn 2s 3s forwards; text-shadow: 0 0 10px rgba(255,255,255,0.5);
+            font-size: 30px; color: #fff; margin-top: 15px; opacity: 0; font-family: 'Poppins'; font-weight: bold;
+            animation: fadeIn 2s 3.5s forwards; text-shadow: 0 0 10px rgba(255,255,255,0.8);
         }
 
-        @keyframes zoomOutHeart {
-            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-            50% { opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(4); opacity: 1; }
-        }
+        @keyframes slideIn { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes bounce { from { transform: translate(-50%, 0); } to { transform: translate(-50%, -10px); } }
         @keyframes fadeIn { to { opacity: 1; } }
-        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
+        @keyframes explodeHeart { 0% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 50% { opacity: 1; } 100% { transform: translate(-50%, -50%) scale(5); opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <!-- SCREEN 1: Name Entry -->
-    <div id="login-screen" class="screen active">
-        <h2>Run Together 👦❤️👧</h2>
-        <p>Enter your name to start the journey</p>
-        <select id="playerGender" style="width: 90%; padding: 15px; border-radius: 30px; margin-bottom: 10px; font-family: 'Poppins';">
-            <option value="boy">I am the Boy 👦</option>
-            <option value="girl">I am the Girl 👧</option>
-        </select>
-        <input type="text" id="playerName" placeholder="Your Name" required>
-        <button onclick="joinOrCreateGame()">Start Game</button>
+    <div id="home-screen" class="screen active">
+        <h1>Run Together 💖</h1>
+        <div class="card">
+            <input type="text" id="playerName" placeholder="Enter Your Name" required>
+            <select id="playerGender">
+                <option value="boy">I am the Boy 👦</option>
+                <option value="girl">I am the Girl 👧</option>
+            </select>
+            
+            <button class="btn-primary" onclick="createGame()">Create New Game</button>
+            
+            <div class="divider">OR</div>
+            
+            <input type="text" id="joinCode" placeholder="Enter 5-Letter Room Code" style="text-transform: uppercase;">
+            <button class="btn-secondary" onclick="joinGame()">Join Game</button>
+        </div>
     </div>
 
-    <!-- SCREEN 2: Lobby -->
     <div id="lobby-screen" class="screen">
         <h2>Waiting for Partner ⏳</h2>
-        <div style="background: rgba(0,0,0,0.5); padding: 20px; border-radius: 15px; width: 100%;">
-            <p>Share this link with your partner:</p>
-            <button onclick="shareWhatsApp()" style="background: #25D366;">Invite via WhatsApp 💬</button>
+        <div class="card">
+            <p>Ask your friend to enter this Room Code:</p>
+            <div class="room-code-box" id="displayCode">XXXXX</div>
+            <div class="divider">OR</div>
+            <p>Share link directly:</p>
+            <button class="btn-secondary" onclick="shareWhatsApp()" style="background: #25D366;">Invite via WhatsApp 💬</button>
         </div>
     </div>
 
-    <!-- SCREEN 3: Game Area -->
     <div id="game-screen" class="screen">
-        <h3 id="level-text" style="margin: 5px;">Level 1 / 5</h3>
+        <h2 id="level-text" style="color: #ffd700; margin-bottom: 5px;">Level 1 / 5</h2>
         <div id="game-container">
-            <div id="instruction-banner">Waiting to meet...</div>
-            <canvas id="gameCanvas" width="320" height="400"></canvas>
+            <div id="instruction-banner">Meeting each other...</div>
+            <canvas id="gameCanvas" width="340" height="460"></canvas>
         </div>
         <div class="controls">
-            <button class="ctrl-btn" onclick="moveLeft()">⬅️ Left</button>
-            <button class="ctrl-btn" onclick="jump()">⬆️ Jump</button>
-            <button class="ctrl-btn" onclick="moveRight()">Right ➡️</button>
+            <button class="ctrl-btn" onclick="moveLeft()">⬅️</button>
+            <button class="ctrl-btn" onclick="jump()">⬆️</button>
+            <button class="ctrl-btn" onclick="moveRight()">➡️</button>
         </div>
     </div>
 
-    <!-- SCREEN 4: Paused -->
     <div id="pause-screen" class="screen">
         <h2>Game Paused ⏸️</h2>
-        <p>Your partner is away or minimized the app.</p>
-        <p>Hold on till they come back...</p>
+        <div class="card">
+            <p style="font-size: 18px;">Your partner went offline or minimized the game.</p>
+            <p>Waiting for them to return... ⏳</p>
+        </div>
     </div>
 
-    <!-- SCREEN 5: Final -->
     <div id="final-screen" class="screen">
         <div class="heart">❤️</div>
         <div class="true-love-text">TRUE LOVE</div>
@@ -122,270 +146,262 @@
 
     <script>
         // ==========================================
-        // 1. FIREBASE CONFIGURATION (PASTE YOURS HERE)
+        // 1. FIREBASE SETUP
         // ==========================================
-        // Import the functions you need from the SDKs you need
-const firebaseConfig = {
-  apiKey: "AIzaSyCZmqyLmyWesuoj6djTbyfrOJ1v7_FCWcQ",
-  authDomain: "game-bf78a.firebaseapp.com",
-  databaseURL: "https://game-bf78a-default-rtdb.firebaseio.com", // Idhi correct ga undali
-  projectId: "game-bf78a",
-  storageBucket: "game-bf78a.firebasestorage.app",
-  messagingSenderId: "860717231489",
-  appId: "1:860717231489:web:f53331a96570be04cacc80"
-};
-
-// initializeApp and database initialization
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
-const db = firebase.database();
+        const firebaseConfig = {
+            apiKey: "AIzaSyCZmqyLmyWesuoj6djTbyfrOJ1v7_FCWcQ",
+            authDomain: "game-bf78a.firebaseapp.com",
+            databaseURL: "https://game-bf78a-default-rtdb.firebaseio.com",
+            projectId: "game-bf78a",
+            storageBucket: "game-bf78a.firebasestorage.app",
+            messagingSenderId: "860717231489",
+            appId: "1:860717231489:web:f53331a96570be04cacc80"
+        };
         
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
         // ==========================================
-        // 2. GAME VARIABLES
+        // 2. GLOBAL VARIABLES
         // ==========================================
-        let gameId = new URLSearchParams(window.location.search).get("game");
-        let playerNum = 0; // 1 = Host, 2 = Joiner
+        let gameId = "";
+        let playerNum = 0; 
         let myName = "", myGender = "";
         let p1Data = {}, p2Data = {};
         let gameRef = null;
+        let isMeeting = true; // For initial meet animation
+        let meetX = { p1: -50, p2: 390 }; // Starting off-screen
         
-        // Canvas Setup
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        const lanes = [60, 160, 260]; // X positions for 3 lanes
+        const lanes = [70, 170, 270]; // X positions for Left, Center, Right lanes
         
         let gameState = {
-            status: 'waiting',
-            level: 1,
-            progress: 0, // Out of 100 per level
-            sharedLane: 1, // 0 = Left, 1 = Center, 2 = Right
-            isJumping: false,
-            obstacle: null // { type: '🐍', lane: 1, y: 0, speed: 3, id: 1 }
+            status: 'waiting', level: 1, progress: 0, sharedLane: 1, isJumping: false, obstacle: null 
         };
 
         const obstacleTypes = [
-            { emoji: '🐍', name: 'Snake', msg: 'A Snake! Move to another lane!', type: 'dodge' },
-            { emoji: '👹', name: 'Monster', msg: 'Monster ahead! Dodge it!', type: 'dodge' },
-            { emoji: '👮', name: 'Police', msg: 'Police checking! Escape sideways!', type: 'dodge' },
-            { emoji: '🌳', name: 'Roots', msg: 'Tree Roots! JUMP over them!', type: 'jump' }
+            { emoji: '🐍', msg: 'Snake! Move Left or Right!', type: 'dodge' },
+            { emoji: '👹', msg: 'Monster! Dodge it!', type: 'dodge' },
+            { emoji: '🚓', msg: 'Police! Change Lane!', type: 'dodge' },
+            { emoji: '🪵', msg: 'Wood Log! JUMP (⬆️) over it!', type: 'jump' }
         ];
 
         let localObstacleY = -50;
         let animationFrameId;
         let roadOffset = 0;
 
+        // Auto-fill code if opened from WhatsApp link
+        window.onload = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('game')) document.getElementById('joinCode').value = urlParams.get('game').toUpperCase();
+        };
+
         // ==========================================
-        // 3. UI & LOBBY LOGIC
+        // 3. GAME CREATION & JOINING
         // ==========================================
         function switchScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(s => {
-                s.classList.remove('active');
-                s.style.display = 'none';
-            });
-            let el = document.getElementById(screenId);
-            el.classList.add('active');
-            if(screenId === 'final-screen') el.style.display = 'flex';
-            else el.style.display = 'flex';
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            if(screenId === 'final-screen') document.getElementById(screenId).style.display = 'flex';
         }
 
-        function joinOrCreateGame() {
+        function createGame() {
             myName = document.getElementById('playerName').value.trim();
             myGender = document.getElementById('playerGender').value;
             if(!myName) return alert("Please enter your name!");
 
-            if (gameId) {
-                // Joiner
-                playerNum = 2;
-                gameRef = db.ref('games/' + gameId);
-                gameRef.update({ 
-                    p2Name: myName, p2Gender: myGender, p2Active: true, status: 'playing' 
-                });
-            } else {
-                // Host
-                playerNum = 1;
-                gameId = Math.random().toString(36).substring(2, 9);
-                gameRef = db.ref('games/' + gameId);
-                gameRef.set({
-                    p1Name: myName, p1Gender: myGender, p1Active: true, 
-                    p2Name: "", p2Gender: "", p2Active: false,
-                    state: gameState
-                });
-                const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?game=' + gameId;
-                window.history.pushState({path:newUrl}, '', newUrl);
-            }
+            playerNum = 1;
+            // Generate a random 5-letter code
+            gameId = Math.random().toString(36).substring(2, 7).toUpperCase();
+            
+            gameRef = db.ref('games/' + gameId);
+            gameRef.set({
+                p1Name: myName, p1Gender: myGender, p1Active: true, 
+                p2Name: "", p2Gender: "", p2Active: false,
+                state: gameState
+            });
+
+            document.getElementById('displayCode').innerText = gameId;
+            switchScreen('lobby-screen');
             setupListeners();
         }
 
+        function joinGame() {
+            myName = document.getElementById('playerName').value.trim();
+            myGender = document.getElementById('playerGender').value;
+            gameId = document.getElementById('joinCode').value.trim().toUpperCase();
+            
+            if(!myName) return alert("Please enter your name!");
+            if(!gameId || gameId.length !== 5) return alert("Please enter a valid 5-letter Room Code!");
+
+            playerNum = 2;
+            gameRef = db.ref('games/' + gameId);
+            
+            // Check if room exists
+            gameRef.once('value').then(snap => {
+                if(!snap.exists()) return alert("Room not found! Check the code.");
+                
+                // Update room to start playing
+                gameRef.update({ 
+                    p2Name: myName, p2Gender: myGender, p2Active: true
+                });
+                gameRef.child('state').update({ status: 'playing' });
+                setupListeners();
+            });
+        }
+
         function shareWhatsApp() {
-            const text = `Hey! Join me in this game! Let's hold hands and run together: ${window.location.href}`;
+            const url = window.location.origin + window.location.pathname + '?game=' + gameId;
+            const text = `Hey! Let's hold hands and run together ❤️. Join my game using Room Code: *${gameId}* or click here: ${url}`;
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
         }
 
         // ==========================================
-        // 4. FIREBASE SYNC & MULTIPLAYER LOGIC
+        // 4. MULTIPLAYER SYNC
         // ==========================================
         function setupListeners() {
-            if(playerNum === 1) switchScreen('lobby-screen');
-
             gameRef.on('value', (snapshot) => {
                 const data = snapshot.val();
-                if(!data) return;
+                if(!data || !data.state) return;
 
                 p1Data = { name: data.p1Name, gender: data.p1Gender };
                 p2Data = { name: data.p2Name, gender: data.p2Gender };
 
-                if(data.status === 'paused' && data.state.level <= 5) {
+                // Handle Pausing (Only if game was actually playing)
+                if(data.state.status === 'paused' && data.state.level <= 5) {
                     switchScreen('pause-screen');
-                    cancelAnimationFrame(animationFrameId);
                     return;
                 }
 
-                if(data.status === 'finished') {
+                // Handle Victory
+                if(data.state.status === 'finished') {
                     switchScreen('final-screen');
-                    document.getElementById('final-names').innerText = `${p1Data.name} & ${p2Data.name}`;
-                    cancelAnimationFrame(animationFrameId);
+                    document.getElementById('final-names').innerText = `${p1Data.name} & ${p2Data.name} ❤️`;
                     return;
                 }
 
-                if(data.status === 'playing' && data.state) {
-                    if(document.getElementById('game-screen').style.display === 'none' || document.getElementById('game-screen').classList.contains('active') == false) {
+                // Handle Active Playing
+                if(data.state.status === 'playing') {
+                    if(!document.getElementById('game-screen').classList.contains('active')) {
                         switchScreen('game-screen');
                         startGameLoop();
-                        if(playerNum === 1) hostObstacleSpawner(); // Host manages obstacles
+                        if(playerNum === 1) hostGameEngine(); // Start spawning obstacles
                     }
                     
-                    // Sync state
                     let prevState = gameState;
                     gameState = data.state;
-                    document.getElementById('level-text').innerText = `Level ${gameState.level} / 5`;
                     
-                    // Instruction update
+                    document.getElementById('level-text').innerText = `Level ${gameState.level} / 5`;
                     let banner = document.getElementById('instruction-banner');
-                    if(gameState.progress === 0 && gameState.level === 1) {
-                        banner.innerText = "Meeting in the center... Hold Hands!";
-                    } else if (gameState.obstacle) {
+                    
+                    if(isMeeting) banner.innerText = "Meeting each other... 💕";
+                    else if (gameState.obstacle) {
                         banner.innerText = gameState.obstacle.msg;
-                        // If new obstacle came, reset local Y
-                        if(!prevState.obstacle || prevState.obstacle.id !== gameState.obstacle.id) {
-                            localObstacleY = -50;
-                        }
-                    } else {
-                        banner.innerText = "Running safely... Get ready!";
-                    }
+                        if(!prevState.obstacle || prevState.obstacle.id !== gameState.obstacle.id) localObstacleY = -50;
+                    } else banner.innerText = "Holding hands! Keep running! 🏃‍♂️🏃‍♀️";
                 }
             });
 
-            // Disconnect/Pause rules
-            gameRef.child(`p${playerNum}Active`).onDisconnect().set(false);
-            gameRef.child('status').onDisconnect().set('paused');
-            
+            // Smart Visibility / Disconnect Handling (Fixed Issue)
             document.addEventListener("visibilitychange", () => {
-                if (document.visibilityState === "hidden") {
-                    gameRef.update({ status: 'paused', [`p${playerNum}Active`]: false });
-                } else {
-                    gameRef.update({ [`p${playerNum}Active`]: true });
-                    gameRef.once('value').then(snap => {
-                        if(snap.val().p1Active && snap.val().p2Active) {
-                            gameRef.update({ status: 'playing' });
+                if (!gameRef) return;
+                gameRef.once('value').then(snap => {
+                    let data = snap.val();
+                    // ONLY pause if game has started (prevents WhatsApp invite pausing)
+                    if (data && data.state && data.state.status === 'playing') {
+                        if (document.visibilityState === "hidden") {
+                            gameRef.child('state').update({ status: 'paused' });
+                            gameRef.update({ [`p${playerNum}Active`]: false });
+                        } else {
+                            gameRef.update({ [`p${playerNum}Active`]: true });
+                            if ((playerNum === 1 && data.p2Active) || (playerNum === 2 && data.p1Active)) {
+                                gameRef.child('state').update({ status: 'playing' });
+                            }
                         }
-                    });
-                }
+                    }
+                });
             });
         }
 
         // ==========================================
-        // 5. CONTROLS (Shared via DB)
+        // 5. CONTROLS
         // ==========================================
-        function moveLeft() {
-            if(gameState.sharedLane > 0) {
-                gameRef.child('state').update({ sharedLane: gameState.sharedLane - 1 });
-            }
-        }
-        function moveRight() {
-            if(gameState.sharedLane < 2) {
-                gameRef.child('state').update({ sharedLane: gameState.sharedLane + 1 });
-            }
-        }
+        function moveLeft() { if(gameState.sharedLane > 0 && !isMeeting) gameRef.child('state').update({ sharedLane: gameState.sharedLane - 1 }); }
+        function moveRight() { if(gameState.sharedLane < 2 && !isMeeting) gameRef.child('state').update({ sharedLane: gameState.sharedLane + 1 }); }
         function jump() {
-            if(!gameState.isJumping) {
+            if(!gameState.isJumping && !isMeeting) {
                 gameRef.child('state').update({ isJumping: true });
-                setTimeout(() => {
-                    gameRef.child('state').update({ isJumping: false });
-                }, 1000); // 1 second jump duration
+                setTimeout(() => gameRef.child('state').update({ isJumping: false }), 800);
             }
         }
 
         // ==========================================
-        // 6. HOST LOGIC (Spawning & Leveling up)
+        // 6. HOST ENGINE (Levels & Obstacles)
         // ==========================================
-        function hostObstacleSpawner() {
+        function hostGameEngine() {
             setInterval(() => {
+                if(isMeeting) return; // Don't spawn while meeting
+
                 gameRef.once('value').then(snap => {
                     let st = snap.val().state;
-                    if(snap.val().status !== 'playing') return;
+                    if(st.status !== 'playing') return;
 
-                    // Level Up Check
+                    // Level Up
                     if(st.progress >= 100) {
-                        if(st.level < 5) {
-                            gameRef.child('state').update({ level: st.level + 1, progress: 0, obstacle: null });
-                        } else {
-                            gameRef.update({ status: 'finished' });
-                        }
+                        if(st.level < 5) gameRef.child('state').update({ level: st.level + 1, progress: 0, obstacle: null });
+                        else gameRef.child('state').update({ status: 'finished' });
                         return;
                     }
 
-                    // Spawn Obstacle if none exists
+                    // Spawn
                     if(!st.obstacle) {
                         let randType = obstacleTypes[Math.floor(Math.random() * obstacleTypes.length)];
                         let randLane = Math.floor(Math.random() * 3);
-                        let speed = 3 + (st.level * 0.5); // Gets faster each level
-
+                        let speed = 4 + (st.level * 0.8); // Speed increases per level
                         gameRef.child('state').update({
-                            obstacle: {
-                                emoji: randType.emoji, msg: randType.msg, type: randType.type,
-                                lane: randLane, speed: speed, id: Date.now()
-                            }
+                            obstacle: { emoji: randType.emoji, msg: randType.msg, type: randType.type, lane: randLane, speed: speed, id: Date.now() }
                         });
                     }
                 });
-            }, 2000);
+            }, 1500);
         }
 
         // ==========================================
-        // 7. GAME RENDERER (Canvas)
+        // 7. CANVAS RENDERER & ANIMATIONS
         // ==========================================
         function startGameLoop() {
             function update() {
                 if(document.getElementById('game-screen').classList.contains('active')) {
                     drawGame();
                     
-                    // Local Obstacle Logic
-                    if(gameState.obstacle) {
+                    // Meeting Animation Logic (Level 1 Start)
+                    if(isMeeting) {
+                        if(meetX.p1 < 140) meetX.p1 += 2;
+                        if(meetX.p2 > 200) meetX.p2 -= 2;
+                        if(meetX.p1 >= 140 && meetX.p2 <= 200) {
+                            isMeeting = false; // They met! Game starts
+                        }
+                    }
+                    
+                    // Obstacle Logic
+                    if(gameState.obstacle && !isMeeting) {
                         localObstacleY += gameState.obstacle.speed;
-
-                        // Collision Detection
-                        let playerY = 320;
+                        let playerY = 380;
+                        
+                        // Collision
                         if(localObstacleY > playerY - 30 && localObstacleY < playerY + 30) {
                             let inSameLane = (gameState.sharedLane === gameState.obstacle.lane);
                             let isHit = false;
-
                             if(gameState.obstacle.type === 'dodge' && inSameLane && !gameState.isJumping) isHit = true;
                             if(gameState.obstacle.type === 'jump' && inSameLane && !gameState.isJumping) isHit = true;
 
-                            if(isHit) {
-                                // Flashing Red effect
-                                ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
-                                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                            }
+                            if(isHit) { ctx.fillStyle = "rgba(255, 0, 0, 0.4)"; ctx.fillRect(0, 0, canvas.width, canvas.height); }
                         }
 
-                        // Obstacle Passed
+                        // Pass
                         if(localObstacleY > canvas.height) {
-                            if(playerNum === 1) { // Host gives points
-                                gameRef.child('state').update({ obstacle: null, progress: gameState.progress + 20 });
-                            }
+                            if(playerNum === 1) gameRef.child('state').update({ obstacle: null, progress: gameState.progress + 20 });
                             localObstacleY = -50;
                         }
                     }
@@ -398,54 +414,59 @@ const db = firebase.database();
         function drawGame() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Draw Road & Lanes
-            roadOffset += 2 + (gameState.level * 0.5); // Scrolling speed
-            if(roadOffset > 40) roadOffset = 0;
+            // Draw Moving Road
+            if(!isMeeting) roadOffset += 3 + (gameState.level * 0.5);
+            if(roadOffset > 50) roadOffset = 0;
 
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
-            ctx.lineWidth = 4;
-            ctx.setLineDash([20, 20]);
-            
-            // Draw lane dividers
-            ctx.beginPath(); ctx.moveTo(106, -40 + roadOffset); ctx.lineTo(106, 400); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(213, -40 + roadOffset); ctx.lineTo(213, 400); ctx.stroke();
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.4)"; ctx.lineWidth = 5; ctx.setLineDash([25, 25]);
+            ctx.beginPath(); ctx.moveTo(113, -50 + roadOffset); ctx.lineTo(113, 460); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(226, -50 + roadOffset); ctx.lineTo(226, 460); ctx.stroke();
             ctx.setLineDash([]);
 
-            // Draw Players (Holding hands side-by-side)
-            let playerY = 320;
-            let jumpOffset = gameState.isJumping ? -40 : 0;
-            let centerX = lanes[gameState.sharedLane];
-
-            ctx.font = "35px Arial";
-            ctx.textAlign = "center";
-            
-            // Get emojis based on gender
+            // Characters Setup
+            let playerY = 380;
+            let jumpOffset = gameState.isJumping ? -60 : 0;
             let p1Emoji = p1Data.gender === 'boy' ? '👦' : '👧';
             let p2Emoji = p2Data.gender === 'boy' ? '👦' : '👧';
-            
-            // Draw Hand holding (Line between them)
-            ctx.strokeStyle = "#ff7675"; ctx.lineWidth = 3;
-            ctx.beginPath(); ctx.moveTo(centerX - 15, playerY + jumpOffset + 10); ctx.lineTo(centerX + 15, playerY + jumpOffset + 10); ctx.stroke();
+            ctx.font = "40px Arial"; ctx.textAlign = "center";
 
-            // Draw Characters
-            ctx.fillText(p1Emoji, centerX - 20, playerY + jumpOffset);
-            ctx.fillText(p2Emoji, centerX + 20, playerY + jumpOffset);
+            if(isMeeting) {
+                // Intro Animation (Walking from sides)
+                ctx.fillText(p1Emoji, meetX.p1, playerY);
+                ctx.fillText(p2Emoji, meetX.p2, playerY);
+            } else {
+                // Running Together
+                let centerX = lanes[gameState.sharedLane];
+                
+                // Shadow
+                ctx.fillStyle = "rgba(0,0,0,0.3)";
+                ctx.beginPath(); ctx.ellipse(centerX - 25, playerY + 10, 15, 5, 0, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.ellipse(centerX + 25, playerY + 10, 15, 5, 0, 0, Math.PI*2); ctx.fill();
 
-            // Draw Names below them
-            ctx.font = "12px Poppins"; ctx.fillStyle = "white";
-            ctx.fillText(p1Data.name || "P1", centerX - 25, playerY + jumpOffset + 30);
-            ctx.fillText(p2Data.name || "P2", centerX + 25, playerY + jumpOffset + 30);
+                // Hand Holding Line (Pink glow)
+                ctx.strokeStyle = "#ff4757"; ctx.lineWidth = 4; ctx.shadowBlur = 10; ctx.shadowColor = "#ff4757";
+                ctx.beginPath(); ctx.moveTo(centerX - 15, playerY + jumpOffset - 10); ctx.lineTo(centerX + 15, playerY + jumpOffset - 10); ctx.stroke();
+                ctx.shadowBlur = 0; // reset
 
-            // Draw Obstacle
-            if(gameState.obstacle) {
-                let obsX = lanes[gameState.obstacle.lane];
-                ctx.font = "40px Arial";
-                ctx.fillText(gameState.obstacle.emoji, obsX, localObstacleY);
+                // Draw Players & Names
+                ctx.fillText(p1Emoji, centerX - 30, playerY + jumpOffset);
+                ctx.fillText(p2Emoji, centerX + 30, playerY + jumpOffset);
+                
+                ctx.font = "14px Poppins"; ctx.fillStyle = "#fff"; ctx.fontWeight = "bold";
+                ctx.fillText(p1Data.name, centerX - 30, playerY + jumpOffset + 25);
+                ctx.fillText(p2Data.name, centerX + 30, playerY + jumpOffset + 25);
             }
 
-            // Draw Progress Bar
-            ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.fillRect(10, 370, 300, 10);
-            ctx.fillStyle = "#f1c40f"; ctx.fillRect(10, 370, (gameState.progress / 100) * 300, 10);
+            // Draw Obstacle
+            if(gameState.obstacle && !isMeeting) {
+                let obsX = lanes[gameState.obstacle.lane];
+                ctx.font = "45px Arial"; ctx.fillText(gameState.obstacle.emoji, obsX, localObstacleY);
+            }
+
+            // Progress Bar
+            ctx.fillStyle = "rgba(0,0,0,0.6)"; ctx.fillRect(20, 430, 300, 15);
+            ctx.fillStyle = "linear-gradient(45deg, #f1c40f, #f39c12)";
+            ctx.fillStyle = "#f1c40f"; ctx.fillRect(20, 430, (gameState.progress / 100) * 300, 15);
         }
     </script>
 </body>
