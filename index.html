@@ -125,22 +125,22 @@
         // 1. FIREBASE CONFIGURATION (PASTE YOURS HERE)
         // ==========================================
         // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCZmqyLmyWesuoj6djTbyfrOJ1v7_FCWcQ",
   authDomain: "game-bf78a.firebaseapp.com",
+  databaseURL: "https://game-bf78a-default-rtdb.firebaseio.com", // Idhi correct ga undali
   projectId: "game-bf78a",
   storageBucket: "game-bf78a.firebasestorage.app",
   messagingSenderId: "860717231489",
   appId: "1:860717231489:web:f53331a96570be04cacc80"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// initializeApp and database initialization
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.database();
+        
 
         // ==========================================
         // 2. GAME VARIABLES
