@@ -197,7 +197,7 @@
             if (urlParams.get('game')) document.getElementById('joinCode').value = urlParams.get('game').toUpperCase();
         };
 
-        // ==========================================
+                // ==========================================
         // 3. GAME CREATION & JOINING
         // ==========================================
         function switchScreen(screenId) {
@@ -216,15 +216,19 @@
             gameId = Math.random().toString(36).substring(2, 7).toUpperCase();
             
             gameRef = db.ref('games/' + gameId);
+            
+            // Added Error Catching here
             gameRef.set({
                 p1Name: myName, p1Gender: myGender, p1Active: true, 
                 p2Name: "", p2Gender: "", p2Active: false,
                 state: gameState
+            }).then(() => {
+                document.getElementById('displayCode').innerText = gameId;
+                switchScreen('lobby-screen');
+                setupListeners();
+            }).catch(error => {
+                alert("Database Error (Create): " + error.message + "\n\n(Note: Check your Firebase Database Rules!)");
             });
-
-            document.getElementById('displayCode').innerText = gameId;
-            switchScreen('lobby-screen');
-            setupListeners();
         }
 
         function joinGame() {
@@ -238,16 +242,19 @@
             playerNum = 2;
             gameRef = db.ref('games/' + gameId);
             
-            // Check if room exists
+            // Added Error Catching here
             gameRef.once('value').then(snap => {
                 if(!snap.exists()) return alert("Room not found! Check the code.");
                 
-                // Update room to start playing
                 gameRef.update({ 
                     p2Name: myName, p2Gender: myGender, p2Active: true
-                });
-                gameRef.child('state').update({ status: 'playing' });
-                setupListeners();
+                }).then(() => {
+                    gameRef.child('state').update({ status: 'playing' });
+                    setupListeners();
+                }).catch(error => alert("Database Error (Update): " + error.message));
+                
+            }).catch(error => {
+                alert("Database Error (Read): " + error.message + "\n\n(Note: Your Firebase Rules are blocking the connection.)");
             });
         }
 
@@ -256,6 +263,8 @@
             const text = `Hey! Let's hold hands and run together ❤️. Join my game using Room Code: *${gameId}* or click here: ${url}`;
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
         }
+        
+            
 
         // ==========================================
         // 4. MULTIPLAYER SYNC
