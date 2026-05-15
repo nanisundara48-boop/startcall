@@ -108,7 +108,7 @@
         <canvas id="gameCanvas"></canvas>
     </div>
 
-    <script type="module">
+        <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, doc, setDoc, onSnapshot, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
@@ -130,6 +130,12 @@
             else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
         }
 
+        // --- UI LOGIC (Idhi miss ayyindi mundhu) ---
+        function switchScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
         // --- NATURAL SOUND ENGINE ---
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         const audioCtx = new AudioContext();
@@ -138,7 +144,6 @@
         function startAmbientSound() {
             if(audioCtx.state === 'suspended') audioCtx.resume();
             if(bgNoiseNode) return;
-            // Create rushing wind/running ambient sound
             const bufferSize = audioCtx.sampleRate * 2; 
             const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
             const data = buffer.getChannelData(0);
@@ -148,7 +153,7 @@
             bgNoiseNode.buffer = buffer; bgNoiseNode.loop = true;
             
             const filter = audioCtx.createBiquadFilter();
-            filter.type = 'lowpass'; filter.frequency.value = 400; // Muffled wind
+            filter.type = 'lowpass'; filter.frequency.value = 400; 
             
             const gainNode = audioCtx.createGain(); gainNode.gain.value = 0.5;
             
@@ -215,7 +220,6 @@
             let myLaneKey = playerNum === 1 ? 'p1Lane' : 'p2Lane'; let myJumpKey = playerNum === 1 ? 'p1Jump' : 'p2Jump';
 
             if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
-                // In Level 1, P1 is locked to left (0,1), P2 is locked to right (1,2). Cannot cross middle wall until end.
                 let minL = gameState.level === 1 && playerNum === 2 ? 1 : 0;
                 let maxL = gameState.level === 1 && playerNum === 1 ? 1 : 2;
                 
@@ -261,7 +265,6 @@
             }
         });
 
-        // WHATSAPP INVITE LINK RE-ADDED
         document.getElementById('btnShare').addEventListener('click', () => {
             const url = window.location.origin + window.location.pathname + '?game=' + gameId;
             const text = `I'm waiting for you! Enter Room Code: *${gameId}* or click here to join: ${url}`;
@@ -292,13 +295,11 @@
                     document.getElementById('p1-life').style.width = gameState.p1Life + "%";
                     document.getElementById('p2-life').style.width = gameState.p2Life + "%";
                     
-                    // Route Map Update
                     for(let i=1; i<=5; i++) {
                         let dot = document.getElementById('dot'+i);
                         if(i <= gameState.level) dot.classList.add('active'); else dot.classList.remove('active');
                     }
 
-                    // Level Up Detection
                     if(gameState.level > oldLevel && gameState.level <= 5) showLevelOverlay(gameState.level);
 
                     if(gameState.p1Life <= 0 || gameState.p2Life <= 0) {
@@ -328,9 +329,7 @@
                 let newProg = gameState.progress + (10 * spd);
 
                 if(newProg >= 100) {
-                    // Level Complete Check
                     if(gameState.level === 1) {
-                        // Must meet in center to pass Level 1
                         if(gameState.p1Lane === 1 && gameState.p2Lane === 1) {
                             await updateDoc(gameDocRef, { level: 2, progress: 0, obstacle: null });
                         }
@@ -340,7 +339,6 @@
                 } else {
                     await updateDoc(gameDocRef, { progress: newProg });
                     
-                    // Spawn Obstacles
                     if(!gameState.obstacle) {
                         let type = gameState.level === 2 ? 'monster' : (gameState.level === 3 ? 'jeep' : (Math.random() > 0.5 ? 'monster' : 'jeep'));
                         let targetLane = gameState.level === 1 ? (Math.random() > 0.5 ? 0 : 2) : Math.floor(Math.random() * 3);
@@ -350,7 +348,7 @@
             }, 1000);
         }
 
-        // --- RENDERER (3D Illusion) ---
+        // --- RENDERER ---
         function project3D(x, y, z) {
             let scale = 400 / (400 + z);
             return { x: (x * scale) + (canvas.width / 2), y: (y * scale) + horizonY, scale: scale };
@@ -360,20 +358,16 @@
         let roadOffset = 0, tick = 0;
 
         function drawEntity(img, x, y, size, z, isJump) {
-            // Bobbing effect for realistic run feel
             let bobY = isJump ? -100 * (400/(400+z)) : Math.sin(tick * 0.5) * 10 * (400/(400+z)); 
-            
-            // Draw Shadow
             ctx.fillStyle = "rgba(0,0,0,0.5)";
             ctx.beginPath(); ctx.ellipse(x, y + size/2, size*0.4, size*0.1, 0, 0, Math.PI*2); ctx.fill();
             
-            // Draw Image
             try { ctx.drawImage(img, x - size/2, y - size/2 + bobY, size, size); } 
             catch(e) { ctx.fillStyle = "gray"; ctx.fillRect(x - size/2, y - size/2 + bobY, size, size); }
         }
 
         function startGameLoop() {
-            if(gameState.level === 1) showLevelOverlay(1); // Show initially
+            if(gameState.level === 1) showLevelOverlay(1); 
 
             function render() {
                 if(gameState.status !== 'playing' || isLevelTransitioning) {
@@ -381,18 +375,15 @@
                 }
                 tick++;
                 
-                // Clear & Draw BG
                 let grad = ctx.createLinearGradient(0, 0, 0, horizonY);
                 grad.addColorStop(0, "#050510"); grad.addColorStop(1, "#2a1b40");
                 ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, horizonY);
                 
-                // Ground
                 ctx.fillStyle = "#111"; ctx.fillRect(0, horizonY, canvas.width, canvas.height);
 
                 let speed = 8 + (gameState.level * 2);
                 roadOffset = (roadOffset + speed) % 150;
 
-                // 3D Lanes
                 ctx.strokeStyle = "rgba(255,255,255,0.2)"; ctx.lineWidth = 2;
                 for(let z = 2000; z > 0; z -= 150) {
                     let actualZ = z - roadOffset;
@@ -400,7 +391,6 @@
                     ctx.beginPath(); ctx.moveTo(pL.x, pL.y); ctx.lineTo(pR.x, pR.y); ctx.stroke();
                 }
 
-                // Level 1: Draw Center Wall Separator
                 if(gameState.level === 1) {
                     ctx.fillStyle = "rgba(0, 242, 254, 0.3)";
                     let wallTop = project3D(0, -100, 2000); let wallBot = project3D(0, 100, 0);
@@ -408,7 +398,6 @@
                     ctx.lineTo(wallBot.x + 20, wallBot.y); ctx.lineTo(wallBot.x - 20, wallBot.y); ctx.fill();
                 }
 
-                // Render Obstacle
                 if(gameState.obstacle) {
                     localObsZ -= (speed * 4);
                     let lX = (gameState.obstacle.lane - 1) * 200;
@@ -419,7 +408,6 @@
                         let obsImg = gameState.obstacle.type === 'jeep' ? imgJeep : imgMonster;
                         drawEntity(obsImg, obsPos.x, obsPos.y, size, localObsZ, false);
                     } else if (localObsZ > -50) {
-                        // Collision Check
                         let myLane = playerNum === 1 ? gameState.p1Lane : gameState.p2Lane;
                         let isJump = playerNum === 1 ? gameState.p1Jump : gameState.p2Jump;
                         if(myLane === gameState.obstacle.lane && !isJump && playerNum === 1) {
@@ -433,11 +421,9 @@
                     }
                 }
 
-                // Render Players
                 let p1X = (gameState.p1Lane - 1) * 200; let p2X = (gameState.p2Lane - 1) * 200;
                 let p1Pos = project3D(p1X, 50, 150); let p2Pos = project3D(p2X, 50, 150);
                 
-                // Hide partner slightly in level 1 if not in center
                 let p1Alpha = (gameState.level === 1 && playerNum === 2 && gameState.p1Lane !== 1) ? 0.3 : 1;
                 let p2Alpha = (gameState.level === 1 && playerNum === 1 && gameState.p2Lane !== 1) ? 0.3 : 1;
 
@@ -451,6 +437,7 @@
             }
             render();
         }
+                        
     </script>
 </body>
 </html>
