@@ -10,12 +10,12 @@
         * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
         body { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; background: #000; color: white; display: flex; flex-direction: column; height: 100vh; width: 100vw; overflow: hidden; touch-action: none; }
         
-        .screen { display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle, #1a1a2e, #000); z-index: 10; }
+        .screen { display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle, #0a0a1a, #000); z-index: 10; }
         .active { display: flex; }
         
         h1 { font-family: 'Orbitron', sans-serif; font-size: 35px; color: #00f2fe; text-transform: uppercase; text-shadow: 0 0 15px #00f2fe; text-align: center; margin-bottom: 20px;}
         
-        .card { background: rgba(10, 10, 20, 0.9); padding: 30px; border-radius: 20px; border: 2px solid #00f2fe; width: 90%; max-width: 400px; box-shadow: 0 0 25px rgba(0, 242, 254, 0.4); text-align: center; backdrop-filter: blur(10px);}
+        .card { background: rgba(10, 10, 20, 0.8); padding: 30px; border-radius: 20px; border: 2px solid #00f2fe; width: 90%; max-width: 400px; box-shadow: 0 0 25px rgba(0, 242, 254, 0.4); text-align: center; backdrop-filter: blur(10px);}
 
         input, select, button { width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: none; font-size: 16px; font-family: 'Poppins', sans-serif; text-align: center; outline: none; font-weight: bold; transition: 0.2s;}
         input, select { background: #fff; color: #000; }
@@ -35,23 +35,31 @@
         #p2-life { background: #ff0844; box-shadow: 0 0 10px #ff0844; width: 100%; }
         .name-tag { font-family: 'Orbitron'; font-size: 10px; margin-bottom: 5px; text-transform: uppercase; }
         
-        #nav-hud { position: absolute; top: 70px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); border: 1px solid #00f2fe; padding: 10px 20px; border-radius: 20px; font-family: 'Orbitron'; font-size: 13px; color: #00f2fe; text-align: center; z-index: 20; width: 85%; }
+        /* Progress Bar (The Line) */
+        #progress-container { position: absolute; top: 75px; left: 50%; transform: translateX(-50%); width: 85%; height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; z-index: 20; }
+        #progress-fill { height: 100%; background: #00f2fe; width: 0%; border-radius: 3px; position: relative; transition: width 0.5s linear;}
+        #progress-icon { position: absolute; right: -10px; top: -8px; font-size: 18px; text-shadow: 0 0 5px #fff; }
+
+        #nav-hud { position: absolute; top: 95px; left: 50%; transform: translateX(-50%); font-family: 'Orbitron'; font-size: 12px; color: #ffeb3b; text-align: center; text-shadow: 0 0 5px #ffeb3b; z-index: 20; width: 85%; }
         
-        /* Turn & Warning Alerts */
-        #alert-center { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-family: 'Orbitron'; font-size: 45px; color: #ffeb3b; text-shadow: 0 0 20px #ffeb3b; z-index: 25; text-align: center; display: none; pointer-events: none; }
+        /* Turn Alerts */
+        #alert-center { position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%); font-family: 'Orbitron'; font-size: 40px; color: #ffeb3b; text-shadow: 0 0 20px #ffeb3b; z-index: 25; text-align: center; display: none; pointer-events: none; }
 
         /* Emoji Bar */
         #emoji-bar { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 15px; z-index: 30; }
         .emoji-btn { background: rgba(255,255,255,0.2); border: 1px solid #fff; border-radius: 50%; width: 45px; height: 45px; font-size: 22px; cursor: pointer; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         .floating-emoji { position: absolute; font-size: 40px; animation: floatUp 2s forwards ease-out; z-index: 40; pointer-events: none; }
-        
         @keyframes floatUp { 0% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -150px) scale(1.5); } }
 
-        /* Overlays */
-        #level-overlay, #game-over-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.9); z-index: 50; flex-direction: column; align-items: center; justify-content: center; text-align: center;}
-        #level-title { font-family: 'Orbitron'; font-size: 35px; color: #00f2fe; margin-bottom: 10px; }
-        #level-task { font-size: 16px; color: #ccc; width: 80%; }
+        /* Level Quotes & Transitions */
+        #level-overlay, #game-over-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 50; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow: hidden;}
+        #level-title { font-family: 'Orbitron'; font-size: 35px; color: #00f2fe; margin-bottom: 10px; z-index: 55;}
+        #level-quote { font-size: 16px; color: #ff9a9e; font-style: italic; width: 80%; margin-bottom: 20px; font-family: 'Georgia', serif; z-index: 55;}
+        #level-task { font-size: 14px; color: #ccc; width: 80%; z-index: 55; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px; border: 1px solid #333;}
         
+        .glitter { position: absolute; width: 4px; height: 4px; background: white; border-radius: 50%; box-shadow: 0 0 10px #fff, 0 0 20px #00f2fe; animation: sparkle 1.5s infinite linear; }
+        @keyframes sparkle { 0% { transform: scale(0) translateY(0); opacity: 0; } 50% { transform: scale(1) translateY(-50px); opacity: 1; } 100% { transform: scale(0) translateY(-100px); opacity: 0; } }
+
         /* Final Love Animation */
         #final-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 100; overflow: hidden; flex-direction: column; align-items: center; justify-content: center; }
         .heart-particle { position: absolute; font-size: 25px; animation: zoomOutHeart 3s forwards; }
@@ -68,7 +76,7 @@
         <div class="card">
             <input type="text" id="playerName" placeholder="Enter Your Name" required>
             <select id="playerGender">
-                <option value="boy">I am the Boy (Blue Car)</option>
+                <option value="boy">I am the Boy (Cyan Car)</option>
                 <option value="girl">I am the Girl (Pink Car)</option>
             </select>
             <button id="btnCreateGame" class="btn-primary">Start Journey</button>
@@ -89,7 +97,8 @@
 
     <div id="level-overlay">
         <div id="level-title">LEVEL 1</div>
-        <div id="level-task">You are on separate routes! Swipe to avoid traffic and make turns to meet your partner.</div>
+        <div id="level-quote">"True love is a journey, starting at forever and ending at never."</div>
+        <div id="level-task">TASK: You are on separate roads. Navigate safely to find your partner!</div>
     </div>
 
     <div id="game-over-screen">
@@ -107,6 +116,8 @@
             <div class="life-container"><div class="name-tag" id="name1" style="color:#00f2fe;">P1</div><div class="life-bar" id="p1-life"></div></div>
             <div class="life-container" style="text-align:right;"><div class="name-tag" id="name2" style="color:#ff0844;">P2</div><div class="life-bar" id="p2-life" style="float: right;"></div></div>
         </div>
+        
+        <div id="progress-container"><div id="progress-fill"><div id="progress-icon">🚗</div></div></div>
         <div id="nav-hud">GPS: Calculating Route...</div>
         
         <div id="alert-center">⬅️ SWIPE LEFT!</div>
@@ -148,54 +159,46 @@
             p1Lane: 1, p2Lane: 1, p1Life: 100, p2Life: 100, obstacle: null, turnEvent: null, latestEmoji: null
         };
 
-        // Smooth Rendering Variables (The Secret to "Soft" Movement)
-        let renderP1X = 1; let renderP2X = 1;
-        let roadCurve = 0, targetCurve = 0;
-        let scenery = []; // 3D Buildings/Trees
+        let renderP1X = 1, renderP2X = 1, roadCurve = 0, targetCurve = 0;
+        let sceneryObjects = [], birds = [];
 
         const levels = {
-            1: { bg: ["#000011", "#0a0a2a"], ground: "#111", title: "LEVEL 1: DIFFERENT ROUTES", task: "You are on separate roads. Make the sharp turns correctly to find your partner!", speed: 5 },
-            2: { bg: ["#1a0000", "#3a0000"], ground: "#210", title: "LEVEL 2: CITY ESCAPE", task: "You met! Now dodge the traffic together. Speed slightly increased.", speed: 7 },
-            3: { bg: ["#001a1a", "#003a3a"], ground: "#011", title: "LEVEL 3: NEON CHASERS", task: "More obstacles! Double-tap screen to share 20 Life if partner is low.", speed: 9 },
-            4: { bg: ["#2a002a", "#4a004a"], ground: "#101", title: "LEVEL 4: SYNTHWAVE", task: "Sharp turns + Fast obstacles! Stay focused.", speed: 11 },
-            5: { bg: ["#000", "#111"], ground: "#000", title: "LEVEL 5: GALAXY FINALE", task: "Maximum speed. The final test of your coordination!", speed: 14 }
+            1: { sky: ["#87CEEB", "#f0f8ff"], ground: "#2E8B57", road: "#555", title: "LEVEL 1: THE SEARCH", quote: `"Distance means so little when someone means so much."`, task: "Separate roads. Drive safe, pick up Hearts (❤️), and find your partner!", speed: 4 },
+            2: { sky: ["#FF7F50", "#FF4500"], ground: "#8B4513", road: "#333", title: "LEVEL 2: DUST RIDER", quote: `"Two souls but a single thought, two hearts that beat as one."`, task: "You met! Now dodge the desert traffic together. Speed increased.", speed: 6 },
+            3: { sky: ["#000022", "#00ffff"], ground: "#001122", road: "#111", title: "LEVEL 3: NEON CHASERS", quote: `"In a sea of people, my eyes will always search for you."`, task: "Night city! Double-tap screen to share 20 Life if partner is low.", speed: 8 },
+            4: { sky: ["#2a002a", "#ff00ff"], ground: "#101", road: "#222", title: "LEVEL 4: SYNTHWAVE", quote: `"I look at you and see the rest of my life in front of my eyes."`, task: "Sharp turns + Fast obstacles! Stay focused on the directions.", speed: 10 },
+            5: { sky: ["#000", "#111"], ground: "#050505", road: "#000", title: "LEVEL 5: GALAXY FINALE", quote: `"I love you past the moon and miss you beyond the stars."`, task: "Maximum speed. The final test of your coordination!", speed: 13 }
         };
 
         let isTransitioning = false;
 
-        // --- CONTROLS (Swipe to Steer & Turn) ---
+        // Populate Birds & Scenery
+        for(let i=0; i<10; i++) birds.push({ x: Math.random()*window.innerWidth, y: Math.random()*horizonY, s: 0.5+Math.random() });
+        for(let i=0; i<25; i++) sceneryObjects.push({ side: Math.random() > 0.5 ? 1 : -1, z: Math.random() * 3000, type: Math.random() > 0.5 ? 'tree' : 'house' });
+
+        // --- CONTROLS ---
         let touchX = 0, touchY = 0, lastTap = 0;
         document.addEventListener('touchstart', e => { touchX = e.changedTouches[0].screenX; touchY = e.changedTouches[0].screenY; 
-            let now = new Date().getTime();
-            if (now - lastTap < 300 && gameState.status === 'playing') shareLife();
-            lastTap = now;
+            let now = new Date().getTime(); if (now - lastTap < 300 && gameState.status === 'playing') shareLife(); lastTap = now;
         });
 
         document.addEventListener('touchend', async e => {
             if(gameState.status !== 'playing' || isTransitioning) return;
             let dx = e.changedTouches[0].screenX - touchX;
-            let dy = e.changedTouches[0].screenY - touchY;
             let myLaneKey = playerNum === 1 ? 'p1Lane' : 'p2Lane';
             
             if (Math.abs(dx) > 40) {
-                // If there's an active TURN EVENT, swiping clears it
-                if(gameState.turnEvent && playerNum === 1) { // Host handles turn logic
+                if(gameState.turnEvent && playerNum === 1) { 
                     if((gameState.turnEvent === 'LEFT' && dx < 0) || (gameState.turnEvent === 'RIGHT' && dx > 0)) {
-                        await updateDoc(gameDocRef, { turnEvent: null }); // Successfully turned
-                        showHUDAlert("GOOD TURN!", "#00ff00");
-                        return;
+                        await updateDoc(gameDocRef, { turnEvent: null }); showHUDAlert("GOOD TURN!", "#00ff00"); return;
                     }
                 }
-                // Normal Lane Changing
                 if (dx > 0 && gameState[myLaneKey] < 2) await updateDoc(gameDocRef, { [myLaneKey]: gameState[myLaneKey] + 1 });
                 else if (dx < 0 && gameState[myLaneKey] > 0) await updateDoc(gameDocRef, { [myLaneKey]: gameState[myLaneKey] - 1 });
             }
         });
 
-        // EMOJI SYSTEM
-        window.sendEmoji = async function(emoji) {
-            if(gameState.status === 'playing') await updateDoc(gameDocRef, { latestEmoji: { e: emoji, p: playerNum, id: Date.now() } });
-        }
+        window.sendEmoji = async function(emoji) { if(gameState.status === 'playing') await updateDoc(gameDocRef, { latestEmoji: { e: emoji, p: playerNum, id: Date.now() } }); }
 
         async function shareLife() {
             let myLife = playerNum === 1 ? 'p1Life' : 'p2Life'; let ptLife = playerNum === 1 ? 'p2Life' : 'p1Life';
@@ -203,8 +206,7 @@
         }
 
         function showHUDAlert(text, color) {
-            let alert = document.getElementById('alert-center');
-            alert.innerText = text; alert.style.color = color;
+            let alert = document.getElementById('alert-center'); alert.innerText = text; alert.style.color = color;
             alert.style.display = 'block'; setTimeout(() => alert.style.display = 'none', 1500);
         }
 
@@ -253,31 +255,25 @@
                 if(gameState.status === 'playing') {
                     document.getElementById('p1-life').style.width = Math.max(0, gameState.p1Life) + "%";
                     document.getElementById('p2-life').style.width = Math.max(0, gameState.p2Life) + "%";
+                    document.getElementById('progress-fill').style.width = gameState.progress + "%";
                     
                     if(gameState.level > oldLvl) {
                         if(gameState.level > 5) triggerFinalLoveAnimation();
                         else showLevelOverlay(gameState.level);
                     }
 
-                    // Handle Turns
                     if(gameState.turnEvent) {
-                        targetCurve = gameState.turnEvent === 'LEFT' ? -30 : 30;
+                        targetCurve = gameState.turnEvent === 'LEFT' ? -40 : 40;
                         document.getElementById('alert-center').innerText = `⬅️ SWIPE ${gameState.turnEvent}! ➡️`;
                         document.getElementById('alert-center').style.color = "#ffeb3b";
                         document.getElementById('alert-center').style.display = 'block';
-                    } else {
-                        targetCurve = 0; document.getElementById('alert-center').style.display = 'none';
-                    }
+                    } else { targetCurve = 0; document.getElementById('alert-center').style.display = 'none'; }
 
-                    // Handle Emojis
                     if(gameState.latestEmoji && gameState.latestEmoji.id !== lastEmojiId) {
                         lastEmojiId = gameState.latestEmoji.id;
-                        let div = document.createElement('div');
-                        div.className = 'floating-emoji'; div.innerText = gameState.latestEmoji.e;
-                        div.style.left = gameState.latestEmoji.p === 1 ? '20%' : '80%';
-                        div.style.top = '60%';
-                        document.getElementById('game-screen').appendChild(div);
-                        setTimeout(() => div.remove(), 2000);
+                        let div = document.createElement('div'); div.className = 'floating-emoji'; div.innerText = gameState.latestEmoji.e;
+                        div.style.left = gameState.latestEmoji.p === 1 ? '20%' : '80%'; div.style.top = '60%';
+                        document.getElementById('game-screen').appendChild(div); setTimeout(() => div.remove(), 2000);
                     }
 
                     if(gameState.p1Life <= 0 || gameState.p2Life <= 0) document.getElementById('game-over-screen').style.display = 'flex';
@@ -285,12 +281,25 @@
             });
         }
 
+        function createGlitter() {
+            let overlay = document.getElementById('level-overlay');
+            for(let i=0; i<30; i++) {
+                let glit = document.createElement('div'); glit.className = 'glitter';
+                glit.style.left = Math.random() * 100 + 'vw'; glit.style.top = Math.random() * 100 + 'vh';
+                glit.style.animationDelay = Math.random() * 2 + 's';
+                overlay.appendChild(glit);
+                setTimeout(() => glit.remove(), 5000);
+            }
+        }
+
         function showLevelOverlay(lvl) {
             isTransitioning = true;
             document.getElementById('level-title').innerText = levels[lvl].title;
-            document.getElementById('level-task').innerText = levels[lvl].task;
+            document.getElementById('level-quote').innerText = levels[lvl].quote;
+            document.getElementById('level-task').innerText = "TASK: " + levels[lvl].task;
             document.getElementById('level-overlay').style.display = 'flex';
-            setTimeout(() => { document.getElementById('level-overlay').style.display = 'none'; isTransitioning = false; }, 4000);
+            createGlitter();
+            setTimeout(() => { document.getElementById('level-overlay').style.display = 'none'; isTransitioning = false; }, 5000);
         }
 
         function triggerFinalLoveAnimation() {
@@ -307,14 +316,13 @@
             }
         }
 
-        // --- HOST PROGRESS ENGINE ---
+        // --- HOST ENGINE ---
         let lastTurnProg = 0; let lastObsProg = 0;
         function hostEngine() {
             setInterval(async () => {
                 if(gameState.status !== 'playing' || isTransitioning || gameState.level > 5 || gameState.p1Life <= 0 || gameState.p2Life <= 0) return;
 
-                // Slower progression, progressive speed
-                let newProg = gameState.progress + 1; // 1% per second. A level takes ~100 seconds! Plenty of time.
+                let newProg = gameState.progress + 1; // 1% per tick
 
                 if(newProg >= 100) {
                     await updateDoc(gameDocRef, { level: gameState.level + 1, progress: 0, obstacle: null, turnEvent: null });
@@ -322,27 +330,22 @@
                 } else {
                     await updateDoc(gameDocRef, { progress: newProg });
                     
-                    // Trigger Turns (Level 1, 3, 4)
-                    if([1, 3, 4].includes(gameState.level) && newProg - lastTurnProg > 15 && !gameState.turnEvent) {
+                    if([1, 3, 4].includes(gameState.level) && newProg - lastTurnProg > 20 && !gameState.turnEvent) {
                         lastTurnProg = newProg;
                         await updateDoc(gameDocRef, { turnEvent: Math.random() > 0.5 ? 'LEFT' : 'RIGHT' });
-                        
-                        // Fail condition for turn: if not cleared in 3 seconds
                         setTimeout(async () => {
                             let snap = await getDoc(gameDocRef);
-                            if(snap.data().turnEvent) { // User missed the swipe!
-                                updateDoc(gameDocRef, { p1Life: snap.data().p1Life - 20, p2Life: snap.data().p2Life - 20, turnEvent: null });
-                            }
+                            if(snap.data().turnEvent) updateDoc(gameDocRef, { p1Life: snap.data().p1Life - 20, p2Life: snap.data().p2Life - 20, turnEvent: null });
                         }, 3000);
                     }
 
-                    // Spawn Obstacles (Distance between them increases making it fair)
-                    if(!gameState.obstacle && newProg - lastObsProg > 5 && !gameState.turnEvent) {
+                    if(!gameState.obstacle && newProg - lastObsProg > 6 && !gameState.turnEvent) {
                         lastObsProg = newProg;
-                        await updateDoc(gameDocRef, { obstacle: { lane: Math.floor(Math.random() * 3), z: 3000, id: Date.now() } });
+                        let type = Math.random() > 0.7 ? 'health' : (gameState.level % 2 === 0 ? 'monster' : 'police');
+                        await updateDoc(gameDocRef, { obstacle: { lane: Math.floor(Math.random() * 3), type: type, z: 3000, id: Date.now() } });
                     }
                 }
-            }, 1000);
+            }, 800); // Progress speed
         }
 
         // --- 3D CANVAS RENDERER ---
@@ -350,7 +353,7 @@
         
         function drawCar(x, y, scale, color) {
             ctx.save(); ctx.translate(x, y); ctx.scale(scale, scale);
-            ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.beginPath(); ctx.ellipse(0, 25, 50, 10, 0, 0, Math.PI*2); ctx.fill(); // Soft Shadow
+            ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.beginPath(); ctx.ellipse(0, 25, 50, 10, 0, 0, Math.PI*2); ctx.fill();
             ctx.fillStyle = "#111"; ctx.fillRect(-40, 5, 15, 20); ctx.fillRect(25, 5, 15, 20);
             ctx.fillStyle = color; ctx.beginPath(); ctx.roundRect(-35, -5, 70, 25, 8); ctx.fill();
             ctx.fillStyle = "#222"; ctx.beginPath(); ctx.moveTo(-25, -5); ctx.lineTo(-15, -25); ctx.lineTo(15, -25); ctx.lineTo(25, -5); ctx.fill();
@@ -358,15 +361,26 @@
             ctx.restore();
         }
 
-        function drawObstacle(x, y, scale) {
+        function drawObject(x, y, scale, type) {
             ctx.save(); ctx.translate(x, y); ctx.scale(scale, scale);
-            ctx.fillStyle = "#ff3300"; ctx.fillRect(-30, -20, 60, 40); // Simple block
-            ctx.fillStyle = "#ffaa00"; ctx.fillRect(-20, -10, 40, 20); 
+            if(type === 'police') {
+                ctx.fillStyle = "#000044"; ctx.fillRect(-40, -20, 80, 40); 
+                ctx.fillStyle = (Math.floor(Date.now()/100)%2 === 0) ? "#ff0000" : "#0000ff";
+                ctx.shadowBlur = 20; ctx.shadowColor = ctx.fillStyle; ctx.fillRect(-15, -35, 30, 15);
+            } else if(type === 'monster') {
+                ctx.fillStyle = "#00ff00"; ctx.beginPath(); ctx.arc(0, 0, 40, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = "#000"; ctx.beginPath(); ctx.arc(-15, -10, 5, 0, Math.PI*2); ctx.arc(15, -10, 5, 0, Math.PI*2); ctx.fill();
+            } else if (type === 'health') {
+                ctx.font = "80px Arial"; ctx.fillText("❤️", -40, 20);
+            } else if (type === 'tree') {
+                ctx.fillStyle = "#3e2723"; ctx.fillRect(-10, 0, 20, 40);
+                ctx.fillStyle = "#2e7d32"; ctx.beginPath(); ctx.moveTo(0, -60); ctx.lineTo(-40, 10); ctx.lineTo(40, 10); ctx.fill();
+            } else if (type === 'house') {
+                ctx.fillStyle = "#fbc02d"; ctx.fillRect(-40, -40, 80, 80);
+                ctx.fillStyle = "#d32f2f"; ctx.beginPath(); ctx.moveTo(0, -80); ctx.lineTo(-50, -40); ctx.lineTo(50, -40); ctx.fill();
+            }
             ctx.restore();
         }
-
-        // Generate static scenery (Buildings)
-        for(let i=0; i<20; i++) scenery.push({ side: Math.random() > 0.5 ? 1 : -1, z: Math.random() * 3000, h: 100 + Math.random()*200 });
 
         function startGameLoop() {
             if(gameState.level === 1) showLevelOverlay(1);
@@ -376,59 +390,80 @@
                 
                 let lvlData = levels[gameState.level];
                 
-                // BG & Ground
+                // Sky & Birds
                 let grad = ctx.createLinearGradient(0, 0, 0, horizonY);
-                grad.addColorStop(0, lvlData.bg[0]); grad.addColorStop(1, lvlData.bg[1]);
+                grad.addColorStop(0, lvlData.sky[0]); grad.addColorStop(1, lvlData.sky[1]);
                 ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, horizonY);
+                
+                ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.font = "10px Arial";
+                birds.forEach(b => {
+                    b.x += b.s; if(b.x > canvas.width) b.x = -20;
+                    ctx.fillText("v", b.x, b.y + Math.sin(Date.now()*0.005 + b.x)*10);
+                });
+
+                // Ground
                 ctx.fillStyle = lvlData.ground; ctx.fillRect(0, horizonY, canvas.width, canvas.height);
 
                 let speed = lvlData.speed; roadOffset = (roadOffset + speed) % 100;
-                
-                // Smooth road curve transitions
                 roadCurve += (targetCurve - roadCurve) * 0.05;
 
-                // Render Scenery (Buildings passing by)
-                ctx.fillStyle = "rgba(0, 255, 255, 0.2)"; // Neon buildings
-                scenery.forEach(s => {
-                    s.z -= speed * 2; if(s.z < 0) s.z = 3000;
-                    let zScale = 400 / (400 + s.z);
-                    let xOffset = (canvas.width/2) + (s.side * 400 * zScale) + (roadCurve * (s.z*0.01));
-                    let yPos = horizonY + ((canvas.height - horizonY) * zScale);
-                    ctx.fillRect(xOffset - (30*zScale), yPos - (s.h*zScale), 60*zScale, s.h*zScale);
-                });
-
-                // Draw Curving Road
-                let dx = 0; ctx.fillStyle = "#222";
-                for(let i=0; i<canvas.height - horizonY; i+=5) {
-                    let y = canvas.height - i; let z = (canvas.height - horizonY) / (y - horizonY);
+                // Solid pseudo-3D Road with Curves
+                let dx = 0; 
+                for(let y = canvas.height; y > horizonY; y -= 4) {
+                    let z = (canvas.height - horizonY) / (y - horizonY);
                     dx += roadCurve * 0.05 * z;
-                    let roadW = 500 / z; let projX = (canvas.width / 2) + dx;
-                    let color = (i + roadOffset) % 100 < 50 ? "#333" : "#222";
-                    ctx.fillStyle = color; ctx.fillRect(projX - roadW, y, roadW * 2, 5);
-                    if(color === "#222") { ctx.fillStyle = "#fff"; ctx.fillRect(projX - roadW/3, y, 5, 5); ctx.fillRect(projX + roadW/3, y, 5, 5); }
+                    let roadW = 800 / z; let projX = (canvas.width / 2) + dx;
+                    
+                    let isStripe = (y + roadOffset) % 40 > 20;
+                    
+                    // Grass side effect
+                    ctx.fillStyle = isStripe ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.05)";
+                    ctx.fillRect(0, y, canvas.width, 4);
+
+                    // Road Surface
+                    ctx.fillStyle = isStripe ? lvlData.road : "#444";
+                    ctx.fillRect(projX - roadW/2, y, roadW, 4);
+                    
+                    // Lane Dividers
+                    if(isStripe) {
+                        ctx.fillStyle = "#fff";
+                        ctx.fillRect(projX - roadW/6, y, 4, 4); ctx.fillRect(projX + roadW/6, y, 4, 4);
+                    }
                 }
 
-                // HUD updates
+                // Render Scenery
+                sceneryObjects.forEach(s => {
+                    s.z -= speed * 3; if(s.z < 0) s.z = 3000;
+                    let zScale = 400 / (400 + s.z);
+                    let cOffset = (roadCurve * 0.05) * s.z;
+                    let xOffset = (canvas.width/2) + (s.side * 500 * zScale) + cOffset;
+                    let yPos = horizonY + ((canvas.height - horizonY) * zScale);
+                    drawObject(xOffset, yPos, zScale, s.type);
+                });
+
                 let navText = document.getElementById('nav-hud');
-                if(gameState.level === 1) navText.innerText = `GPS: Route ${gameState.progress}% to Partner. Follow directions!`;
-                else navText.innerText = `GPS: Driving together! Dodge traffic!`;
+                if(gameState.level === 1) navText.innerText = `GPS: Finding Partner...`;
+                else navText.innerText = `GPS: Driving together!`;
 
                 // Obstacle Logic
                 if(gameState.obstacle) {
                     obsZ -= (speed * 4);
                     let zScale = 400 / (400 + obsZ);
-                    let laneOffset = (gameState.obstacle.lane - 1) * 200;
+                    let laneOffset = (gameState.obstacle.lane - 1) * 200; // -200, 0, 200
                     let curveOff = (roadCurve * 0.05) * obsZ;
                     let oX = (canvas.width/2) + (laneOffset * zScale) + curveOff;
                     let oY = horizonY + ((canvas.height - horizonY) * zScale);
 
                     if(obsZ > 20) {
-                        drawObstacle(oX, oY, zScale * 2);
+                        drawObject(oX, oY, zScale * 1.5, gameState.obstacle.type);
                     } else if(obsZ > -50) {
-                        // Soft Collision (Hitbox is small now)
                         let myLane = playerNum === 1 ? gameState.p1Lane : gameState.p2Lane;
                         if(myLane === gameState.obstacle.lane && playerNum === 1) {
-                            updateDoc(gameDocRef, { p1Life: gameState.p1Life - 15, p2Life: gameState.p2Life - 15, obstacle: null });
+                            if(gameState.obstacle.type === 'health') {
+                                updateDoc(gameDocRef, { p1Life: Math.min(100, gameState.p1Life + 10), p2Life: Math.min(100, gameState.p2Life + 10), obstacle: null });
+                            } else {
+                                updateDoc(gameDocRef, { p1Life: gameState.p1Life - 15, p2Life: gameState.p2Life - 15, obstacle: null });
+                            }
                             obsZ = 3000;
                         }
                     } else {
@@ -436,29 +471,17 @@
                     }
                 }
 
-                // --- Smooth Car Rendering ---
-                // Target lanes
-                let targetP1X = (gameState.p1Lane - 1) * 200;
-                let targetP2X = (gameState.p2Lane - 1) * 200;
-                
-                // Interpolate (Glide effect)
-                renderP1X += (targetP1X - renderP1X) * 0.15;
-                renderP2X += (targetP2X - renderP2X) * 0.15;
-
+                // Render Cars
+                let targetP1X = (gameState.p1Lane - 1) * 200; let targetP2X = (gameState.p2Lane - 1) * 200;
+                renderP1X += (targetP1X - renderP1X) * 0.15; renderP2X += (targetP2X - renderP2X) * 0.15;
                 let carY = canvas.height - 100;
-                let p1Proj = { x: (canvas.width/2) + renderP1X, y: carY };
-                let p2Proj = { x: (canvas.width/2) + renderP2X, y: carY };
+                let p1Proj = { x: (canvas.width/2) + renderP1X, y: carY }; let p2Proj = { x: (canvas.width/2) + renderP2X, y: carY };
+                let p1Color = gameState.p1Gender === 'boy' ? '#00f2fe' : '#ff0844'; let p2Color = gameState.p2Gender === 'boy' ? '#00f2fe' : '#ff0844';
 
-                let p1Color = gameState.p1Gender === 'boy' ? '#00f2fe' : '#ff0844';
-                let p2Color = gameState.p2Gender === 'boy' ? '#00f2fe' : '#ff0844';
-
-                // Separation Logic (Level 1)
                 if(gameState.level === 1) {
-                    if(playerNum === 1) drawCar(p1Proj.x, p1Proj.y, 1.2, p1Color);
-                    else drawCar(p2Proj.x, p2Proj.y, 1.2, p2Color);
+                    if(playerNum === 1) drawCar(p1Proj.x, p1Proj.y, 1.2, p1Color); else drawCar(p2Proj.x, p2Proj.y, 1.2, p2Color);
                 } else {
-                    drawCar(p1Proj.x, p1Proj.y, 1.2, p1Color);
-                    drawCar(p2Proj.x, p2Proj.y, 1.2, p2Color);
+                    drawCar(p1Proj.x, p1Proj.y, 1.2, p1Color); drawCar(p2Proj.x, p2Proj.y, 1.2, p2Color);
                 }
 
                 requestAnimationFrame(render);
