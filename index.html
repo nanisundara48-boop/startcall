@@ -3,88 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Find You & Run 💖</title>
+    <title>Find You & Run - The Journey 💖</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Orbitron:wght@700;900&family=Poppins:wght@500;700&display=swap');
         
         * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
-        body { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; background: #050505; color: white; display: flex; flex-direction: column; height: 100vh; width: 100vw; overflow: hidden; touch-action: none; }
+        body { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; background: #000; color: white; display: flex; flex-direction: column; height: 100vh; width: 100vw; overflow: hidden; touch-action: none; }
         
-        .screen { display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle, #1a1a2e, #0f0f1a); z-index: 10; }
+        /* Realistic Backgrounds */
+        .bg-road { background: url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=1080&auto=format&fit=crop') center/cover; }
+        .bg-soil { background: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1080&auto=format&fit=crop') center/cover; }
+        .bg-sand { background: url('https://images.unsplash.com/photo-1509316785289-025f5b846b35?q=80&w=1080&auto=format&fit=crop') center/cover; }
+        
+        .screen { display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; flex-direction: column; align-items: center; justify-content: center; z-index: 10; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
         .active { display: flex; }
         
-        h1 { font-family: 'Orbitron', sans-serif; font-size: 40px; color: #00f2fe; text-transform: uppercase; text-shadow: 0 0 15px #00f2fe; margin-bottom: 20px; text-align: center;}
+        h1 { font-family: 'Cinzel', serif; font-size: 40px; color: #ff0844; text-transform: uppercase; text-shadow: 0 0 15px #ff0844; margin-bottom: 20px; text-align: center;}
         
-        .card { background: rgba(0, 0, 0, 0.8); padding: 30px; border-radius: 15px; border: 2px solid #4facfe; width: 90%; max-width: 400px; box-shadow: 0 0 25px rgba(79, 172, 254, 0.5); backdrop-filter: blur(10px); text-align: center; }
+        .card { background: rgba(0, 0, 0, 0.85); padding: 30px; border-radius: 15px; border: 2px solid #ff0844; width: 90%; max-width: 400px; box-shadow: 0 0 25px rgba(255, 8, 68, 0.5); text-align: center; }
 
         input, select, button { width: 100%; padding: 15px; margin: 10px 0; border-radius: 8px; border: none; font-size: 16px; font-family: 'Poppins', sans-serif; text-align: center; outline: none; font-weight: bold; }
-        input, select { background: #fff; color: #000; }
+        .btn-primary { background: linear-gradient(90deg, #ff0844, #ffb199); color: #fff; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; }
+        .btn-join { background: transparent; border: 2px solid #ffb199; color: #ffb199; }
         
-        .btn-primary { background: linear-gradient(90deg, #4facfe, #00f2fe); color: #000; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; }
-        .btn-whatsapp { background: linear-gradient(90deg, #1D976C, #93F9B9); color: #000; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; box-shadow: 0 0 15px #1D976C; margin-top: 15px; }
-        .btn-danger { background: linear-gradient(90deg, #ff416c, #ff4b2b); color: white; margin-top: 20px; }
+        /* HUD & UI */
+        #game-screen { background: #000; z-index: 5; transition: background 1s ease; }
+        canvas { display: block; width: 100vw; height: 100vh; position: absolute; z-index: 1; }
         
-        /* Game Area & HUD */
-        #game-screen { background: #000; z-index: 5; }
-        canvas { display: block; width: 100vw; height: 100vh; }
-        
-        #hud { position: absolute; top: 15px; left: 15px; right: 15px; display: flex; justify-content: space-between; z-index: 20; pointer-events: none; }
-        .life-container { width: 40%; background: rgba(0,0,0,0.7); border: 2px solid #fff; border-radius: 8px; padding: 5px; }
+        #hud { position: absolute; top: 15px; left: 15px; right: 15px; display: flex; justify-content: space-between; align-items: flex-start; z-index: 20; pointer-events: none; }
+        .life-container { width: 35%; background: rgba(0,0,0,0.8); border: 2px solid #fff; border-radius: 8px; padding: 5px; position: relative; }
         .life-bar { height: 12px; border-radius: 4px; transition: width 0.3s; }
         #p1-life { background: #00f2fe; box-shadow: 0 0 10px #00f2fe; width: 100%; }
         #p2-life { background: #ff0844; box-shadow: 0 0 10px #ff0844; width: 100%; }
-        .name-tag { font-family: 'Orbitron'; font-size: 11px; margin-bottom: 5px; text-transform: uppercase; }
+        .name-tag { font-family: 'Orbitron'; font-size: 12px; margin-bottom: 5px; text-transform: uppercase; }
 
-        /* Route Map */
-        #route-map { position: absolute; top: 70px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; z-index: 20; background: rgba(0,0,0,0.6); padding: 5px 15px; border-radius: 20px; border: 1px solid #4facfe; }
-        .map-dot { width: 12px; height: 12px; border-radius: 50%; background: #333; border: 1px solid #fff; }
-        .map-dot.active { background: #00f2fe; box-shadow: 0 0 10px #00f2fe; }
-
-        #instruction-banner { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.85); color: #fff; padding: 10px 20px; border-radius: 20px; font-family: 'Poppins'; font-size: 13px; text-align: center; border: 1px solid #fff; z-index: 20; width: 80%; }
+        /* Game Progress & Compass */
+        #progress-bar-container { position: absolute; top: 60px; left: 50%; transform: translateX(-50%); width: 60%; height: 6px; background: rgba(255,255,255,0.2); border-radius: 10px; z-index: 20; }
+        #progress-fill { height: 100%; width: 0%; background: #00f2fe; border-radius: 10px; transition: width 0.5s; box-shadow: 0 0 10px #00f2fe; }
         
-        /* Overlays */
-        #level-overlay { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.9); z-index: 50; flex-direction: column; align-items: center; justify-content: center; }
-        #level-title { font-family: 'Orbitron'; font-size: 40px; color: #00f2fe; text-shadow: 0 0 20px #00f2fe; margin-bottom: 10px; }
-        #level-task { font-size: 18px; color: #fff; text-align: center; width: 80%; }
+        #compass { position: absolute; top: 80px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); padding: 8px 20px; border-radius: 20px; border: 1px solid #ffb199; color: #ffb199; font-family: 'Orbitron'; font-size: 14px; z-index: 20; display: none; }
 
-        #game-over-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.9); z-index: 60; flex-direction: column; align-items: center; justify-content: center; }
+        #instruction-banner { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.85); color: #fff; padding: 10px 20px; border-radius: 20px; font-family: 'Poppins'; font-size: 12px; text-align: center; border: 1px solid #fff; z-index: 20; width: 85%; box-shadow: 0 0 15px rgba(255,255,255,0.2); }
+
+        /* Cinematic Overlays */
+        #level-overlay, #game-over-screen, #cinematic-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 50; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+        
+        #level-title { font-family: 'Cinzel'; font-size: 35px; color: #ffb199; margin-bottom: 15px; }
+        #level-msg { font-size: 16px; color: #ddd; font-style: italic; }
+
+        /* Final True Love Animation */
+        .hearts-bg { position: absolute; width: 100%; height: 100%; top: 0; left: 0; overflow: hidden; z-index: 0; }
+        .heart-particle { position: absolute; color: #ff0844; font-size: 20px; animation: zoomOutOut 3s infinite ease-in; opacity: 0; }
+        
+        @keyframes zoomOutOut {
+            0% { transform: scale(0.1) translateY(0); opacity: 1; }
+            100% { transform: scale(5) translateY(-100px); opacity: 0; }
+        }
+
+        .true-love-text { font-family: 'Cinzel', serif; font-size: 45px; color: #ff0844; text-shadow: 0 0 20px #ff0844, 0 0 40px #ffb199; z-index: 1; animation: pulse 2s infinite; }
+        .partner-names { font-family: 'Orbitron'; font-size: 25px; color: #fff; margin-top: 20px; z-index: 1; text-shadow: 0 0 10px #00f2fe; }
+        
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
     </style>
 </head>
-<body>
+<body class="bg-road">
 
     <div id="home-screen" class="screen active">
-        <h1>Find You</h1>
+        <h1>The Journey</h1>
         <div class="card">
             <input type="text" id="playerName" placeholder="Enter Your Name" required>
             <select id="playerGender">
                 <option value="boy">I am the Boy</option>
                 <option value="girl">I am the Girl</option>
             </select>
-            <button id="btnCreateGame" class="btn-primary">Host Game</button>
+            <button id="btnCreateGame" class="btn-primary">Start Journey</button>
             <div style="margin: 15px 0; color: #aaa;">OR</div>
-            <input type="text" id="joinCode" placeholder="Enter Room Code" style="text-transform: uppercase;">
-            <button id="btnJoinGame" class="btn-primary" style="background: transparent; border: 2px solid #00f2fe; color: #00f2fe;">Join Game</button>
+            <input type="text" id="joinCode" placeholder="Enter Room Code">
+            <button id="btnJoinGame" class="btn-join">Join Partner</button>
         </div>
     </div>
 
     <div id="lobby-screen" class="screen">
-        <h2 style="color: #fff; font-family: 'Orbitron';">Waiting for Partner</h2>
+        <h2 style="color: #fff; font-family: 'Orbitron';">Searching for Destiny...</h2>
         <div class="card">
-            <p style="color: #aaa; margin: 0;">Room Code:</p>
-            <h1 id="displayCode" style="font-size: 45px; color: #00f2fe; margin: 10px 0;">XXXXX</h1>
-            <button id="btnShare" class="btn-whatsapp">📱 Invite via WhatsApp</button>
+            <p style="color: #aaa; margin: 0;">Your Fate Code:</p>
+            <h1 id="displayCode" style="font-size: 45px; color: #ff0844; margin: 10px 0;">XXXXX</h1>
+            <button id="btnShare" class="btn-primary" style="background: #25D366;">📱 Share via WhatsApp</button>
         </div>
     </div>
 
     <div id="level-overlay">
-        <div id="level-title">LEVEL 1</div>
-        <div id="level-task">Find your partner! Survive your route and meet in the center.</div>
+        <div id="level-title">STAGE 1</div>
+        <div id="level-msg"></div>
+    </div>
+
+    <div id="cinematic-screen">
+        <div class="hearts-bg" id="heart-container"></div>
+        <div class="true-love-text">TRUE LOVE<br>NEVER ENDS</div>
+        <div class="partner-names" id="final-names">NANI & PARTNER</div>
     </div>
 
     <div id="game-over-screen">
-        <h1 style="color: #ff416c; text-shadow: 0 0 20px #ff416c;">GAME OVER</h1>
-        <p style="color: #fff; font-size: 18px;">You ran out of life!</p>
-        <button id="btnRestart" class="btn-danger" style="width: 200px;">Restart Journey</button>
+        <h1 style="color: #ff416c;">HEARTBROKEN</h1>
+        <p style="color: #fff;">You couldn't survive the distance.</p>
+        <button id="btnRestart" class="btn-primary">Try Again</button>
     </div>
 
     <div id="game-screen" class="screen">
@@ -99,161 +121,108 @@
             </div>
         </div>
         
-        <div id="route-map">
-            <div class="map-dot" id="dot1"></div><div class="map-dot" id="dot2"></div>
-            <div class="map-dot" id="dot3"></div><div class="map-dot" id="dot4"></div><div class="map-dot" id="dot5"></div>
-        </div>
-
-        <div id="instruction-banner">Swipe Left/Right/Up.</div>
+        <div id="progress-bar-container"><div id="progress-fill"></div></div>
+        <div id="compass">Follow the signs...</div>
+        
+        <div id="instruction-banner">Swipe L/R to Turn. Swipe UP to Jump.<br><span style="color:#ffb199">Double Tap screen to share 20% Health!</span></div>
         <canvas id="gameCanvas"></canvas>
     </div>
 
-        <script type="module">
+    <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, doc, setDoc, onSnapshot, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCZmqyLmyWesuoj6djTbyfrOJ1v7_FCWcQ",
             authDomain: "game-bf78a.firebaseapp.com",
-            projectId: "game-bf78a",
-            storageBucket: "game-bf78a.firebasestorage.app",
-            messagingSenderId: "860717231489",
-            appId: "1:860717231489:web:f53331a96570be04cacc80"
+            projectId: "game-bf78a"
         };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // --- FULL SCREEN MAGIC ---
-        function enterFullScreen() {
-            let elem = document.documentElement;
-            if (elem.requestFullscreen) elem.requestFullscreen().catch(e => {});
-            else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+        // UI & Audio
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext();
+        function playTone(freq, type, dur) {
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+            let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+            osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(); gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
+            setTimeout(() => osc.stop(), dur * 1000);
         }
 
-        // --- UI LOGIC (Idhi miss ayyindi mundhu) ---
         function switchScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
         }
 
-        // --- NATURAL SOUND ENGINE ---
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        const audioCtx = new AudioContext();
-        let bgNoiseNode;
-
-        function startAmbientSound() {
-            if(audioCtx.state === 'suspended') audioCtx.resume();
-            if(bgNoiseNode) return;
-            const bufferSize = audioCtx.sampleRate * 2; 
-            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-            const data = buffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-            
-            bgNoiseNode = audioCtx.createBufferSource();
-            bgNoiseNode.buffer = buffer; bgNoiseNode.loop = true;
-            
-            const filter = audioCtx.createBiquadFilter();
-            filter.type = 'lowpass'; filter.frequency.value = 400; 
-            
-            const gainNode = audioCtx.createGain(); gainNode.gain.value = 0.5;
-            
-            bgNoiseNode.connect(filter); filter.connect(gainNode); gainNode.connect(audioCtx.destination);
-            bgNoiseNode.start();
-        }
-
-        function playSFX(type) {
-            const osc = audioCtx.createOscillator(); const gainNode = audioCtx.createGain();
-            osc.connect(gainNode); gainNode.connect(audioCtx.destination);
-            if(type === 'jump') {
-                osc.type = 'sine'; osc.frequency.setValueAtTime(400, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.2);
-                gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.2);
-            } else if(type === 'hit') {
-                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(100, audioCtx.currentTime);
-                gainNode.gain.setValueAtTime(1, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.4);
-            }
-        }
-
-        // --- GITHUB IMAGE INTEGRATION ---
-        const imgBoy = new Image(); imgBoy.src = '103503-removebg-preview.png'; 
-        const imgGirl = new Image(); imgGirl.src = '103511-removebg-preview.png'; 
-        const imgMonster = new Image(); imgMonster.src = '103516-removebg-preview.png'; 
-        const imgJeep = new Image(); imgJeep.src = 'Police-Car-PNG-Photo.png'; 
-
-        // --- GAME STATE ---
-        let gameId = "", playerNum = 0, gameDocRef = null;
+        // Assets (using emojis/drawings fallback if images fail for speed)
         const canvas = document.getElementById('gameCanvas'); const ctx = canvas.getContext('2d');
         let horizonY = 0;
-        
-        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; horizonY = canvas.height * 0.4; }
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; horizonY = canvas.height * 0.55; }
         window.addEventListener('resize', resizeCanvas); resizeCanvas();
 
+        let gameId = "", playerNum = 0, gameDocRef = null;
         let gameState = { 
-            status: 'waiting', level: 1, progress: 0, p1Name: "", p1Gender: "", p2Name: "", p2Gender: "",
-            p1Lane: 0, p2Lane: 2, p1Jump: false, p2Jump: false, p1Life: 100, p2Life: 100, obstacle: null
+            status: 'waiting', level: 1, progress: 0, 
+            p1Name: "", p1Gender: "", p2Name: "", p2Gender: "",
+            p1Lane: 0, p2Lane: 2, p1Jump: false, p2Jump: false, 
+            p1Life: 100, p2Life: 100, items: [] 
         };
 
-        const levelData = {
-            1: { title: "LEVEL 1: THE SEARCH", task: "You are separated! Dodge obstacles on your route. Meet in the center to advance." },
-            2: { title: "LEVEL 2: MONSTER CHASE", task: "You found each other! Now dodge the Monsters together." },
-            3: { title: "LEVEL 3: POLICE BARRICADE", task: "Police Jeeps are blocking the road! Jump or change lanes quickly." },
-            4: { title: "LEVEL 4: NARROW ESCAPE", task: "Speed increased! Share life if your partner gets hit (Double Tap)." },
-            5: { title: "LEVEL 5: TRUE LOVE RUN", task: "Maximum speed! Survive this to win the game." }
+        const stageData = {
+            1: { bg: 'bg-road', msg: "You are separated. Survive the traffic and follow the compass.", road: '#333' },
+            2: { bg: 'bg-soil', msg: "Congrats! You are able to next stage of love. Now face the Forest.", road: '#5c4033' },
+            3: { bg: 'bg-sand', msg: "The heat is on! The Desert drains health faster.", road: '#c2b280' },
+            4: { bg: 'bg-road', msg: "Night City. They are coming for you both.", road: '#111' },
+            5: { bg: 'bg-road', msg: "The Final Run. Meet at the center!", road: '#220022' }
         };
 
-        let isLevelTransitioning = false;
-
-        // --- SWIPE CONTROLS ---
+        let isCinematic = false;
+        
+        // Input Controls
         let touchStartX = 0, touchStartY = 0, lastTap = 0;
         document.addEventListener('touchstart', e => {
             touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY;
             let now = new Date().getTime();
-            if (now - lastTap < 300 && gameState.status === 'playing') shareLife();
+            if (now - lastTap < 300 && gameState.status === 'playing') { shareLife(); playTone(600, 'sine', 0.5); }
             lastTap = now;
         });
 
         document.addEventListener('touchend', async e => {
-            if(gameState.status !== 'playing' || isLevelTransitioning) return;
+            if(gameState.status !== 'playing' || isCinematic) return;
             let dx = e.changedTouches[0].screenX - touchStartX; let dy = e.changedTouches[0].screenY - touchStartY;
             let myLaneKey = playerNum === 1 ? 'p1Lane' : 'p2Lane'; let myJumpKey = playerNum === 1 ? 'p1Jump' : 'p2Jump';
 
             if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
-                let minL = gameState.level === 1 && playerNum === 2 ? 1 : 0;
-                let maxL = gameState.level === 1 && playerNum === 1 ? 1 : 2;
-                
-                if (dx > 0 && gameState[myLaneKey] < maxL) await updateDoc(gameDocRef, { [myLaneKey]: gameState[myLaneKey] + 1 });
-                else if (dx < 0 && gameState[myLaneKey] > minL) await updateDoc(gameDocRef, { [myLaneKey]: gameState[myLaneKey] - 1 });
+                if (dx > 0 && gameState[myLaneKey] < 2) await updateDoc(gameDocRef, { [myLaneKey]: gameState[myLaneKey] + 1 });
+                else if (dx < 0 && gameState[myLaneKey] > -2) await updateDoc(gameDocRef, { [myLaneKey]: gameState[myLaneKey] - 1 });
             } else if (Math.abs(dy) > Math.abs(dx) && dy < -40) {
                 if(!gameState[myJumpKey]) {
-                    playSFX('jump'); await updateDoc(gameDocRef, { [myJumpKey]: true });
+                    playTone(400, 'square', 0.3); await updateDoc(gameDocRef, { [myJumpKey]: true });
                     setTimeout(async () => await updateDoc(gameDocRef, { [myJumpKey]: false }), 800);
                 }
             }
         });
 
         async function shareLife() {
-            let myLife = playerNum === 1 ? 'p1Life' : 'p2Life';
-            let ptLife = playerNum === 1 ? 'p2Life' : 'p1Life';
+            let myLife = playerNum === 1 ? 'p1Life' : 'p2Life'; let ptLife = playerNum === 1 ? 'p2Life' : 'p1Life';
             if(gameState[myLife] > 20 && gameState[ptLife] < 100) {
                 await updateDoc(gameDocRef, { [myLife]: gameState[myLife] - 20, [ptLife]: Math.min(100, gameState[ptLife] + 20) });
             }
         }
 
-        // --- BUTTONS ---
+        // Setup 
         document.getElementById('btnCreateGame').addEventListener('click', async () => {
-            enterFullScreen(); startAmbientSound();
-            const name = document.getElementById('playerName').value.trim();
-            if(!name) return; playerNum = 1; gameId = Math.random().toString(36).substring(2, 7).toUpperCase();
+            const name = document.getElementById('playerName').value.trim(); if(!name) return;
+            playerNum = 1; gameId = Math.random().toString(36).substring(2, 7).toUpperCase();
             gameDocRef = doc(db, "games", gameId);
             await setDoc(gameDocRef, { ...gameState, p1Name: name, p1Gender: document.getElementById('playerGender').value });
-            document.getElementById('displayCode').innerText = gameId;
-            switchScreen('lobby-screen'); setupListeners();
+            document.getElementById('displayCode').innerText = gameId; switchScreen('lobby-screen'); setupSync();
         });
 
         document.getElementById('btnJoinGame').addEventListener('click', async () => {
-            enterFullScreen(); startAmbientSound();
             const name = document.getElementById('playerName').value.trim();
             gameId = document.getElementById('joinCode').value.trim().toUpperCase();
             if(!name || gameId.length !== 5) return; playerNum = 2;
@@ -261,25 +230,11 @@
             const snap = await getDoc(gameDocRef);
             if(snap.exists()) {
                 await updateDoc(gameDocRef, { p2Name: name, p2Gender: document.getElementById('playerGender').value, status: 'playing' });
-                setupListeners();
+                setupSync();
             }
         });
 
-        document.getElementById('btnShare').addEventListener('click', () => {
-            const url = window.location.origin + window.location.pathname + '?game=' + gameId;
-            const text = `I'm waiting for you! Enter Room Code: *${gameId}* or click here to join: ${url}`;
-            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
-        });
-
-        document.getElementById('btnRestart').addEventListener('click', async () => {
-            document.getElementById('game-over-screen').style.display = 'none';
-            if(playerNum === 1) {
-                await updateDoc(gameDocRef, { level: 1, progress: 0, p1Life: 100, p2Life: 100, status: 'playing', obstacle: null, p1Lane: 0, p2Lane: 2 });
-            }
-        });
-
-        // --- SYNC ENGINE ---
-        function setupListeners() {
+        function setupSync() {
             onSnapshot(gameDocRef, (docSnap) => {
                 if(!docSnap.exists()) return;
                 let oldLevel = gameState.level;
@@ -288,156 +243,170 @@
                 if(gameState.status === 'playing' && !document.getElementById('game-screen').classList.contains('active')) {
                     switchScreen('game-screen');
                     document.getElementById('name1').innerText = gameState.p1Name; document.getElementById('name2').innerText = gameState.p2Name;
-                    startGameLoop(); if(playerNum === 1) hostEngine();
+                    if(playerNum === 1) startHostLoop(); startGameLoop();
                 }
 
                 if(gameState.status === 'playing') {
                     document.getElementById('p1-life').style.width = gameState.p1Life + "%";
                     document.getElementById('p2-life').style.width = gameState.p2Life + "%";
-                    
-                    for(let i=1; i<=5; i++) {
-                        let dot = document.getElementById('dot'+i);
-                        if(i <= gameState.level) dot.classList.add('active'); else dot.classList.remove('active');
+                    document.getElementById('progress-fill').style.width = gameState.progress + "%";
+
+                    // Compass Logic
+                    let myL = playerNum === 1 ? gameState.p1Lane : gameState.p2Lane;
+                    let ptL = playerNum === 1 ? gameState.p2Lane : gameState.p1Lane;
+                    let comp = document.getElementById('compass');
+                    if(gameState.progress < 85) {
+                        comp.style.display = 'block';
+                        if(myL < ptL) comp.innerText = "Partner is to your RIGHT 👉";
+                        else if(myL > ptL) comp.innerText = "👈 Partner is to your LEFT";
+                        else comp.innerText = "✨ You are on the same path! ✨";
+                    } else { comp.style.display = 'none'; }
+
+                    if(gameState.level > oldLevel) {
+                        if(gameState.level > 5) showTrueLoveScreen();
+                        else showLevelTransition(gameState.level);
                     }
 
-                    if(gameState.level > oldLevel && gameState.level <= 5) showLevelOverlay(gameState.level);
-
-                    if(gameState.p1Life <= 0 || gameState.p2Life <= 0) {
-                        document.getElementById('game-over-screen').style.display = 'flex';
-                    }
+                    if(gameState.p1Life <= 0 || gameState.p2Life <= 0) { switchScreen('game-over-screen'); }
                 }
             });
         }
 
-        function showLevelOverlay(lvl) {
-            isLevelTransitioning = true;
-            document.getElementById('level-title').innerText = levelData[lvl].title;
-            document.getElementById('level-task').innerText = levelData[lvl].task;
+        function showLevelTransition(lvl) {
+            isCinematic = true;
+            document.body.className = stageData[lvl].bg;
+            document.getElementById('level-title').innerText = "STAGE " + lvl;
+            let msg = lvl > 1 ? "Congrats, you are able to next stage of love.<br><br>" + stageData[lvl].msg : stageData[lvl].msg;
+            document.getElementById('level-msg').innerHTML = msg;
             document.getElementById('level-overlay').style.display = 'flex';
-            setTimeout(() => {
-                document.getElementById('level-overlay').style.display = 'none';
-                isLevelTransitioning = false;
-            }, 3000);
+            setTimeout(() => { document.getElementById('level-overlay').style.display = 'none'; isCinematic = false; }, 4000);
         }
 
-        // --- HOST LOGIC ---
-        function hostEngine() {
-            setInterval(async () => {
-                if(gameState.status !== 'playing' || isLevelTransitioning || gameState.p1Life <= 0 || gameState.p2Life <= 0) return;
+        function showTrueLoveScreen() {
+            isCinematic = true;
+            document.getElementById('final-names').innerText = `${gameState.p1Name} & ${gameState.p2Name}`;
+            let hc = document.getElementById('heart-container'); hc.innerHTML = '';
+            for(let i=0; i<30; i++) {
+                let h = document.createElement('div'); h.className = 'heart-particle'; h.innerHTML = '💖';
+                h.style.left = 50 + (Math.random()*40 - 20) + '%'; h.style.top = 50 + (Math.random()*40 - 20) + '%';
+                h.style.animationDelay = (Math.random() * 2) + 's'; hc.appendChild(h);
+            }
+            switchScreen('cinematic-screen');
+        }
 
-                let spd = 1 + (gameState.level * 0.2);
-                let newProg = gameState.progress + (10 * spd);
+        // Host Logic (Spawn Items & Progress)
+        function startHostLoop() {
+            setInterval(async () => {
+                if(gameState.status !== 'playing' || isCinematic) return;
+                let newProg = gameState.progress + 2;
 
                 if(newProg >= 100) {
-                    if(gameState.level === 1) {
-                        if(gameState.p1Lane === 1 && gameState.p2Lane === 1) {
-                            await updateDoc(gameDocRef, { level: 2, progress: 0, obstacle: null });
-                        }
-                    } else if (gameState.level < 5) {
-                        await updateDoc(gameDocRef, { level: gameState.level + 1, progress: 0, obstacle: null });
-                    }
+                    await updateDoc(gameDocRef, { level: gameState.level + 1, progress: 0, items: [] });
                 } else {
-                    await updateDoc(gameDocRef, { progress: newProg });
+                    let newItems = gameState.items.filter(i => i.z > -100).map(i => ({...i, z: i.z - 300}));
                     
-                    if(!gameState.obstacle) {
-                        let type = gameState.level === 2 ? 'monster' : (gameState.level === 3 ? 'jeep' : (Math.random() > 0.5 ? 'monster' : 'jeep'));
-                        let targetLane = gameState.level === 1 ? (Math.random() > 0.5 ? 0 : 2) : Math.floor(Math.random() * 3);
-                        await updateDoc(gameDocRef, { obstacle: { lane: targetLane, type: type, id: Date.now() } });
+                    if(Math.random() > 0.6 && newItems.length < 2) {
+                        let isHealth = Math.random() > 0.7;
+                        let type = isHealth ? 'health' : (Math.random() > 0.5 ? 'police' : 'monster');
+                        let lane = Math.floor(Math.random() * 5) - 2; // -2 to 2
+                        newItems.push({ id: Date.now(), type, lane, z: 3000 });
                     }
+                    await updateDoc(gameDocRef, { progress: newProg, items: newItems });
                 }
-            }, 1000);
+            }, 500);
         }
 
-        // --- RENDERER ---
-        function project3D(x, y, z) {
-            let scale = 400 / (400 + z);
-            return { x: (x * scale) + (canvas.width / 2), y: (y * scale) + horizonY, scale: scale };
+        // Renderer
+        function project3D(x, y, z, curve) {
+            let scale = 500 / (500 + z);
+            let curveX = x + (curve * Math.pow(z/1000, 2)); // Curved road effect
+            return { x: (curveX * scale) + (canvas.width / 2), y: (y * scale) + horizonY, scale };
         }
 
-        let localObsZ = 2000;
-        let roadOffset = 0, tick = 0;
-
-        function drawEntity(img, x, y, size, z, isJump) {
-            let bobY = isJump ? -100 * (400/(400+z)) : Math.sin(tick * 0.5) * 10 * (400/(400+z)); 
+        let tick = 0, roadOffset = 0;
+        function drawSprite(ctx, type, x, y, size, z, isJump) {
+            let bobY = isJump ? -120 * (500/(500+z)) : 0;
+            let runWobble = !isJump ? Math.sin(tick * 0.4) * 10 * (500/(500+z)) : 0; // Running animation wobble
+            
             ctx.fillStyle = "rgba(0,0,0,0.5)";
             ctx.beginPath(); ctx.ellipse(x, y + size/2, size*0.4, size*0.1, 0, 0, Math.PI*2); ctx.fill();
             
-            try { ctx.drawImage(img, x - size/2, y - size/2 + bobY, size, size); } 
-            catch(e) { ctx.fillStyle = "gray"; ctx.fillRect(x - size/2, y - size/2 + bobY, size, size); }
+            ctx.font = `${size}px Arial`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            let emoji = '🚶';
+            if(type === 'boy') emoji = '🧍‍♂️'; if(type === 'girl') emoji = '🧍‍♀️';
+            if(type === 'police') emoji = '🚓'; if(type === 'monster') emoji = '🧟';
+            if(type === 'health') emoji = '💊';
+            
+            ctx.save();
+            ctx.translate(x + runWobble, y + bobY);
+            if(!isJump && (type === 'boy' || type === 'girl')) ctx.rotate(Math.sin(tick * 0.4) * 0.1); // Torso tilt
+            ctx.fillText(emoji, 0, 0);
+            ctx.restore();
         }
 
         function startGameLoop() {
-            if(gameState.level === 1) showLevelOverlay(1); 
+            if(gameState.level === 1) showLevelTransition(1);
 
             function render() {
-                if(gameState.status !== 'playing' || isLevelTransitioning) {
-                    animationFrameId = requestAnimationFrame(render); return;
-                }
-                tick++;
+                if(gameState.status !== 'playing') return;
+                requestAnimationFrame(render);
+                if(isCinematic) return;
                 
-                let grad = ctx.createLinearGradient(0, 0, 0, horizonY);
-                grad.addColorStop(0, "#050510"); grad.addColorStop(1, "#2a1b40");
-                ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, horizonY);
-                
-                ctx.fillStyle = "#111"; ctx.fillRect(0, horizonY, canvas.width, canvas.height);
+                tick++; roadOffset = (roadOffset + 15) % 200;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                let speed = 8 + (gameState.level * 2);
-                roadOffset = (roadOffset + speed) % 150;
+                let currentStage = stageData[gameState.level] || stageData[5];
+                let curveAmt = Math.sin(tick * 0.01) * 300; // Road bends left/right
 
-                ctx.strokeStyle = "rgba(255,255,255,0.2)"; ctx.lineWidth = 2;
-                for(let z = 2000; z > 0; z -= 150) {
-                    let actualZ = z - roadOffset;
-                    let pL = project3D(-300, 100, actualZ); let pR = project3D(300, 100, actualZ);
-                    ctx.beginPath(); ctx.moveTo(pL.x, pL.y); ctx.lineTo(pR.x, pR.y); ctx.stroke();
-                }
+                // Draw Ground
+                ctx.fillStyle = currentStage.road;
+                ctx.beginPath();
+                let tl = project3D(-1000, 0, 3000, curveAmt); let tr = project3D(1000, 0, 3000, curveAmt);
+                let bl = project3D(-1500, 0, 0, 0); let br = project3D(1500, 0, 0, 0);
+                ctx.moveTo(tl.x, tl.y); ctx.lineTo(tr.x, tr.y); ctx.lineTo(br.x, br.y); ctx.lineTo(bl.x, bl.y); ctx.fill();
 
-                if(gameState.level === 1) {
-                    ctx.fillStyle = "rgba(0, 242, 254, 0.3)";
-                    let wallTop = project3D(0, -100, 2000); let wallBot = project3D(0, 100, 0);
-                    ctx.beginPath(); ctx.moveTo(wallTop.x - 5, wallTop.y); ctx.lineTo(wallTop.x + 5, wallTop.y);
-                    ctx.lineTo(wallBot.x + 20, wallBot.y); ctx.lineTo(wallBot.x - 20, wallBot.y); ctx.fill();
-                }
-
-                if(gameState.obstacle) {
-                    localObsZ -= (speed * 4);
-                    let lX = (gameState.obstacle.lane - 1) * 200;
-                    let obsPos = project3D(lX, 50, localObsZ);
-                    
-                    if(localObsZ > 50) {
-                        let size = 200 * obsPos.scale;
-                        let obsImg = gameState.obstacle.type === 'jeep' ? imgJeep : imgMonster;
-                        drawEntity(obsImg, obsPos.x, obsPos.y, size, localObsZ, false);
-                    } else if (localObsZ > -50) {
-                        let myLane = playerNum === 1 ? gameState.p1Lane : gameState.p2Lane;
-                        let isJump = playerNum === 1 ? gameState.p1Jump : gameState.p2Jump;
-                        if(myLane === gameState.obstacle.lane && !isJump && playerNum === 1) {
-                            playSFX('hit');
-                            updateDoc(gameDocRef, { p1Life: gameState.p1Life - 20, p2Life: gameState.p2Life - 20, obstacle: null });
-                            localObsZ = 2000;
-                        }
-                    } else {
-                        localObsZ = 2000;
-                        if(playerNum === 1) updateDoc(gameDocRef, { obstacle: null });
+                // Draw Lines
+                ctx.strokeStyle = "rgba(255,255,255,0.3)"; ctx.lineWidth = 2;
+                for(let z = 3000; z > 0; z -= 200) {
+                    let aZ = z - roadOffset;
+                    for(let l = -2; l <= 2; l++) {
+                        let pt1 = project3D(l*250, 0, aZ, curveAmt); let pt2 = project3D(l*250, 0, aZ+100, curveAmt);
+                        ctx.beginPath(); ctx.moveTo(pt1.x, pt1.y); ctx.lineTo(pt2.x, pt2.y); ctx.stroke();
                     }
                 }
 
-                let p1X = (gameState.p1Lane - 1) * 200; let p2X = (gameState.p2Lane - 1) * 200;
-                let p1Pos = project3D(p1X, 50, 150); let p2Pos = project3D(p2X, 50, 150);
-                
-                let p1Alpha = (gameState.level === 1 && playerNum === 2 && gameState.p1Lane !== 1) ? 0.3 : 1;
-                let p2Alpha = (gameState.level === 1 && playerNum === 1 && gameState.p2Lane !== 1) ? 0.3 : 1;
+                // Draw Items & Collision
+                let myLane = playerNum === 1 ? gameState.p1Lane : gameState.p2Lane;
+                let myJump = playerNum === 1 ? gameState.p1Jump : gameState.p2Jump;
 
-                ctx.globalAlpha = p1Alpha;
-                drawEntity(gameState.p1Gender === 'boy' ? imgBoy : imgGirl, p1Pos.x, p1Pos.y, 160 * p1Pos.scale, 150, gameState.p1Jump);
-                ctx.globalAlpha = p2Alpha;
-                drawEntity(gameState.p2Gender === 'boy' ? imgBoy : imgGirl, p2Pos.x, p2Pos.y, 160 * p2Pos.scale, 150, gameState.p2Jump);
-                ctx.globalAlpha = 1;
+                gameState.items.forEach(item => {
+                    let p = project3D(item.lane * 250, -50, item.z, curveAmt);
+                    if(item.z > 0) drawSprite(ctx, item.type, p.x, p.y, 150 * p.scale, item.z, false);
+                    
+                    // Collision
+                    if(item.z < 100 && item.z > -100 && myLane === item.lane && !myJump && playerNum === 1) {
+                        if(item.type === 'health') {
+                            playTone(800, 'sine', 0.2);
+                            updateDoc(gameDocRef, { p1Life: Math.min(100, gameState.p1Life + 20), p2Life: Math.min(100, gameState.p2Life + 20) });
+                        } else {
+                            playTone(150, 'sawtooth', 0.4);
+                            updateDoc(gameDocRef, { p1Life: gameState.p1Life - 15, p2Life: gameState.p2Life - 15 });
+                        }
+                        item.z = -500; // hide
+                    }
+                });
 
-                animationFrameId = requestAnimationFrame(render);
+                // Draw Players (Only show partner if progress > 85% or on same lane in final level)
+                let p1p = project3D(gameState.p1Lane * 250, -50, 150, curveAmt);
+                let p2p = project3D(gameState.p2Lane * 250, -50, 150, curveAmt);
+
+                let showPartner = gameState.progress > 85;
+
+                if(playerNum === 1 || showPartner) drawSprite(ctx, gameState.p1Gender, p1p.x, p1p.y, 180 * p1p.scale, 150, gameState.p1Jump);
+                if(playerNum === 2 || showPartner) drawSprite(ctx, gameState.p2Gender, p2p.x, p2p.y, 180 * p2p.scale, 150, gameState.p2Jump);
             }
             render();
         }
-                        
     </script>
 </body>
 </html>
