@@ -3,136 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Find You - Premium Edition 💖</title>
+    <title>Journey to You 💖</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Orbitron:wght@700;900&family=Poppins:wght@400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@500;700&display=swap');
         
-        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; margin: 0; padding: 0; }
-        body { font-family: 'Poppins', sans-serif; background: #000; color: white; display: flex; flex-direction: column; height: 100vh; width: 100vw; overflow: hidden; touch-action: none; }
+        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
+        body { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; background: #000; color: white; display: flex; flex-direction: column; height: 100vh; width: 100vw; overflow: hidden; touch-action: none; }
         
-        /* Premium UI Glassmorphism */
-        .screen { display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; flex-direction: column; align-items: center; justify-content: center; z-index: 10; background: radial-gradient(circle at center, rgba(20,20,30,0.9) 0%, rgba(5,5,5,1) 100%); backdrop-filter: blur(10px); }
+        .screen { display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle, #1a1a2e, #000); z-index: 10; }
         .active { display: flex; }
         
-        h1.title { font-family: 'Cinzel', serif; font-size: 45px; color: #ff0844; text-transform: uppercase; text-shadow: 0 0 25px rgba(255,8,68,0.8); margin-bottom: 30px; letter-spacing: 2px; text-align: center; }
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 38px; color: #ff00ff; text-transform: uppercase; text-shadow: 0 0 15px #ff00ff; text-align: center; margin-bottom: 20px;}
         
-        .card { background: rgba(255, 255, 255, 0.05); padding: 35px; border-radius: 20px; border: 1px solid rgba(255, 8, 68, 0.3); width: 90%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 0 15px rgba(255,8,68,0.1); backdrop-filter: blur(15px); text-align: center; }
+        .card { background: rgba(20, 20, 30, 0.9); padding: 30px; border-radius: 15px; border: 2px solid #00ffff; width: 90%; max-width: 400px; box-shadow: 0 0 20px rgba(0, 255, 255, 0.4); text-align: center; }
 
-        input, select, button { width: 100%; padding: 16px; margin: 12px 0; border-radius: 12px; border: none; font-size: 16px; font-family: 'Poppins', sans-serif; text-align: center; outline: none; font-weight: 600; transition: all 0.3s ease; }
-        input, select { background: rgba(0,0,0,0.5); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
-        input:focus { border-color: #00f2fe; box-shadow: 0 0 15px rgba(0,242,254,0.3); }
+        input, select, button { width: 100%; padding: 15px; margin: 10px 0; border-radius: 8px; border: none; font-size: 16px; font-family: 'Poppins', sans-serif; text-align: center; outline: none; font-weight: bold; }
+        input, select { background: #fff; color: #000; }
         
-        .btn-primary { background: linear-gradient(135deg, #ff0844 0%, #ffb199 100%); color: #fff; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; box-shadow: 0 10px 20px rgba(255,8,68,0.4); }
-        .btn-primary:active { transform: translateY(2px); box-shadow: 0 5px 10px rgba(255,8,68,0.4); }
-        .btn-join { background: transparent; border: 2px solid #00f2fe; color: #00f2fe; box-shadow: 0 10px 20px rgba(0,242,254,0.1); }
+        .btn-primary { background: linear-gradient(90deg, #00ffff, #ff00ff); color: #000; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; }
+        .btn-secondary { background: transparent; border: 2px solid #00ffff; color: #00ffff; }
         
         /* Game HUD */
         #game-screen { background: #000; z-index: 5; }
-        canvas { display: block; width: 100vw; height: 100vh; position: absolute; z-index: 1; }
+        canvas { display: block; width: 100vw; height: 100vh; }
         
-        #hud { position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; z-index: 20; pointer-events: none; }
-        .life-container { width: 38%; background: rgba(0,0,0,0.7); border: 2px solid rgba(255,255,255,0.2); border-radius: 10px; padding: 6px; backdrop-filter: blur(5px); }
-        .life-bar { height: 14px; border-radius: 6px; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        #p1-life { background: linear-gradient(90deg, #00c6ff, #0072ff); box-shadow: 0 0 15px rgba(0,198,255,0.6); width: 100%; }
-        #p2-life { background: linear-gradient(90deg, #ff0844, #ffb199); box-shadow: 0 0 15px rgba(255,8,68,0.6); width: 100%; }
-        .name-tag { font-family: 'Orbitron'; font-size: 13px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
-
-        /* Progress & Navigation */
-        #progress-wrapper { position: absolute; top: 80px; left: 50%; transform: translateX(-50%); width: 70%; z-index: 20; text-align: center; }
-        #progress-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; box-shadow: inset 0 0 5px rgba(0,0,0,0.8); }
-        #progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #00f2fe, #4facfe); border-radius: 10px; transition: width 0.5s linear; box-shadow: 0 0 15px #00f2fe; }
-        #distance-text { font-family: 'Orbitron'; font-size: 12px; color: #aaa; margin-top: 8px; letter-spacing: 1px; }
+        #hud { position: absolute; top: 15px; left: 15px; right: 15px; display: flex; justify-content: space-between; z-index: 20; pointer-events: none; }
+        .life-container { width: 40%; background: rgba(0,0,0,0.7); border: 2px solid #fff; border-radius: 8px; padding: 5px; }
+        .life-bar { height: 12px; border-radius: 4px; transition: width 0.3s; }
+        #p1-life { background: #00ffff; box-shadow: 0 0 10px #00ffff; width: 100%; }
+        #p2-life { background: #ff00ff; box-shadow: 0 0 10px #ff00ff; width: 100%; }
         
-        #compass { display: none; margin-top: 15px; padding: 10px 20px; background: rgba(0,0,0,0.8); border: 1px solid #00f2fe; border-radius: 20px; color: #00f2fe; font-family: 'Poppins'; font-size: 14px; font-weight: 600; box-shadow: 0 0 20px rgba(0,242,254,0.3); animation: pulse-border 2s infinite; }
-
-        @keyframes pulse-border { 0% { box-shadow: 0 0 10px rgba(0,242,254,0.3); } 50% { box-shadow: 0 0 25px rgba(0,242,254,0.8); } 100% { box-shadow: 0 0 10px rgba(0,242,254,0.3); } }
-
-        #controls-hint { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); padding: 12px 25px; border-radius: 25px; font-size: 13px; border: 1px solid rgba(255,255,255,0.2); z-index: 20; text-align: center; width: 85%; max-width: 350px; }
-        .highlight { color: #00f2fe; font-weight: bold; }
-
-        /* Cinematic Overlays */
-        #level-overlay, #game-over-screen, #cinematic-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.9); z-index: 100; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; backdrop-filter: blur(10px); }
+        /* Direction / Nav HUD */
+        #nav-hud { position: absolute; top: 70px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); border: 2px solid #00ffff; padding: 10px 20px; border-radius: 20px; font-family: 'Orbitron'; font-size: 14px; color: #00ffff; text-align: center; text-shadow: 0 0 10px #00ffff; z-index: 20; width: 85%; }
         
-        #level-title { font-family: 'Cinzel'; font-size: 50px; color: #ff0844; text-shadow: 0 0 30px rgba(255,8,68,0.8); margin-bottom: 20px; letter-spacing: 4px; }
-        #level-msg { font-size: 18px; color: #ddd; max-width: 80%; line-height: 1.6; }
+        #instruction-banner { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.8); color: #fff; padding: 10px 20px; border-radius: 20px; font-size: 13px; text-align: center; z-index: 20; width: 80%; }
 
-        /* True Love Cinematic */
-        .heart-particle { position: absolute; color: #ff0844; font-size: 24px; animation: explode 4s cubic-bezier(0.1, 0.8, 0.3, 1) forwards; opacity: 0; text-shadow: 0 0 20px #ff0844; }
+        /* Level Transitions & Game Over */
+        #level-overlay, #game-over-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.9); z-index: 50; flex-direction: column; align-items: center; justify-content: center; text-align: center;}
+        #level-title { font-family: 'Orbitron'; font-size: 35px; color: #00ffff; margin-bottom: 10px; }
+        #level-task { font-size: 16px; color: #fff; width: 80%; }
+
+        /* Final Love Animation */
+        #final-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 100; overflow: hidden; flex-direction: column; align-items: center; justify-content: center; }
+        .heart-particle { position: absolute; font-size: 20px; opacity: 1; animation: zoomOutHeart 3s forwards; }
+        #final-text { font-family: 'Orbitron'; font-size: 30px; color: #fff; text-shadow: 0 0 20px #ff00ff, 0 0 40px #ff00ff; z-index: 110; opacity: 0; animation: fadeInText 3s 2s forwards; text-align: center;}
         
-        @keyframes explode {
-            0% { transform: scale(0.1) translate(0, 0) rotate(0deg); opacity: 1; }
-            50% { opacity: 1; }
-            100% { transform: scale(3) translate(var(--tx), var(--ty)) rotate(var(--rot)); opacity: 0; }
+        @keyframes zoomOutHeart { 
+            0% { transform: scale(0) translate(0,0); opacity: 1; } 
+            100% { transform: scale(15) translate(var(--tx), var(--ty)); opacity: 0; } 
         }
-
-        .true-love-text { font-family: 'Cinzel', serif; font-size: 50px; color: #fff; text-shadow: 0 0 20px #ff0844, 0 0 40px #ff0844, 0 0 60px #ff0844; z-index: 10; animation: heartBeat 1.5s infinite; text-align: center; line-height: 1.2; }
-        .partner-names { font-family: 'Orbitron'; font-size: 28px; color: #00f2fe; margin-top: 30px; z-index: 10; text-shadow: 0 0 15px rgba(0,242,254,0.8); letter-spacing: 2px; }
-        
-        @keyframes heartBeat { 0% { transform: scale(1); } 14% { transform: scale(1.05); } 28% { transform: scale(1); } 42% { transform: scale(1.05); } 70% { transform: scale(1); } }
+        @keyframes fadeInText { to { opacity: 1; } }
     </style>
 </head>
 <body>
 
     <div id="home-screen" class="screen active">
-        <h1 class="title">Find You<br><span style="font-size: 20px; color: #00f2fe; font-family: 'Orbitron';">The Journey</span></h1>
+        <h1>Journey To You</h1>
         <div class="card">
             <input type="text" id="playerName" placeholder="Enter Your Name" required>
             <select id="playerGender">
-                <option value="boy">I am the Boy</option>
-                <option value="girl">I am the Girl</option>
+                <option value="boy">I am the Boy (Blue Car)</option>
+                <option value="girl">I am the Girl (Pink Car)</option>
             </select>
-            <button id="btnCreateGame" class="btn-primary">Host Journey</button>
-            <div style="margin: 20px 0; color: #666; font-size: 14px;">OR JOIN PARTNER</div>
-            <input type="text" id="joinCode" placeholder="Enter 5-Letter Code">
-            <button id="btnJoinGame" class="btn-join">Join Game</button>
+            <button id="btnCreateGame" class="btn-primary">Start Journey</button>
+            <div style="margin: 15px 0; color: #aaa;">OR</div>
+            <input type="text" id="joinCode" placeholder="Enter Room Code" style="text-transform: uppercase;">
+            <button id="btnJoinGame" class="btn-secondary">Join Journey</button>
         </div>
     </div>
 
     <div id="lobby-screen" class="screen">
-        <h2 style="color: #fff; font-family: 'Orbitron'; letter-spacing: 2px;">WAITING FOR DESTINY</h2>
-        <div class="card" style="margin-top: 30px;">
-            <p style="color: #aaa; margin: 0; font-size: 14px;">Share this code with your partner</p>
-            <h1 id="displayCode" style="font-size: 55px; color: #00f2fe; margin: 15px 0; text-shadow: 0 0 20px rgba(0,242,254,0.5);">XXXXX</h1>
-            <button id="btnShare" class="btn-primary" style="background: linear-gradient(135deg, #1D976C, #93F9B9); color: #000; font-weight: 900;">📱 WhatsApp Invite</button>
+        <h2 style="color: #fff; font-family: 'Orbitron';">Locating Partner...</h2>
+        <div class="card">
+            <p style="color: #aaa; margin: 0;">Share Room Code:</p>
+            <h1 id="displayCode" style="font-size: 45px; color: #00ffff; margin: 10px 0;">XXXXX</h1>
         </div>
     </div>
 
     <div id="level-overlay">
         <div id="level-title">LEVEL 1</div>
-        <div id="level-msg"></div>
-    </div>
-
-    <div id="cinematic-screen">
-        <div id="heart-container" style="position: absolute; width: 100%; height: 100%; top:0; left:0; z-index: 1;"></div>
-        <div class="true-love-text">TRUE LOVE<br>NEVER ENDS</div>
-        <div class="partner-names" id="final-names"></div>
+        <div id="level-task">Drive through the dark city. Follow directions to find your partner!</div>
     </div>
 
     <div id="game-over-screen">
-        <h1 style="color: #ff0844; font-family: 'Cinzel'; font-size: 40px;">HEARTBROKEN</h1>
-        <p style="color: #ccc; margin: 20px 0;">Distance and obstacles faded your love.</p>
-        <button id="btnRestart" class="btn-primary" style="width: 250px;">Restart Journey</button>
+        <h1 style="color: #ff0000; font-family: 'Orbitron';">CAR CRASHED</h1>
+        <button id="btnRestart" class="btn-primary" style="width: 200px; margin-top: 20px;">Restart Engine</button>
+    </div>
+
+    <div id="final-screen">
+        <div id="final-text">
+            TRUE LOVE NEVER ENDS<br><br>
+            <span id="finalNames" style="color: #ff00ff; font-size: 24px;">Name 1 & Name 2</span>
+        </div>
     </div>
 
     <div id="game-screen" class="screen">
         <div id="hud">
-            <div class="life-container">
-                <div class="name-tag" id="name1" style="color:#00f2fe;">P1</div>
-                <div class="life-bar" id="p1-life"></div>
-            </div>
-            <div class="life-container" style="text-align: right;">
-                <div class="name-tag" id="name2" style="color:#ff0844;">P2</div>
-                <div class="life-bar" id="p2-life" style="float: right;"></div>
-            </div>
+            <div class="life-container"><div class="life-bar" id="p1-life"></div></div>
+            <div class="life-container"><div class="life-bar" id="p2-life" style="float: right;"></div></div>
         </div>
-        
-        <div id="progress-wrapper">
-            <div id="progress-bar"><div id="progress-fill"></div></div>
-            <div id="distance-text">Distance to Partner: <span id="dist-val" style="color:#fff;">100%</span></div>
-            <div id="compass"></div>
-        </div>
-        
-        <div id="controls-hint">Swipe <span class="highlight">L/R</span> to Turn. Swipe <span class="highlight">UP</span> to Jump.<br><span style="color:#ffb199; font-weight: bold; font-size: 11px; display: block; margin-top: 5px;">Double Tap to transfer 20% Health!</span></div>
+        <div id="nav-hud">GPS: Partner 500m ahead...</div>
+        <div id="instruction-banner">Swipe Left/Right to Steer.</div>
         <canvas id="gameCanvas"></canvas>
     </div>
 
@@ -140,271 +111,196 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, doc, setDoc, onSnapshot, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // IMPORTANT: Replace with your actual Firebase config
         const firebaseConfig = {
             apiKey: "AIzaSyCZmqyLmyWesuoj6djTbyfrOJ1v7_FCWcQ",
             authDomain: "game-bf78a.firebaseapp.com",
-            projectId: "game-bf78a"
+            projectId: "game-bf78a",
+            storageBucket: "game-bf78a.firebasestorage.app",
+            messagingSenderId: "860717231489",
+            appId: "1:860717231489:web:f53331a96570be04cacc80"
         };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // --- AUDIO ENGINE ---
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        const audioCtx = new AudioContext();
-        
-        function playSFX(type) {
-            if(audioCtx.state === 'suspended') audioCtx.resume();
-            let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            
-            if(type === 'jump') {
-                osc.type = 'sine'; osc.frequency.setValueAtTime(300, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.3);
-                gain.gain.setValueAtTime(0.5, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
-            } else if (type === 'hit') {
-                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.8, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.4);
-            } else if (type === 'heal') {
-                osc.type = 'triangle'; osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-                osc.frequency.setValueAtTime(800, audioCtx.currentTime + 0.1);
-                gain.gain.setValueAtTime(0.5, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.4);
-            }
+        // --- FULL SCREEN ---
+        function enterFullScreen() {
+            let elem = document.documentElement;
+            if (elem.requestFullscreen) elem.requestFullscreen().catch(e => {});
         }
 
-        // --- GAME ASSETS & SETUP ---
-        const canvas = document.getElementById('gameCanvas'); 
-        const ctx = canvas.getContext('2d');
-        let width, height, horizon;
-
-        function resize() { 
-            width = canvas.width = window.innerWidth; 
-            height = canvas.height = window.innerHeight; 
-            horizon = height * 0.55; 
-        }
-        window.addEventListener('resize', resize); resize();
-
-        let gameId = "", playerNum = 0, gameDocRef = null, isCinematic = false;
-        
-        let gameState = { 
-            status: 'waiting', level: 1, progress: 0, 
-            p1Name: "", p1Gender: "", p2Name: "", p2Gender: "",
-            p1Lane: 0, p2Lane: 2, p1Jump: false, p2Jump: false, 
-            p1Life: 100, p2Life: 100, items: [] 
-        };
-
-        const stageData = {
-            1: { name: "THE SEPARATION", colors: ["#2a2a35", "#111"], road: "#333", line: "#fff", msg: "You are separated. Survive the traffic and follow the compass to find your partner." },
-            2: { name: "THE DARK FOREST", colors: ["#0b160b", "#050a05"], road: "#2d1a11", line: "#5c4033", msg: "Congrats, you are able to next stage of love! Watch out for the obstacles hidden in the soil." },
-            3: { name: "BURNING DESERT", colors: ["#ff7e5f", "#feb47b"], road: "#e0c38c", line: "#c2b280", msg: "The heat drains health. Grab health kits and keep moving!" },
-            4: { name: "NEON NIGHTS", colors: ["#0f0c29", "#302b63"], road: "#000", line: "#00f2fe", msg: "Monsters and Police block the way. Coordinate your dodges!" },
-            5: { name: "THE FINAL RUN", colors: ["#20002c", "#cbb4d4"], road: "#1a001a", line: "#ff0844", msg: "This is it. True love requires sacrifice. Meet in the center!" }
-        };
-
-        // --- INPUT HANDLING ---
-        let touchX = 0, touchY = 0, lastTap = 0;
-        document.addEventListener('touchstart', e => {
-            touchX = e.touches[0].clientX; touchY = e.touches[0].clientY;
-            let now = Date.now();
-            if (now - lastTap < 300 && gameState.status === 'playing') {
-                let myLife = playerNum === 1 ? 'p1Life' : 'p2Life';
-                let ptLife = playerNum === 1 ? 'p2Life' : 'p1Life';
-                if(gameState[myLife] > 20 && gameState[ptLife] < 100) {
-                    playSFX('heal');
-                    updateDoc(gameDocRef, { [myLife]: gameState[myLife] - 20, [ptLife]: Math.min(100, gameState[ptLife] + 20) });
-                }
-            }
-            lastTap = now;
-        });
-
-        document.addEventListener('touchend', async e => {
-            if(gameState.status !== 'playing' || isCinematic) return;
-            let dx = e.changedTouches[0].clientX - touchX; 
-            let dy = e.changedTouches[0].clientY - touchY;
-            let myLaneKey = playerNum === 1 ? 'p1Lane' : 'p2Lane'; 
-            let myJumpKey = playerNum === 1 ? 'p1Jump' : 'p2Jump';
-
-            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
-                let newLane = gameState[myLaneKey] + (dx > 0 ? 1 : -1);
-                if (newLane >= -2 && newLane <= 2) await updateDoc(gameDocRef, { [myLaneKey]: newLane });
-            } else if (dy < -50 && !gameState[myJumpKey]) {
-                playSFX('jump');
-                await updateDoc(gameDocRef, { [myJumpKey]: true });
-                setTimeout(() => updateDoc(gameDocRef, { [myJumpKey]: false }), 700);
-            }
-        });
-
-        // --- BUTTON LOGIC ---
         function switchScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+            if(document.getElementById(id)) document.getElementById(id).classList.add('active');
         }
 
+        // --- GAME STATE ---
+        let gameId = "", playerNum = 0, gameDocRef = null;
+        const canvas = document.getElementById('gameCanvas'); const ctx = canvas.getContext('2d');
+        let horizonY = 0;
+        
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; horizonY = canvas.height * 0.45; }
+        window.addEventListener('resize', resizeCanvas); resizeCanvas();
+
+        let gameState = { 
+            status: 'waiting', level: 1, progress: 0, p1Name: "", p1Gender: "", p2Name: "", p2Gender: "",
+            p1Lane: 1, p2Lane: 1, p1Life: 100, p2Life: 100, obstacle: null, curve: 0
+        };
+
+        const levels = {
+            1: { bg: ["#000022", "#000000"], ground: "#111", title: "LEVEL 1: THE LOST HIGHWAY", nav: "Follow the curves to locate your partner. Avoid obstacles." },
+            2: { bg: ["#330000", "#ff6600"], ground: "#331100", title: "LEVEL 2: DUST RIDER", nav: "You found each other! Now survive the desert monsters." },
+            3: { bg: ["#001133", "#00ffff"], ground: "#002222", title: "LEVEL 3: NEON PURSUIT", nav: "Police barricades ahead! Steer carefully together." },
+            4: { bg: ["#220033", "#ff00ff"], ground: "#110011", title: "LEVEL 4: SYNTHWAVE STORM", nav: "Extreme speed & sharp turns! Double tap to share life." },
+            5: { bg: ["#000000", "#ffffff"], ground: "#222", title: "LEVEL 5: GALAXY DRIVE", nav: "The final stretch. Stay alive to prove your love!" }
+        };
+
+        let isTransitioning = false;
+
+        // --- SWIPE CONTROLS ---
+        let touchX = 0;
+        document.addEventListener('touchstart', e => touchX = e.changedTouches[0].screenX );
+        document.addEventListener('touchend', async e => {
+            if(gameState.status !== 'playing' || isTransitioning) return;
+            let dx = e.changedTouches[0].screenX - touchX;
+            let myLane = playerNum === 1 ? 'p1Lane' : 'p2Lane';
+            if (dx > 40 && gameState[myLane] < 2) await updateDoc(gameDocRef, { [myLane]: gameState[myLane] + 1 });
+            else if (dx < -40 && gameState[myLane] > 0) await updateDoc(gameDocRef, { [myLane]: gameState[myLane] - 1 });
+        });
+
+        // --- BUTTONS ---
         document.getElementById('btnCreateGame').addEventListener('click', async () => {
-            const name = document.getElementById('playerName').value.trim(); if(!name) return;
-            playerNum = 1; gameId = Math.random().toString(36).substring(2, 7).toUpperCase();
+            enterFullScreen(); const name = document.getElementById('playerName').value.trim();
+            if(!name) return; playerNum = 1; gameId = Math.random().toString(36).substring(2, 7).toUpperCase();
             gameDocRef = doc(db, "games", gameId);
             await setDoc(gameDocRef, { ...gameState, p1Name: name, p1Gender: document.getElementById('playerGender').value });
-            document.getElementById('displayCode').innerText = gameId; 
-            switchScreen('lobby-screen'); setupSync();
+            document.getElementById('displayCode').innerText = gameId; switchScreen('lobby-screen'); setupListeners();
         });
 
         document.getElementById('btnJoinGame').addEventListener('click', async () => {
-            const name = document.getElementById('playerName').value.trim();
+            enterFullScreen(); const name = document.getElementById('playerName').value.trim();
             gameId = document.getElementById('joinCode').value.trim().toUpperCase();
-            if(!name || gameId.length !== 5) return alert("Enter valid Name and 5-letter Room Code.");
-            playerNum = 2; gameDocRef = doc(db, "games", gameId);
+            if(!name || gameId.length !== 5) return; playerNum = 2;
+            gameDocRef = doc(db, "games", gameId);
             const snap = await getDoc(gameDocRef);
             if(snap.exists()) {
                 await updateDoc(gameDocRef, { p2Name: name, p2Gender: document.getElementById('playerGender').value, status: 'playing' });
-                setupSync();
-            } else alert("Room not found!");
-        });
-
-        // WHATSAPP JOIN LINK GENERATOR
-        document.getElementById('btnShare').addEventListener('click', () => {
-            const currentUrl = window.location.href.split('?')[0];
-            const text = `Hey! I am waiting for you in Find You & Run. Join using Room Code: *${gameId}* \nLink: ${currentUrl}`;
-            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+                setupListeners();
+            }
         });
 
         document.getElementById('btnRestart').addEventListener('click', async () => {
-            if(playerNum === 1) await updateDoc(gameDocRef, { level: 1, progress: 0, p1Life: 100, p2Life: 100, status: 'playing', items: [], p1Lane: 0, p2Lane: 2 });
-            else alert("Waiting for Host to restart...");
+            document.getElementById('game-over-screen').style.display = 'none';
+            if(playerNum === 1) await updateDoc(gameDocRef, { level: 1, progress: 0, p1Life: 100, p2Life: 100, status: 'playing', obstacle: null });
         });
 
-        // --- GAME SYNC ENGINE ---
-        function setupSync() {
+        // --- SYNC ---
+        function setupListeners() {
             onSnapshot(gameDocRef, (docSnap) => {
                 if(!docSnap.exists()) return;
-                let oldLevel = gameState.level;
-                gameState = docSnap.data();
+                let oldLvl = gameState.level; gameState = docSnap.data();
 
                 if(gameState.status === 'playing' && !document.getElementById('game-screen').classList.contains('active')) {
-                    switchScreen('game-screen');
-                    document.getElementById('name1').innerText = gameState.p1Name; 
-                    document.getElementById('name2').innerText = gameState.p2Name;
-                    if(playerNum === 1) startHostEngine(); 
-                    startGameLoop();
+                    switchScreen('game-screen'); startGameLoop(); if(playerNum === 1) hostEngine();
                 }
 
                 if(gameState.status === 'playing') {
-                    // Update UI
                     document.getElementById('p1-life').style.width = Math.max(0, gameState.p1Life) + "%";
                     document.getElementById('p2-life').style.width = Math.max(0, gameState.p2Life) + "%";
-                    document.getElementById('progress-fill').style.width = gameState.progress + "%";
-                    document.getElementById('dist-val').innerText = (100 - gameState.progress) + "m";
-
-                    // Compass System
-                    let myLane = playerNum === 1 ? gameState.p1Lane : gameState.p2Lane;
-                    let ptLane = playerNum === 1 ? gameState.p2Lane : gameState.p1Lane;
-                    let compass = document.getElementById('compass');
                     
-                    if(gameState.progress < 90) {
-                        compass.style.display = 'inline-block';
-                        if(myLane < ptLane) compass.innerHTML = `Partner is to your <span style="color:#fff">RIGHT 👉</span>`;
-                        else if(myLane > ptLane) compass.innerHTML = `👈 Partner is to your <span style="color:#fff">LEFT</span>`;
-                        else compass.innerHTML = `✨ You are aligned! Run! ✨`;
-                    } else compass.style.display = 'none';
-
-                    // Level Transitions
-                    if(gameState.level > oldLevel) {
-                        if(gameState.level > 5) triggerCinematicEnding();
+                    if(gameState.level > oldLvl) {
+                        if(gameState.level > 5) triggerFinalLoveAnimation();
                         else showLevelOverlay(gameState.level);
                     }
 
-                    // Game Over
-                    if(gameState.p1Life <= 0 || gameState.p2Life <= 0) switchScreen('game-over-screen');
+                    if(gameState.p1Life <= 0 || gameState.p2Life <= 0) document.getElementById('game-over-screen').style.display = 'flex';
                 }
             });
         }
 
-        // --- CINEMATIC EVENTS ---
         function showLevelOverlay(lvl) {
-            isCinematic = true;
-            document.getElementById('level-title').innerText = "LEVEL " + lvl;
-            document.getElementById('level-msg').innerText = stageData[lvl].msg;
+            isTransitioning = true;
+            document.getElementById('level-title').innerText = levels[lvl].title;
+            document.getElementById('level-task').innerText = levels[lvl].nav;
             document.getElementById('level-overlay').style.display = 'flex';
-            setTimeout(() => { document.getElementById('level-overlay').style.display = 'none'; isCinematic = false; }, 3500);
+            setTimeout(() => { document.getElementById('level-overlay').style.display = 'none'; isTransitioning = false; }, 3000);
         }
 
-        function triggerCinematicEnding() {
-            isCinematic = true;
-            document.getElementById('final-names').innerText = `${gameState.p1Name} 💖 ${gameState.p2Name}`;
-            let container = document.getElementById('heart-container'); container.innerHTML = '';
-            
-            for(let i=0; i<40; i++) {
-                let h = document.createElement('div'); h.className = 'heart-particle'; h.innerHTML = '💖';
+        function triggerFinalLoveAnimation() {
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('hud').style.display = 'none';
+            document.getElementById('nav-hud').style.display = 'none';
+            let finalScreen = document.getElementById('final-screen');
+            finalScreen.style.display = 'flex';
+            document.getElementById('finalNames').innerText = `${gameState.p1Name} & ${gameState.p2Name}`;
+
+            // Generate Multicolored Hearts
+            const colors = ['#ff0000', '#ff00ff', '#00ffff', '#ffff00', '#00ff00'];
+            for(let i=0; i<60; i++) {
+                let h = document.createElement('div');
+                h.innerHTML = '❤️'; h.className = 'heart-particle';
+                h.style.color = colors[Math.floor(Math.random() * colors.length)];
                 h.style.left = '50%'; h.style.top = '50%';
-                h.style.setProperty('--tx', (Math.random()*600 - 300) + 'px');
-                h.style.setProperty('--ty', (Math.random()*600 - 300) + 'px');
-                h.style.setProperty('--rot', (Math.random()*360) + 'deg');
-                h.style.animationDelay = (Math.random() * 1.5) + 's';
-                container.appendChild(h);
+                
+                // Random directions for zoom out
+                let angle = Math.random() * Math.PI * 2;
+                let dist = 100 + Math.random() * 200;
+                h.style.setProperty('--tx', (Math.cos(angle) * dist) + 'px');
+                h.style.setProperty('--ty', (Math.sin(angle) * dist) + 'px');
+                h.style.animationDelay = (Math.random() * 2) + 's';
+                finalScreen.appendChild(h);
             }
-            switchScreen('cinematic-screen');
         }
 
-        // --- HOST LOGIC (SPAWNER) ---
-        function startHostEngine() {
+        // --- HOST LOGIC ---
+        function hostEngine() {
             setInterval(async () => {
-                if(gameState.status !== 'playing' || isCinematic || gameState.p1Life <=0 || gameState.p2Life <=0) return;
-                
-                let speedFactor = 1 + (gameState.level * 0.2);
-                let newProg = gameState.progress + (1.5 * speedFactor);
+                if(gameState.status !== 'playing' || isTransitioning || gameState.level > 5 || gameState.p1Life <= 0 || gameState.p2Life <= 0) return;
+
+                let spd = 1 + (gameState.level * 0.3);
+                let newProg = gameState.progress + (8 * spd);
+                let newCurve = Math.sin(newProg * 0.1) * (gameState.level * 0.5); // Dynamic curve
 
                 if(newProg >= 100) {
-                    await updateDoc(gameDocRef, { level: gameState.level + 1, progress: 0, items: [] });
+                    await updateDoc(gameDocRef, { level: gameState.level + 1, progress: 0, obstacle: null, curve: 0 });
                 } else {
-                    // Move existing items
-                    let newItems = gameState.items.filter(i => i.z > -200).map(i => ({...i, z: i.z - (400 * speedFactor)}));
+                    await updateDoc(gameDocRef, { progress: newProg, curve: newCurve });
                     
-                    // Spawn new items (Obstacles & Health)
-                    if(Math.random() > 0.5 && newItems.length < 3) {
-                        let type = Math.random() > 0.8 ? 'health' : (Math.random() > 0.5 ? 'police' : 'monster');
-                        let lane = Math.floor(Math.random() * 5) - 2; // -2, -1, 0, 1, 2
-                        newItems.push({ id: Date.now(), type, lane, z: 4000 });
+                    if(!gameState.obstacle) {
+                        let type = gameState.level % 2 === 0 ? 'monster' : 'police';
+                        await updateDoc(gameDocRef, { obstacle: { lane: Math.floor(Math.random() * 3), type: type, z: 2000, id: Date.now() } });
                     }
-                    await updateDoc(gameDocRef, { progress: newProg, items: newItems });
                 }
-            }, 500);
+            }, 1000);
         }
 
-        // --- ADVANCED 2.5D RENDERER ---
-        let tick = 0, roadOffset = 0;
+        // --- 3D CANVAS RENDERER ---
+        let obsZ = 2000;
+        let roadOffset = 0;
 
-        function project(x, y, z, curveOffset) {
-            let scale = 600 / (600 + z);
-            let cx = x + (curveOffset * Math.pow(z/1000, 2)); // Dynamic road curving
-            return { x: (cx * scale) + (width / 2), y: (y * scale) + horizon, s: scale };
-        }
-
-        // PLACEHOLDER DRAWING (Since external URLs fail without a server)
-        function drawEntity(ctx, type, px, py, scale, isJump) {
-            let size = 200 * scale;
-            let bob = isJump ? -150 * scale : Math.sin(tick * 0.4) * 10 * scale;
-            
+        function drawCar(x, y, scale, color) {
+            ctx.save(); ctx.translate(x, y); ctx.scale(scale, scale);
             // Shadow
-            ctx.fillStyle = "rgba(0,0,0,0.4)";
-            ctx.beginPath(); ctx.ellipse(px, py + size/2, size*0.3, size*0.1, 0, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.beginPath(); ctx.ellipse(0, 30, 60, 15, 0, 0, Math.PI*2); ctx.fill();
+            // Tires
+            ctx.fillStyle = "#111"; ctx.fillRect(-50, 10, 20, 25); ctx.fillRect(30, 10, 20, 25);
+            // Body
+            ctx.fillStyle = color; ctx.beginPath(); ctx.roundRect(-45, -10, 90, 30, 10); ctx.fill();
+            // Roof
+            ctx.fillStyle = "#222"; ctx.beginPath(); ctx.moveTo(-30, -10); ctx.lineTo(-20, -35); ctx.lineTo(20, -35); ctx.lineTo(30, -10); ctx.fill();
+            // Tail lights
+            ctx.fillStyle = "#ff0000"; ctx.shadowBlur = 10; ctx.shadowColor = "red"; ctx.fillRect(-40, 5, 15, 8); ctx.fillRect(25, 5, 15, 8);
+            ctx.restore();
+        }
 
-            // Entity Box (Replace these with drawImage if you host your assets)
-            ctx.save(); ctx.translate(px, py + bob);
-            
-            if(type === 'boy' || type === 'girl') {
-                ctx.fillStyle = type === 'boy' ? '#00f2fe' : '#ff0844';
-                ctx.fillRect(-size/4, -size/2, size/2, size);
-                ctx.fillStyle = "#fff"; ctx.font = `${size/3}px Arial`; ctx.fillText(type==='boy'?"👦":"👧", -size/6, -size/8);
-            } else if (type === 'health') {
-                ctx.fillStyle = '#00ff00'; ctx.fillRect(-size/4, -size/4, size/2, size/2);
-                ctx.fillStyle = "#fff"; ctx.fillRect(-size/12, -size/5, size/6, size/2.5); ctx.fillRect(-size/5, -size/12, size/2.5, size/6);
+        function drawObstacle(x, y, scale, type) {
+            ctx.save(); ctx.translate(x, y); ctx.scale(scale, scale);
+            if(type === 'police') {
+                ctx.fillStyle = "#000044"; ctx.fillRect(-40, -20, 80, 40); // Car body
+                ctx.fillStyle = (Math.floor(Date.now()/100)%2 === 0) ? "#ff0000" : "#0000ff"; // Flashing siren
+                ctx.shadowBlur = 20; ctx.shadowColor = ctx.fillStyle; ctx.fillRect(-15, -35, 30, 15);
             } else {
-                ctx.fillStyle = type === 'police' ? '#0000ff' : '#555';
-                ctx.fillRect(-size/3, -size/3, size/1.5, size/1.5);
-                ctx.fillStyle = "#fff"; ctx.font = `${size/2}px Arial`; ctx.fillText(type==='police'?"🚓":"🧟", -size/4, size/8);
+                ctx.fillStyle = "#00ff00"; ctx.beginPath(); ctx.arc(0, 0, 40, 0, Math.PI*2); ctx.fill(); // Monster blob
+                ctx.fillStyle = "#000"; ctx.beginPath(); ctx.arc(-15, -10, 5, 0, Math.PI*2); ctx.arc(15, -10, 5, 0, Math.PI*2); ctx.fill();
             }
             ctx.restore();
         }
@@ -413,75 +309,99 @@
             if(gameState.level === 1) showLevelOverlay(1);
 
             function render() {
-                if(gameState.status !== 'playing') return;
-                requestAnimationFrame(render);
-                if(isCinematic) return;
-
-                tick++;
-                let stage = stageData[gameState.level] || stageData[5];
-                let speed = 20 + (gameState.level * 5);
-                roadOffset = (roadOffset + speed) % 300;
-                let curve = Math.sin(tick * 0.02) * 500; // Road bends
-
-                // Draw Sky Background
-                let bgGrad = ctx.createLinearGradient(0, 0, 0, horizon);
-                bgGrad.addColorStop(0, stage.colors[0]); bgGrad.addColorStop(1, stage.colors[1]);
-                ctx.fillStyle = bgGrad; ctx.fillRect(0, 0, width, horizon);
+                if(gameState.status !== 'playing' || isTransitioning || gameState.level > 5) {
+                    requestAnimationFrame(render); return;
+                }
+                
+                let lvlData = levels[gameState.level];
+                
+                // Draw Sky
+                let grad = ctx.createLinearGradient(0, 0, 0, horizonY);
+                grad.addColorStop(0, lvlData.bg[0]); grad.addColorStop(1, lvlData.bg[1]);
+                ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, horizonY);
                 
                 // Draw Ground
-                ctx.fillStyle = stage.road; ctx.fillRect(0, horizon, width, height - horizon);
+                ctx.fillStyle = lvlData.ground; ctx.fillRect(0, horizonY, canvas.width, canvas.height);
 
-                // Draw Road Polygons (Pseudo 3D depth)
-                for(let z = 4000; z > 0; z -= 300) {
-                    let actualZ = z - roadOffset;
-                    if(actualZ < 10) continue;
-                    
-                    let tl = project(-800, 0, actualZ, curve); let tr = project(800, 0, actualZ, curve);
-                    let bl = project(-800, 0, actualZ - 300, curve); let br = project(800, 0, actualZ - 300, curve);
-                    
-                    // Road surface
-                    ctx.fillStyle = (Math.floor(z/300) % 2 === 0) ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0.1)";
-                    ctx.beginPath(); ctx.moveTo(tl.x, tl.y); ctx.lineTo(tr.x, tr.y); ctx.lineTo(br.x, br.y); ctx.lineTo(bl.x, bl.y); ctx.fill();
+                let speed = 10 + (gameState.level * 2);
+                roadOffset = (roadOffset + speed) % 100;
 
-                    // Lane lines
-                    ctx.strokeStyle = stage.line; ctx.lineWidth = 3 * tl.s;
-                    for(let l = -2; l <= 2; l++) {
-                        let pt1 = project(l*320, 0, actualZ, curve); let pt2 = project(l*320, 0, actualZ - 150, curve);
-                        ctx.beginPath(); ctx.moveTo(pt1.x, pt1.y); ctx.lineTo(pt2.x, pt2.y); ctx.stroke();
+                // --- Draw Curving Road (Pseudo-3D) ---
+                let dx = 0; let ddx = gameState.curve * 0.05; // Curve logic
+                ctx.fillStyle = "#333";
+                
+                for(let i=0; i<canvas.height - horizonY; i+=4) {
+                    let y = canvas.height - i;
+                    let z = (canvas.height - horizonY) / (y - horizonY); // Perspective depth
+                    
+                    dx += ddx * z; // Curve displacement
+                    
+                    let roadW = 400 / z; // Road width
+                    let projX = (canvas.width / 2) + dx;
+                    
+                    // Alternating road lines for movement illusion
+                    let color = (i + roadOffset) % 100 < 50 ? "#444" : "#222";
+                    ctx.fillStyle = color;
+                    ctx.fillRect(projX - roadW, y, roadW * 2, 4);
+                    
+                    // White lane dividers
+                    if(color === "#222") {
+                        ctx.fillStyle = "#fff";
+                        ctx.fillRect(projX - roadW/3, y, 4, 4);
+                        ctx.fillRect(projX + roadW/3, y, 4, 4);
                     }
                 }
 
-                // Render Items & Detect Collision
-                let myLane = playerNum === 1 ? gameState.p1Lane : gameState.p2Lane;
-                let myJump = playerNum === 1 ? gameState.p1Jump : gameState.p2Jump;
+                // --- Update Nav HUD ---
+                let dist = Math.floor(100 - gameState.progress) * 10;
+                let navText = document.getElementById('nav-hud');
+                if(gameState.level === 1) navText.innerText = `GPS: Partner ${dist}m away... Curve ahead!`;
+                else navText.innerText = `GPS: Driving together! Dodge obstacles!`;
 
-                // Sort items by Z index so closer items draw on top
-                gameState.items.slice().sort((a,b) => b.z - a.z).forEach(item => {
-                    if(item.z < 0) return;
-                    let p = project(item.lane * 320, 0, item.z, curve);
-                    drawEntity(ctx, item.type, p.x, p.y, p.s, false);
+                // --- Draw Obstacle ---
+                if(gameState.obstacle) {
+                    obsZ -= (speed * 4);
+                    let zScale = 200 / (200 + obsZ);
+                    let laneOffset = (gameState.obstacle.lane - 1) * 150;
+                    
+                    // Add curve offset to obstacle
+                    let curveOff = (gameState.curve * 0.05) * (obsZ * 0.5);
+                    let oX = (canvas.width/2) + (laneOffset * zScale) + curveOff;
+                    let oY = horizonY + ((canvas.height - horizonY) * zScale);
 
-                    // Collision checking (Host only handles damage to avoid double-triggers)
-                    if(playerNum === 1 && item.z < 200 && item.z > 0 && myLane === item.lane && !myJump) {
-                        if(item.type === 'health') {
-                            playSFX('heal'); updateDoc(gameDocRef, { p1Life: Math.min(100, gameState.p1Life+20), p2Life: Math.min(100, gameState.p2Life+20) });
-                        } else {
-                            playSFX('hit'); updateDoc(gameDocRef, { p1Life: gameState.p1Life-15, p2Life: gameState.p2Life-15 });
+                    if(obsZ > 20) {
+                        drawObstacle(oX, oY, zScale * 1.5, gameState.obstacle.type);
+                    } else if(obsZ > -50) {
+                        let myLane = playerNum === 1 ? gameState.p1Lane : gameState.p2Lane;
+                        if(myLane === gameState.obstacle.lane && playerNum === 1) {
+                            updateDoc(gameDocRef, { p1Life: gameState.p1Life - 25, p2Life: gameState.p2Life - 25, obstacle: null });
+                            obsZ = 2000;
                         }
-                        item.z = -1000; // Remove item
+                    } else {
+                        obsZ = 2000;
+                        if(playerNum === 1) updateDoc(gameDocRef, { obstacle: null });
                     }
-                });
+                }
 
-                // Render Players
-                let p1 = project(gameState.p1Lane * 320, 0, 150, curve);
-                let p2 = project(gameState.p2Lane * 320, 0, 150, curve);
+                // --- Draw Cars ---
+                let p1Color = gameState.p1Gender === 'boy' ? '#00ffff' : '#ff00ff';
+                let p2Color = gameState.p2Gender === 'boy' ? '#00ffff' : '#ff00ff';
+                
+                let p1X = (canvas.width/2) + ((gameState.p1Lane - 1) * 100);
+                let p2X = (canvas.width/2) + ((gameState.p2Lane - 1) * 100);
+                let carY = canvas.height - 80;
 
-                // Show partner only if close to end (90%+) or if they are in the same lane (simulating distance)
-                let showP1 = playerNum === 1 || gameState.progress > 90 || gameState.p1Lane === gameState.p2Lane;
-                let showP2 = playerNum === 2 || gameState.progress > 90 || gameState.p1Lane === gameState.p2Lane;
+                // Level 1 Visibility Logic (Can't see partner)
+                if(gameState.level === 1) {
+                    if(playerNum === 1) drawCar(p1X, carY, 1, p1Color);
+                    else drawCar(p2X, carY, 1, p2Color);
+                } else {
+                    // Both visible
+                    drawCar(p1X, carY, 1, p1Color);
+                    drawCar(p2X, carY, 1, p2Color);
+                }
 
-                if(showP1) drawEntity(ctx, gameState.p1Gender, p1.x, p1.y, p1.s, gameState.p1Jump);
-                if(showP2) drawEntity(ctx, gameState.p2Gender, p2.x, p2.y, p2.s, gameState.p2Jump);
+                requestAnimationFrame(render);
             }
             render();
         }
