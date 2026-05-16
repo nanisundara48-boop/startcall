@@ -3,139 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Journey to You 💖</title>
+    <title>Love Games 💖</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;600;800&display=swap');
         
-        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
-        body { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; background: #000; color: white; display: flex; flex-direction: column; height: 100vh; width: 100vw; overflow: hidden; touch-action: none; }
+        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; margin: 0; padding: 0; }
+        body { font-family: 'Poppins', sans-serif; background: #050505; color: white; height: 100vh; width: 100vw; overflow: hidden; touch-action: none; }
         
-        .screen { display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle, #0a0a1a, #000); z-index: 10; }
+        .screen { display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle, #110022, #000); z-index: 10; }
         .active { display: flex; }
         
-        h1 { font-family: 'Orbitron', sans-serif; font-size: 35px; color: #00f2fe; text-transform: uppercase; text-shadow: 0 0 15px #00f2fe; text-align: center; margin-bottom: 20px;}
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 32px; color: #ff00ff; text-transform: uppercase; text-shadow: 0 0 15px #ff00ff; text-align: center; margin-bottom: 20px;}
         
-        .card { background: rgba(10, 10, 20, 0.8); padding: 30px; border-radius: 20px; border: 2px solid #00f2fe; width: 90%; max-width: 400px; box-shadow: 0 0 25px rgba(0, 242, 254, 0.4); text-align: center; backdrop-filter: blur(10px);}
+        .card { background: rgba(20, 0, 40, 0.8); padding: 25px; border-radius: 20px; border: 2px solid #00f2fe; width: 90%; max-width: 400px; box-shadow: 0 0 25px rgba(0, 242, 254, 0.3); text-align: center; backdrop-filter: blur(10px);}
 
-        input, select, button { width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: none; font-size: 16px; font-family: 'Poppins', sans-serif; text-align: center; outline: none; font-weight: bold; transition: 0.2s;}
+        input, select, button { width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: none; font-size: 16px; font-family: 'Poppins', sans-serif; text-align: center; font-weight: bold; transition: 0.2s;}
         input, select { background: #fff; color: #000; }
         
-        .btn-primary { background: linear-gradient(90deg, #00f2fe, #4facfe); color: #000; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; }
-        .btn-secondary { background: transparent; border: 2px solid #00f2fe; color: #00f2fe; }
-        .btn-danger { background: linear-gradient(90deg, #ff0844, #ffb199); color: #fff; margin-top: 15px; }
+        .btn-primary { background: linear-gradient(90deg, #00f2fe, #ff00ff); color: #fff; text-transform: uppercase; cursor: pointer; box-shadow: 0 5px 15px rgba(255,0,255,0.4);}
+        .btn-game { background: transparent; border: 2px solid #00f2fe; color: #00f2fe; margin: 15px 0; }
+        .btn-whatsapp { background: #25D366; color: #fff; }
 
-        /* Game HUD */
-        #game-screen { background: #000; z-index: 5; }
-        canvas { display: block; width: 100vw; height: 100vh; }
+        /* Game specific UI */
+        #game-canvas { display: none; position: absolute; top:0; left:0; width: 100vw; height: 100vh; z-index: 5; }
         
-        #hud { position: absolute; top: 15px; left: 15px; right: 15px; display: flex; justify-content: space-between; z-index: 20; pointer-events: none; }
-        .life-container { width: 38%; background: rgba(0,0,0,0.7); border: 2px solid #fff; border-radius: 8px; padding: 5px; }
-        .life-bar { height: 10px; border-radius: 4px; transition: width 0.3s; }
+        /* Tic Tac Toe UI */
+        .ttt-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 300px; margin: 20px auto; }
+        .ttt-cell { width: 90px; height: 90px; background: rgba(255,255,255,0.1); border: 2px solid #00f2fe; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 50px; font-family: 'Orbitron'; cursor: pointer; box-shadow: inset 0 0 15px rgba(0,242,254,0.2); }
+        .ttt-x { color: #00f2fe; text-shadow: 0 0 15px #00f2fe; }
+        .ttt-o { color: #ff00ff; text-shadow: 0 0 15px #ff00ff; }
+
+        /* HUD & Overlays */
+        #hud { position: absolute; top: 15px; width: 100%; padding: 0 20px; display: flex; justify-content: space-between; z-index: 20; pointer-events: none; }
+        .life-bar-bg { width: 40%; height: 15px; background: rgba(0,0,0,0.5); border: 1px solid #fff; border-radius: 8px; overflow: hidden; }
+        .life-fill { height: 100%; transition: width 0.3s; }
         #p1-life { background: #00f2fe; box-shadow: 0 0 10px #00f2fe; width: 100%; }
-        #p2-life { background: #ff0844; box-shadow: 0 0 10px #ff0844; width: 100%; }
-        .name-tag { font-family: 'Orbitron'; font-size: 10px; margin-bottom: 5px; text-transform: uppercase; }
+        #p2-life { background: #ff00ff; box-shadow: 0 0 10px #ff00ff; width: 100%; }
         
-        /* Progress Bar (The Line) */
-        #progress-container { position: absolute; top: 75px; left: 50%; transform: translateX(-50%); width: 85%; height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; z-index: 20; }
-        #progress-fill { height: 100%; background: #00f2fe; width: 0%; border-radius: 3px; position: relative; transition: width 0.5s linear;}
-        #progress-icon { position: absolute; right: -10px; top: -8px; font-size: 18px; text-shadow: 0 0 5px #fff; }
-
-        #nav-hud { position: absolute; top: 95px; left: 50%; transform: translateX(-50%); font-family: 'Orbitron'; font-size: 12px; color: #ffeb3b; text-align: center; text-shadow: 0 0 5px #ffeb3b; z-index: 20; width: 85%; }
+        #instruction { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); border: 1px solid #ffeb3b; color: #ffeb3b; padding: 10px 20px; border-radius: 20px; z-index: 20; text-align: center; display: none;}
         
-        /* Turn Alerts */
-        #alert-center { position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%); font-family: 'Orbitron'; font-size: 40px; color: #ffeb3b; text-shadow: 0 0 20px #ffeb3b; z-index: 25; text-align: center; display: none; pointer-events: none; }
-
-        /* Emoji Bar */
-        #emoji-bar { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 15px; z-index: 30; }
-        .emoji-btn { background: rgba(255,255,255,0.2); border: 1px solid #fff; border-radius: 50%; width: 45px; height: 45px; font-size: 22px; cursor: pointer; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-        .floating-emoji { position: absolute; font-size: 40px; animation: floatUp 2s forwards ease-out; z-index: 40; pointer-events: none; }
-        @keyframes floatUp { 0% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -150px) scale(1.5); } }
-
-        /* Level Quotes & Transitions */
-        #level-overlay, #game-over-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 50; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow: hidden;}
-        #level-title { font-family: 'Orbitron'; font-size: 35px; color: #00f2fe; margin-bottom: 10px; z-index: 55;}
-        #level-quote { font-size: 16px; color: #ff9a9e; font-style: italic; width: 80%; margin-bottom: 20px; font-family: 'Georgia', serif; z-index: 55;}
-        #level-task { font-size: 14px; color: #ccc; width: 80%; z-index: 55; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px; border: 1px solid #333;}
+        #overlay { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 50; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .quote { font-size: 18px; color: #ff9a9e; font-style: italic; margin: 20px; font-family: 'Georgia', serif; }
         
-        .glitter { position: absolute; width: 4px; height: 4px; background: white; border-radius: 50%; box-shadow: 0 0 10px #fff, 0 0 20px #00f2fe; animation: sparkle 1.5s infinite linear; }
-        @keyframes sparkle { 0% { transform: scale(0) translateY(0); opacity: 0; } 50% { transform: scale(1) translateY(-50px); opacity: 1; } 100% { transform: scale(0) translateY(-100px); opacity: 0; } }
-
-        /* Final Love Animation */
-        #final-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 100; overflow: hidden; flex-direction: column; align-items: center; justify-content: center; }
-        .heart-particle { position: absolute; font-size: 25px; animation: zoomOutHeart 3s forwards; }
-        #final-text { font-family: 'Orbitron'; font-size: 32px; color: #fff; text-shadow: 0 0 20px #ff00ff; z-index: 110; opacity: 0; animation: fadeInText 3s 2s forwards; text-align: center;}
-        
-        @keyframes zoomOutHeart { 0% { transform: scale(0) translate(0,0); opacity: 1; } 100% { transform: scale(15) translate(var(--tx), var(--ty)); opacity: 0; } }
-        @keyframes fadeInText { to { opacity: 1; } }
+        /* Final Love Particles */
+        .particle { position: absolute; animation: explode 2s forwards; }
+        @keyframes explode { 0% { transform: scale(0) translate(0,0); opacity: 1; } 100% { transform: scale(5) translate(var(--tx), var(--ty)); opacity: 0; } }
     </style>
 </head>
 <body>
 
-    <div id="home-screen" class="screen active">
-        <h1>Journey To You</h1>
+    <div id="join-screen" class="screen">
+        <h1>Join Partner 💖</h1>
         <div class="card">
-            <input type="text" id="playerName" placeholder="Enter Your Name" required>
-            <select id="playerGender">
-                <option value="boy">I am the Boy (Cyan Car)</option>
-                <option value="girl">I am the Girl (Pink Car)</option>
+            <p>You've been invited!</p>
+            <input type="text" id="joinName" placeholder="Your Name" required>
+            <select id="joinGender">
+                <option value="boy">I am the Boy</option>
+                <option value="girl">I am the Girl</option>
             </select>
-            <button id="btnCreateGame" class="btn-primary">Start Journey</button>
-            <div style="margin: 15px 0; color: #666;">OR</div>
-            <input type="text" id="joinCode" placeholder="Enter Room Code" style="text-transform: uppercase;">
-            <button id="btnJoinGame" class="btn-secondary">Join Partner</button>
+            <button id="btnAutoJoin" class="btn-primary">Enter Game</button>
         </div>
     </div>
 
-    <div id="lobby-screen" class="screen">
-        <h2 style="color: #fff; font-family: 'Orbitron';">Locating Partner...</h2>
+    <div id="menu-screen" class="screen active">
+        <h1>Nani Creations</h1>
         <div class="card">
-            <p style="color: #aaa; margin: 0;">Tell your partner to join with:</p>
-            <h1 id="displayCode" style="font-size: 45px; color: #00f2fe; margin: 10px 0;">XXXXX</h1>
-            <button id="btnShare" class="btn-primary" style="background: #25D366; color: #fff; border:none; margin-top: 15px;">Invite via WhatsApp</button>
+            <p>Select your experience:</p>
+            <button onclick="startGameSetup('ttt')" class="btn-primary btn-game">Tic Tac Toe (Find Partner)</button>
+            <button onclick="startGameSetup('journey')" class="btn-primary btn-game">Magical Journey (Duo Surf)</button>
         </div>
     </div>
 
-    <div id="level-overlay">
-        <div id="level-title">LEVEL 1</div>
-        <div id="level-quote">"True love is a journey, starting at forever and ending at never."</div>
-        <div id="level-task">TASK: You are on separate roads. Navigate safely to find your partner!</div>
+    <div id="setup-screen" class="screen">
+        <h1 id="setupTitle">Setup Game</h1>
+        <div class="card">
+            <input type="text" id="hostName" placeholder="Your Name" required>
+            <select id="hostGender">
+                <option value="boy">I am the Boy</option>
+                <option value="girl">I am the Girl</option>
+            </select>
+            <button id="btnHost" class="btn-primary">Create Game</button>
+        </div>
     </div>
 
-    <div id="game-over-screen">
-        <h1 style="color: #ff0844; font-family: 'Orbitron';">JOURNEY FAILED</h1>
-        <p style="color: #ccc;">You crashed too many times.</p>
-        <button id="btnRestart" class="btn-danger" style="width: 200px;">Try Again</button>
+    <div id="ttt-screen" class="screen">
+        <h2 id="ttt-status" style="color:#00f2fe; margin-bottom: 20px;">Level 1: Defeat the System</h2>
+        <div class="ttt-board" id="board">
+            </div>
+        <div id="ttt-invite" style="display: none; margin-top: 20px; text-align: center;">
+            <p style="color:#00ff00; margin-bottom:10px;">System Defeated! You proved your love.</p>
+            <button id="btnTTTInvite" class="btn-whatsapp">Invite Partner via WhatsApp</button>
+        </div>
     </div>
 
-    <div id="final-screen">
-        <div id="final-text">TRUE LOVE NEVER ENDS<br><br><span id="finalNames" style="color: #ff00ff; font-size: 24px;"></span></div>
-    </div>
-
-    <div id="game-screen" class="screen">
+    <div id="journey-hud" style="display:none;">
+        <canvas id="game-canvas"></canvas>
         <div id="hud">
-            <div class="life-container"><div class="name-tag" id="name1" style="color:#00f2fe;">P1</div><div class="life-bar" id="p1-life"></div></div>
-            <div class="life-container" style="text-align:right;"><div class="name-tag" id="name2" style="color:#ff0844;">P2</div><div class="life-bar" id="p2-life" style="float: right;"></div></div>
+            <div class="life-bar-bg"><div id="p1-life" class="life-fill"></div><div style="font-size:10px; padding-left:5px;">P1</div></div>
+            <div class="life-bar-bg"><div id="p2-life" class="life-fill" style="float:right;"></div><div style="font-size:10px; text-align:right; padding-right:5px;">P2</div></div>
         </div>
-        
-        <div id="progress-container"><div id="progress-fill"><div id="progress-icon">🚗</div></div></div>
-        <div id="nav-hud">GPS: Calculating Route...</div>
-        
-        <div id="alert-center">⬅️ SWIPE LEFT!</div>
+        <div id="instruction">SWIPE TO MOVE!</div>
+    </div>
 
-        <div id="emoji-bar">
-            <button class="emoji-btn" onclick="sendEmoji('❤️')">❤️</button>
-            <button class="emoji-btn" onclick="sendEmoji('😂')">😂</button>
-            <button class="emoji-btn" onclick="sendEmoji('😱')">😱</button>
-            <button class="emoji-btn" onclick="sendEmoji('🚨')">🚨</button>
-        </div>
-
-        <canvas id="gameCanvas"></canvas>
+    <div id="overlay">
+        <h1 id="ov-title" style="color: #ff00ff;">MESSAGE</h1>
+        <div id="ov-quote" class="quote"></div>
+        <button id="ov-btn" class="btn-primary" style="display:none; width: 200px;">Continue</button>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, doc, setDoc, onSnapshot, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
+        // FIREBASE SETUP
         const firebaseConfig = {
             apiKey: "AIzaSyCZmqyLmyWesuoj6djTbyfrOJ1v7_FCWcQ",
             authDomain: "game-bf78a.firebaseapp.com",
@@ -146,342 +126,357 @@
         };
         const app = initializeApp(firebaseConfig); const db = getFirestore(app);
 
-        function switchScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); if(document.getElementById(id)) document.getElementById(id).classList.add('active'); }
+        // GLOBAL VARS
+        let gameMode = ""; // 'ttt' or 'journey'
+        let gameId = ""; let playerNum = 0; let docRef = null;
+        let isOnline = true; // Connection status tracking
 
-        // --- GAME & RENDER STATE ---
-        let gameId = "", playerNum = 0, gameDocRef = null;
-        const canvas = document.getElementById('gameCanvas'); const ctx = canvas.getContext('2d');
-        let horizonY = 0; function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; horizonY = canvas.height * 0.45; }
-        window.addEventListener('resize', resizeCanvas); resizeCanvas();
+        // SOUND ENGINE (BGM & SFX)
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const ctxAudio = new AudioContext();
+        let bgmOsc;
 
-        let gameState = { 
-            status: 'waiting', level: 1, progress: 0, p1Name: "", p1Gender: "", p2Name: "", p2Gender: "",
-            p1Lane: 1, p2Lane: 1, p1Life: 100, p2Life: 100, obstacle: null, turnEvent: null, latestEmoji: null
-        };
+        function playBGM() {
+            if(ctxAudio.state === 'suspended') ctxAudio.resume();
+            if(bgmOsc) return;
+            bgmOsc = ctxAudio.createOscillator();
+            let gain = ctxAudio.createGain();
+            bgmOsc.type = 'sine';
+            bgmOsc.frequency.setValueAtTime(200, ctxAudio.currentTime);
+            gain.gain.value = 0.05; // Very soft background hum
+            bgmOsc.connect(gain); gain.connect(ctxAudio.destination);
+            bgmOsc.start();
+        }
 
-        let renderP1X = 1, renderP2X = 1, roadCurve = 0, targetCurve = 0;
-        let sceneryObjects = [], birds = [];
+        function playSFX(type) {
+            let osc = ctxAudio.createOscillator(); let g = ctxAudio.createGain();
+            osc.connect(g); g.connect(ctxAudio.destination);
+            if(type === 'win') { osc.type='square'; osc.frequency.setValueAtTime(400, ctxAudio.currentTime); osc.frequency.exponentialRampToValueAtTime(800, ctxAudio.currentTime+0.5); g.gain.setValueAtTime(0.3, ctxAudio.currentTime); g.gain.exponentialRampToValueAtTime(0.01, ctxAudio.currentTime+0.5); osc.start(); osc.stop(ctxAudio.currentTime+0.5); }
+            if(type === 'hit') { osc.type='sawtooth'; osc.frequency.setValueAtTime(100, ctxAudio.currentTime); g.gain.setValueAtTime(0.5, ctxAudio.currentTime); g.gain.exponentialRampToValueAtTime(0.01, ctxAudio.currentTime+0.3); osc.start(); osc.stop(ctxAudio.currentTime+0.3); }
+            if(type === 'magic') { osc.type='triangle'; osc.frequency.setValueAtTime(600, ctxAudio.currentTime); osc.frequency.linearRampToValueAtTime(1200, ctxAudio.currentTime+0.3); g.gain.setValueAtTime(0.3, ctxAudio.currentTime); g.gain.linearRampToValueAtTime(0.01, ctxAudio.currentTime+0.3); osc.start(); osc.stop(ctxAudio.currentTime+0.3); }
+        }
 
-        const levels = {
-            1: { sky: ["#87CEEB", "#f0f8ff"], ground: "#2E8B57", road: "#555", title: "LEVEL 1: THE SEARCH", quote: `"Distance means so little when someone means so much."`, task: "Separate roads. Drive safe, pick up Hearts (❤️), and find your partner!", speed: 4 },
-            2: { sky: ["#FF7F50", "#FF4500"], ground: "#8B4513", road: "#333", title: "LEVEL 2: DUST RIDER", quote: `"Two souls but a single thought, two hearts that beat as one."`, task: "You met! Now dodge the desert traffic together. Speed increased.", speed: 6 },
-            3: { sky: ["#000022", "#00ffff"], ground: "#001122", road: "#111", title: "LEVEL 3: NEON CHASERS", quote: `"In a sea of people, my eyes will always search for you."`, task: "Night city! Double-tap screen to share 20 Life if partner is low.", speed: 8 },
-            4: { sky: ["#2a002a", "#ff00ff"], ground: "#101", road: "#222", title: "LEVEL 4: SYNTHWAVE", quote: `"I look at you and see the rest of my life in front of my eyes."`, task: "Sharp turns + Fast obstacles! Stay focused on the directions.", speed: 10 },
-            5: { sky: ["#000", "#111"], ground: "#050505", road: "#000", title: "LEVEL 5: GALAXY FINALE", quote: `"I love you past the moon and miss you beyond the stars."`, task: "Maximum speed. The final test of your coordination!", speed: 13 }
-        };
+        function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+        
+        function showOverlay(title, quote, showBtn = false, btnAction = null) {
+            document.getElementById('ov-title').innerText = title;
+            document.getElementById('ov-quote').innerText = quote;
+            let btn = document.getElementById('ov-btn');
+            if(showBtn) { btn.style.display = 'block'; btn.onclick = () => { document.getElementById('overlay').style.display='none'; if(btnAction) btnAction(); }; }
+            else { btn.style.display = 'none'; setTimeout(() => document.getElementById('overlay').style.display='none', 5000); }
+            document.getElementById('overlay').style.display = 'flex';
+        }
 
-        let isTransitioning = false;
+        // --- URL INTERCEPTOR (Auto Join) ---
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlGameId = urlParams.get('game');
+        const urlMode = urlParams.get('mode');
 
-        // Populate Birds & Scenery
-        for(let i=0; i<10; i++) birds.push({ x: Math.random()*window.innerWidth, y: Math.random()*horizonY, s: 0.5+Math.random() });
-        for(let i=0; i<25; i++) sceneryObjects.push({ side: Math.random() > 0.5 ? 1 : -1, z: Math.random() * 3000, type: Math.random() > 0.5 ? 'tree' : 'house' });
+        if(urlGameId && urlMode) {
+            gameMode = urlMode; gameId = urlGameId.toUpperCase();
+            showScreen('join-screen');
+        }
 
-        // --- CONTROLS ---
-        let touchX = 0, touchY = 0, lastTap = 0;
-        document.addEventListener('touchstart', e => { touchX = e.changedTouches[0].screenX; touchY = e.changedTouches[0].screenY; 
-            let now = new Date().getTime(); if (now - lastTap < 300 && gameState.status === 'playing') shareLife(); lastTap = now;
+        document.getElementById('btnAutoJoin').addEventListener('click', async () => {
+            let name = document.getElementById('joinName').value.trim();
+            if(!name) return; playerNum = 2; playBGM();
+            docRef = doc(db, "games", gameId);
+            let snap = await getDoc(docRef);
+            if(snap.exists()) {
+                await updateDoc(docRef, { p2Name: name, status: 'playing', p2Active: true });
+                initMultiplayerListeners();
+            } else alert("Room closed or invalid.");
         });
 
-        document.addEventListener('touchend', async e => {
-            if(gameState.status !== 'playing' || isTransitioning) return;
-            let dx = e.changedTouches[0].screenX - touchX;
-            let myLaneKey = playerNum === 1 ? 'p1Lane' : 'p2Lane';
+        // --- MENU LOGIC ---
+        window.startGameSetup = function(mode) {
+            gameMode = mode;
+            document.getElementById('setupTitle').innerText = mode === 'ttt' ? 'Tic Tac Toe' : 'Magical Journey';
+            showScreen('setup-screen');
+        }
+
+        document.getElementById('btnHost').addEventListener('click', async () => {
+            let name = document.getElementById('hostName').value.trim();
+            if(!name) return; playerNum = 1; playBGM();
             
-            if (Math.abs(dx) > 40) {
-                if(gameState.turnEvent && playerNum === 1) { 
-                    if((gameState.turnEvent === 'LEFT' && dx < 0) || (gameState.turnEvent === 'RIGHT' && dx > 0)) {
-                        await updateDoc(gameDocRef, { turnEvent: null }); showHUDAlert("GOOD TURN!", "#00ff00"); return;
-                    }
-                }
-                if (dx > 0 && gameState[myLaneKey] < 2) await updateDoc(gameDocRef, { [myLaneKey]: gameState[myLaneKey] + 1 });
-                else if (dx < 0 && gameState[myLaneKey] > 0) await updateDoc(gameDocRef, { [myLaneKey]: gameState[myLaneKey] - 1 });
+            if(gameMode === 'ttt') {
+                // TTT Level 1 is against BOT. No Firebase yet.
+                initTicTacToeBot(name);
+            } else {
+                // Host Journey
+                gameId = Math.random().toString(36).substring(2, 7).toUpperCase();
+                docRef = doc(db, "games", gameId);
+                await setDoc(docRef, { mode: 'journey', status: 'waiting', p1Name: name, p1Active: true, level: 1, p1Life: 100, p2Life: 100, progress: 0, p1Lane: 1, p2Lane: 1, obstacle: null, turnData: null });
+                shareWhatsApp(gameId, 'journey');
+                showOverlay("WAITING", "Invite sent. Waiting for partner...", false);
+                initMultiplayerListeners();
             }
         });
 
-        window.sendEmoji = async function(emoji) { if(gameState.status === 'playing') await updateDoc(gameDocRef, { latestEmoji: { e: emoji, p: playerNum, id: Date.now() } }); }
-
-        async function shareLife() {
-            let myLife = playerNum === 1 ? 'p1Life' : 'p2Life'; let ptLife = playerNum === 1 ? 'p2Life' : 'p1Life';
-            if(gameState[myLife] > 20 && gameState[ptLife] < 100) await updateDoc(gameDocRef, { [myLife]: gameState[myLife] - 20, [ptLife]: Math.min(100, gameState[ptLife] + 20) });
-        }
-
-        function showHUDAlert(text, color) {
-            let alert = document.getElementById('alert-center'); alert.innerText = text; alert.style.color = color;
-            alert.style.display = 'block'; setTimeout(() => alert.style.display = 'none', 1500);
-        }
-
-        // --- BUTTONS ---
-        document.getElementById('btnCreateGame').addEventListener('click', async () => {
-            const name = document.getElementById('playerName').value.trim();
-            if(!name) return; playerNum = 1; gameId = Math.random().toString(36).substring(2, 7).toUpperCase();
-            gameDocRef = doc(db, "games", gameId);
-            await setDoc(gameDocRef, { ...gameState, p1Name: name, p1Gender: document.getElementById('playerGender').value });
-            document.getElementById('displayCode').innerText = gameId; switchScreen('lobby-screen'); setupListeners();
-        });
-
-        document.getElementById('btnJoinGame').addEventListener('click', async () => {
-            const name = document.getElementById('playerName').value.trim();
-            gameId = document.getElementById('joinCode').value.trim().toUpperCase();
-            if(!name || gameId.length !== 5) return; playerNum = 2;
-            gameDocRef = doc(db, "games", gameId);
-            const snap = await getDoc(gameDocRef);
-            if(snap.exists()) { await updateDoc(gameDocRef, { p2Name: name, p2Gender: document.getElementById('playerGender').value, status: 'playing' }); setupListeners(); }
-        });
-
-        document.getElementById('btnRestart').addEventListener('click', async () => {
-            document.getElementById('game-over-screen').style.display = 'none';
-            if(playerNum === 1) await updateDoc(gameDocRef, { level: 1, progress: 0, p1Life: 100, p2Life: 100, status: 'playing', obstacle: null, turnEvent: null });
-        });
-
-        document.getElementById('btnShare').addEventListener('click', () => {
-            const url = window.location.origin + window.location.pathname + '?game=' + gameId;
-            const text = `Join my Journey! Room Code: *${gameId}* or click here: ${url}`;
+        function shareWhatsApp(id, mode) {
+            const url = `${window.location.origin}${window.location.pathname}?game=${id}&mode=${mode}`;
+            const text = `Join my game! Click here to play immediately: ${url}`;
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
-        });
+        }
 
-        // --- SYNC ENGINE ---
-        let lastEmojiId = 0;
-        function setupListeners() {
-            onSnapshot(gameDocRef, (docSnap) => {
+        // --- TIC TAC TOE (BOT & MULTIPLAYER) ---
+        let tttBoard = ['', '', '', '', '', '', '', '', ''];
+        let tttActive = true;
+        
+        function drawTTTBoard(onCellClick) {
+            let b = document.getElementById('board'); b.innerHTML = '';
+            for(let i=0; i<9; i++) {
+                let cell = document.createElement('div'); cell.className = 'ttt-cell';
+                cell.onclick = () => onCellClick(i);
+                cell.innerText = tttBoard[i];
+                if(tttBoard[i] === 'X') cell.classList.add('ttt-x'); else if(tttBoard[i]==='O') cell.classList.add('ttt-o');
+                b.appendChild(cell);
+            }
+        }
+
+        function checkWin(board) {
+            const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+            for(let l of lines) { if(board[l[0]] && board[l[0]] === board[l[1]] && board[l[0]] === board[l[2]]) return board[l[0]]; }
+            if(!board.includes('')) return 'Tie';
+            return null;
+        }
+
+        // Level 1: Find Partner (vs Bot)
+        function initTicTacToeBot(playerName) {
+            showScreen('ttt-screen');
+            tttBoard = ['', '', '', '', '', '', '', '', '']; tttActive = true;
+            document.getElementById('ttt-status').innerText = "Level 1: Defeat the System to find love.";
+            
+            drawTTTBoard((i) => {
+                if(!tttActive || tttBoard[i] !== '') return;
+                tttBoard[i] = 'X'; playSFX('magic'); drawTTTBoard();
+                
+                let win = checkWin(tttBoard);
+                if(win) { handleBotWin(win, playerName); return; }
+                
+                // Bot Move (Medium logic: block or random)
+                setTimeout(() => {
+                    let empty = tttBoard.map((v, i) => v === '' ? i : null).filter(v => v !== null);
+                    if(empty.length > 0) {
+                        let move = empty[Math.floor(Math.random() * empty.length)]; // Simple bot
+                        tttBoard[move] = 'O'; playSFX('hit'); drawTTTBoard();
+                        let bWin = checkWin(tttBoard);
+                        if(bWin) handleBotWin(bWin, playerName);
+                    }
+                }, 500);
+            });
+        }
+
+        async function handleBotWin(winner, pName) {
+            tttActive = false;
+            if(winner === 'X') {
+                playSFX('win');
+                document.getElementById('ttt-invite').style.display = 'block';
+                showOverlay("SYSTEM DEFEATED", `"Love requires patience and skill. You are ready."`, true, () => {});
+                
+                document.getElementById('btnTTTInvite').onclick = async () => {
+                    gameId = Math.random().toString(36).substring(2, 7).toUpperCase(); docRef = doc(db, "games", gameId);
+                    await setDoc(docRef, { mode: 'ttt', status: 'waiting', p1Name: pName, p1Active: true, board: ['', '', '', '', '', '', '', '', ''], turn: 'X', level: 2 });
+                    shareWhatsApp(gameId, 'ttt'); initMultiplayerListeners();
+                };
+            } else {
+                showOverlay("FAILED", `"The system won. Try again."`, true, () => initTicTacToeBot(pName));
+            }
+        }
+
+        // --- MULTIPLAYER ENGINE (Sync) ---
+        function initMultiplayerListeners() {
+            // Heartbeat / Disconnect logic
+            document.addEventListener("visibilitychange", async () => {
+                if(!docRef) return;
+                if (document.visibilityState === "hidden") await updateDoc(docRef, { [`p${playerNum}Active`]: false });
+                else await updateDoc(docRef, { [`p${playerNum}Active`]: true });
+            });
+
+            onSnapshot(docRef, (docSnap) => {
                 if(!docSnap.exists()) return;
-                let oldLvl = gameState.level; gameState = docSnap.data();
+                let data = docSnap.data();
 
-                if(gameState.status === 'playing' && !document.getElementById('game-screen').classList.contains('active')) {
-                    switchScreen('game-screen');
-                    document.getElementById('name1').innerText = gameState.p1Name; document.getElementById('name2').innerText = gameState.p2Name;
-                    startGameLoop(); if(playerNum === 1) hostEngine();
+                // Pause if someone leaves
+                if(data.status === 'playing' && (!data.p1Active || !data.p2Active)) {
+                    document.getElementById('instruction').innerText = "Partner disconnected! Paused.";
+                    document.getElementById('instruction').style.display = 'block'; return;
+                } else document.getElementById('instruction').style.display = 'none';
+
+                if(data.mode === 'ttt' && data.status === 'playing') {
+                    showScreen('ttt-screen'); document.getElementById('ttt-invite').style.display = 'none';
+                    document.getElementById('ttt-status').innerText = `Level ${data.level}: ${data.turn}'s Turn`;
+                    tttBoard = data.board;
+                    
+                    drawTTTBoard(async (i) => {
+                        let mySymbol = playerNum === 1 ? 'X' : 'O';
+                        if(data.turn !== mySymbol || tttBoard[i] !== '') return;
+                        
+                        let newBoard = [...tttBoard]; newBoard[i] = mySymbol; playSFX('magic');
+                        let nextTurn = mySymbol === 'X' ? 'O' : 'X';
+                        
+                        let winner = checkWin(newBoard);
+                        if(winner) {
+                            playSFX('win');
+                            let msg = winner === 'Tie' ? "It's a Tie!" : `${winner === 'X' ? data.p1Name : data.p2Name} Wins!`;
+                            let q = `"Every battle brings us closer."`;
+                            await updateDoc(docRef, { board: newBoard, status: 'paused' });
+                            showOverlay(msg, q, true, async () => {
+                                if(playerNum === 1) await updateDoc(docRef, { board: ['', '', '', '', '', '', '', '', ''], turn: 'X', level: data.level+1, status: 'playing' });
+                            });
+                        } else { await updateDoc(docRef, { board: newBoard, turn: nextTurn }); }
+                    });
                 }
 
-                if(gameState.status === 'playing') {
-                    document.getElementById('p1-life').style.width = Math.max(0, gameState.p1Life) + "%";
-                    document.getElementById('p2-life').style.width = Math.max(0, gameState.p2Life) + "%";
-                    document.getElementById('progress-fill').style.width = gameState.progress + "%";
-                    
-                    if(gameState.level > oldLvl) {
-                        if(gameState.level > 5) triggerFinalLoveAnimation();
-                        else showLevelOverlay(gameState.level);
+                if(data.mode === 'journey' && data.status === 'playing') {
+                    if(!document.getElementById('journey-hud').style.display || document.getElementById('journey-hud').style.display === 'none') {
+                        showScreen('menu-screen'); document.getElementById('menu-screen').classList.remove('active');
+                        document.getElementById('journey-hud').style.display = 'block'; document.getElementById('game-canvas').style.display = 'block';
+                        startJourneyEngine(); if(playerNum === 1) startJourneyHost();
                     }
-
-                    if(gameState.turnEvent) {
-                        targetCurve = gameState.turnEvent === 'LEFT' ? -40 : 40;
-                        document.getElementById('alert-center').innerText = `⬅️ SWIPE ${gameState.turnEvent}! ➡️`;
-                        document.getElementById('alert-center').style.color = "#ffeb3b";
-                        document.getElementById('alert-center').style.display = 'block';
-                    } else { targetCurve = 0; document.getElementById('alert-center').style.display = 'none'; }
-
-                    if(gameState.latestEmoji && gameState.latestEmoji.id !== lastEmojiId) {
-                        lastEmojiId = gameState.latestEmoji.id;
-                        let div = document.createElement('div'); div.className = 'floating-emoji'; div.innerText = gameState.latestEmoji.e;
-                        div.style.left = gameState.latestEmoji.p === 1 ? '20%' : '80%'; div.style.top = '60%';
-                        document.getElementById('game-screen').appendChild(div); setTimeout(() => div.remove(), 2000);
-                    }
-
-                    if(gameState.p1Life <= 0 || gameState.p2Life <= 0) document.getElementById('game-over-screen').style.display = 'flex';
+                    syncJourneyState(data);
                 }
             });
         }
 
-        function createGlitter() {
-            let overlay = document.getElementById('level-overlay');
-            for(let i=0; i<30; i++) {
-                let glit = document.createElement('div'); glit.className = 'glitter';
-                glit.style.left = Math.random() * 100 + 'vw'; glit.style.top = Math.random() * 100 + 'vh';
-                glit.style.animationDelay = Math.random() * 2 + 's';
-                overlay.appendChild(glit);
-                setTimeout(() => glit.remove(), 5000);
+        // --- THE JOURNEY V8 (Magical Surf Pseudo-3D) ---
+        let jState = null;
+        let c = document.getElementById('game-canvas'); let ctx = c.getContext('2d');
+        let hY = 0; function res() { c.width = window.innerWidth; c.height = window.innerHeight; hY = c.height * 0.4; } window.addEventListener('resize', res); res();
+
+        // Journey Controls
+        let tX = 0;
+        document.addEventListener('touchstart', e => tX = e.changedTouches[0].screenX );
+        document.addEventListener('touchend', async e => {
+            if(!jState || jState.status !== 'playing') return;
+            let dx = e.changedTouches[0].screenX - tX;
+            let myLane = playerNum === 1 ? 'p1Lane' : 'p2Lane';
+            
+            // Handle Forks/Turns visually
+            if(jState.turnData && playerNum === 1) {
+                if((jState.turnData === 'LEFT' && dx < -40) || (jState.turnData === 'RIGHT' && dx > 40)) {
+                    playSFX('win'); await updateDoc(docRef, { turnData: null }); return;
+                }
             }
-        }
+            if (dx > 40 && jState[myLane] < 2) await updateDoc(docRef, { [myLane]: jState[myLane] + 1 });
+            else if (dx < -40 && jState[myLane] > 0) await updateDoc(docRef, { [myLane]: jState[myLane] - 1 });
+        });
 
-        function showLevelOverlay(lvl) {
-            isTransitioning = true;
-            document.getElementById('level-title').innerText = levels[lvl].title;
-            document.getElementById('level-quote').innerText = levels[lvl].quote;
-            document.getElementById('level-task').innerText = "TASK: " + levels[lvl].task;
-            document.getElementById('level-overlay').style.display = 'flex';
-            createGlitter();
-            setTimeout(() => { document.getElementById('level-overlay').style.display = 'none'; isTransitioning = false; }, 5000);
-        }
+        function syncJourneyState(data) {
+            let oldLvl = jState ? jState.level : 1; jState = data;
+            document.getElementById('p1-life').style.width = Math.max(0, data.p1Life) + "%";
+            document.getElementById('p2-life').style.width = Math.max(0, data.p2Life) + "%";
 
-        function triggerFinalLoveAnimation() {
-            document.getElementById('game-screen').style.display = 'none';
-            let finalScreen = document.getElementById('final-screen'); finalScreen.style.display = 'flex';
-            document.getElementById('finalNames').innerText = `${gameState.p1Name} & ${gameState.p2Name}`;
-            const colors = ['#ff0000', '#ff00ff', '#00ffff', '#ffff00', '#00ff00'];
-            for(let i=0; i<80; i++) {
-                let h = document.createElement('div'); h.innerHTML = '❤️'; h.className = 'heart-particle';
-                h.style.color = colors[Math.floor(Math.random() * colors.length)]; h.style.left = '50%'; h.style.top = '50%';
-                let angle = Math.random() * Math.PI * 2; let dist = 100 + Math.random() * 300;
-                h.style.setProperty('--tx', (Math.cos(angle) * dist) + 'px'); h.style.setProperty('--ty', (Math.sin(angle) * dist) + 'px');
-                h.style.animationDelay = (Math.random() * 2) + 's'; finalScreen.appendChild(h);
+            if(jState.level > oldLvl) {
+                let quotes = ["The journey of a thousand miles begins with you.", "Through the shadows, we find our light.", "Together, there are no dead ends.", "Love is the only path."];
+                showOverlay(`LEVEL ${jState.level}`, quotes[(jState.level-1)%4]);
             }
+            
+            let ins = document.getElementById('instruction');
+            if(jState.turnData) { ins.innerText = `FORK AHEAD: GO ${jState.turnData}!`; ins.style.display = 'block'; }
+            else ins.style.display = 'none';
+
+            if(jState.p1Life <= 0 || jState.p2Life <= 0) showOverlay("JOURNEY ENDED", "You lost your light. Reload to try again.");
         }
 
-        // --- HOST ENGINE ---
-        let lastTurnProg = 0; let lastObsProg = 0;
-        function hostEngine() {
+        function startJourneyHost() {
             setInterval(async () => {
-                if(gameState.status !== 'playing' || isTransitioning || gameState.level > 5 || gameState.p1Life <= 0 || gameState.p2Life <= 0) return;
-
-                let newProg = gameState.progress + 1; // 1% per tick
-
-                if(newProg >= 100) {
-                    await updateDoc(gameDocRef, { level: gameState.level + 1, progress: 0, obstacle: null, turnEvent: null });
-                    lastTurnProg = 0; lastObsProg = 0;
-                } else {
-                    await updateDoc(gameDocRef, { progress: newProg });
+                if(!jState || jState.status !== 'playing' || jState.p1Life <= 0 || jState.p2Life <= 0) return;
+                let prog = jState.progress + 2;
+                if(prog >= 100) { await updateDoc(docRef, { level: jState.level + 1, progress: 0, obstacle: null, turnData: null }); } 
+                else {
+                    let update = { progress: prog };
+                    if(prog % 30 === 0 && jState.level > 1 && !jState.turnData) update.turnData = Math.random() > 0.5 ? 'LEFT' : 'RIGHT';
+                    if(jState.turnData && prog % 30 === 10) { update.p1Life = jState.p1Life - 20; update.p2Life = jState.p2Life - 20; update.turnData = null; } // Failed turn
                     
-                    if([1, 3, 4].includes(gameState.level) && newProg - lastTurnProg > 20 && !gameState.turnEvent) {
-                        lastTurnProg = newProg;
-                        await updateDoc(gameDocRef, { turnEvent: Math.random() > 0.5 ? 'LEFT' : 'RIGHT' });
-                        setTimeout(async () => {
-                            let snap = await getDoc(gameDocRef);
-                            if(snap.data().turnEvent) updateDoc(gameDocRef, { p1Life: snap.data().p1Life - 20, p2Life: snap.data().p2Life - 20, turnEvent: null });
-                        }, 3000);
-                    }
-
-                    if(!gameState.obstacle && newProg - lastObsProg > 6 && !gameState.turnEvent) {
-                        lastObsProg = newProg;
-                        let type = Math.random() > 0.7 ? 'health' : (gameState.level % 2 === 0 ? 'monster' : 'police');
-                        await updateDoc(gameDocRef, { obstacle: { lane: Math.floor(Math.random() * 3), type: type, z: 3000, id: Date.now() } });
-                    }
+                    if(!jState.obstacle && Math.random() > 0.6 && !jState.turnData) update.obstacle = { lane: Math.floor(Math.random()*3), z: 2000, type: Math.random()>0.7?'heart':'rock' };
+                    await updateDoc(docRef, update);
                 }
-            }, 800); // Progress speed
+            }, 500);
         }
 
-        // --- 3D CANVAS RENDERER ---
-        let obsZ = 3000; let roadOffset = 0;
-        
-        function drawCar(x, y, scale, color) {
-            ctx.save(); ctx.translate(x, y); ctx.scale(scale, scale);
-            ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.beginPath(); ctx.ellipse(0, 25, 50, 10, 0, 0, Math.PI*2); ctx.fill();
-            ctx.fillStyle = "#111"; ctx.fillRect(-40, 5, 15, 20); ctx.fillRect(25, 5, 15, 20);
-            ctx.fillStyle = color; ctx.beginPath(); ctx.roundRect(-35, -5, 70, 25, 8); ctx.fill();
-            ctx.fillStyle = "#222"; ctx.beginPath(); ctx.moveTo(-25, -5); ctx.lineTo(-15, -25); ctx.lineTo(15, -25); ctx.lineTo(25, -5); ctx.fill();
-            ctx.fillStyle = "#ff0000"; ctx.fillRect(-30, 8, 12, 6); ctx.fillRect(18, 8, 12, 6);
-            ctx.restore();
+        let oZ = 2000, rOff = 0, p1Rx = 1, p2Rx = 1, curve = 0, tCurve = 0;
+        let stars = []; for(let i=0; i<50; i++) stars.push({x:Math.random()*2000, y:Math.random()*hY, s:Math.random()*2});
+        let scenery = []; for(let i=0; i<15; i++) scenery.push({side:Math.random()>0.5?1:-1, z:Math.random()*2000});
+
+        function proj(x,y,z) { let s = 300/(300+z); return { x: (c.width/2)+(x*s), y: hY+((c.height-hY)*s), s:s }; }
+
+        function drawOrb(x, y, s, color) {
+            ctx.beginPath(); ctx.arc(x, y, 20*s, 0, Math.PI*2); ctx.fillStyle = color; ctx.shadowBlur = 30*s; ctx.shadowColor = color; ctx.fill(); ctx.shadowBlur = 0;
+            ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(x, y, 8*s, 0, Math.PI*2); ctx.fill(); // Core
         }
 
-        function drawObject(x, y, scale, type) {
-            ctx.save(); ctx.translate(x, y); ctx.scale(scale, scale);
-            if(type === 'police') {
-                ctx.fillStyle = "#000044"; ctx.fillRect(-40, -20, 80, 40); 
-                ctx.fillStyle = (Math.floor(Date.now()/100)%2 === 0) ? "#ff0000" : "#0000ff";
-                ctx.shadowBlur = 20; ctx.shadowColor = ctx.fillStyle; ctx.fillRect(-15, -35, 30, 15);
-            } else if(type === 'monster') {
-                ctx.fillStyle = "#00ff00"; ctx.beginPath(); ctx.arc(0, 0, 40, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = "#000"; ctx.beginPath(); ctx.arc(-15, -10, 5, 0, Math.PI*2); ctx.arc(15, -10, 5, 0, Math.PI*2); ctx.fill();
-            } else if (type === 'health') {
-                ctx.font = "80px Arial"; ctx.fillText("❤️", -40, 20);
-            } else if (type === 'tree') {
-                ctx.fillStyle = "#3e2723"; ctx.fillRect(-10, 0, 20, 40);
-                ctx.fillStyle = "#2e7d32"; ctx.beginPath(); ctx.moveTo(0, -60); ctx.lineTo(-40, 10); ctx.lineTo(40, 10); ctx.fill();
-            } else if (type === 'house') {
-                ctx.fillStyle = "#fbc02d"; ctx.fillRect(-40, -40, 80, 80);
-                ctx.fillStyle = "#d32f2f"; ctx.beginPath(); ctx.moveTo(0, -80); ctx.lineTo(-50, -40); ctx.lineTo(50, -40); ctx.fill();
-            }
-            ctx.restore();
-        }
-
-        function startGameLoop() {
-            if(gameState.level === 1) showLevelOverlay(1);
-
+        function startJourneyEngine() {
             function render() {
-                if(gameState.status !== 'playing' || isTransitioning || gameState.level > 5) { requestAnimationFrame(render); return; }
+                if(!jState || jState.status !== 'playing') { requestAnimationFrame(render); return; }
                 
-                let lvlData = levels[gameState.level];
+                // Magical Sky
+                let g = ctx.createLinearGradient(0,0,0,hY); g.addColorStop(0,"#020011"); g.addColorStop(1,"#2a0044");
+                ctx.fillStyle = g; ctx.fillRect(0,0,c.width,hY);
+                ctx.fillStyle = "#fff"; stars.forEach(st => { st.x -= 0.5; if(st.x<0) st.x=c.width; ctx.beginPath(); ctx.arc(st.x, st.y, st.s, 0, Math.PI*2); ctx.fill(); });
+
+                // Ground & Path
+                ctx.fillStyle = "#0a0a1a"; ctx.fillRect(0,hY,c.width,c.height);
+                let spd = 10 + jState.level; rOff = (rOff+spd)%100;
                 
-                // Sky & Birds
-                let grad = ctx.createLinearGradient(0, 0, 0, horizonY);
-                grad.addColorStop(0, lvlData.sky[0]); grad.addColorStop(1, lvlData.sky[1]);
-                ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, horizonY);
-                
-                ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.font = "10px Arial";
-                birds.forEach(b => {
-                    b.x += b.s; if(b.x > canvas.width) b.x = -20;
-                    ctx.fillText("v", b.x, b.y + Math.sin(Date.now()*0.005 + b.x)*10);
-                });
+                tCurve = jState.turnData ? (jState.turnData==='LEFT'?-50:50) : Math.sin(jState.progress*0.1)*20;
+                curve += (tCurve - curve)*0.05;
 
-                // Ground
-                ctx.fillStyle = lvlData.ground; ctx.fillRect(0, horizonY, canvas.width, canvas.height);
-
-                let speed = lvlData.speed; roadOffset = (roadOffset + speed) % 100;
-                roadCurve += (targetCurve - roadCurve) * 0.05;
-
-                // Solid pseudo-3D Road with Curves
-                let dx = 0; 
-                for(let y = canvas.height; y > horizonY; y -= 4) {
-                    let z = (canvas.height - horizonY) / (y - horizonY);
-                    dx += roadCurve * 0.05 * z;
-                    let roadW = 800 / z; let projX = (canvas.width / 2) + dx;
+                let dx = 0;
+                for(let y=c.height; y>hY; y-=5) {
+                    let z = (c.height-hY)/(y-hY); dx += curve*0.05*z;
+                    let pX = (c.width/2)+dx; let rW = 400/z;
                     
-                    let isStripe = (y + roadOffset) % 40 > 20;
-                    
-                    // Grass side effect
-                    ctx.fillStyle = isStripe ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.05)";
-                    ctx.fillRect(0, y, canvas.width, 4);
-
-                    // Road Surface
-                    ctx.fillStyle = isStripe ? lvlData.road : "#444";
-                    ctx.fillRect(projX - roadW/2, y, roadW, 4);
-                    
-                    // Lane Dividers
-                    if(isStripe) {
-                        ctx.fillStyle = "#fff";
-                        ctx.fillRect(projX - roadW/6, y, 4, 4); ctx.fillRect(projX + roadW/6, y, 4, 4);
-                    }
+                    // Starlight Path (Not road lines, glowing edges)
+                    ctx.fillStyle = (y+rOff)%40 > 20 ? "rgba(0, 242, 254, 0.1)" : "rgba(255, 0, 255, 0.1)";
+                    ctx.fillRect(pX-rW, y, rW*2, 5);
+                    ctx.fillStyle = "#fff"; ctx.globalAlpha = 0.5; ctx.fillRect(pX-rW, y, 3, 5); ctx.fillRect(pX+rW, y, 3, 5); ctx.globalAlpha = 1;
                 }
 
-                // Render Scenery
-                sceneryObjects.forEach(s => {
-                    s.z -= speed * 3; if(s.z < 0) s.z = 3000;
-                    let zScale = 400 / (400 + s.z);
-                    let cOffset = (roadCurve * 0.05) * s.z;
-                    let xOffset = (canvas.width/2) + (s.side * 500 * zScale) + cOffset;
-                    let yPos = horizonY + ((canvas.height - horizonY) * zScale);
-                    drawObject(xOffset, yPos, zScale, s.type);
+                // Scenery (Glowing crystals on side, strictly offset)
+                scenery.forEach(s => {
+                    s.z -= spd*2; if(s.z<0) s.z=2000;
+                    let sP = proj(s.side * 500 + (curve*s.z*0.05), 0, s.z);
+                    ctx.fillStyle = s.side === 1 ? "rgba(0,255,255,0.4)" : "rgba(255,0,255,0.4)";
+                    ctx.beginPath(); ctx.moveTo(sP.x, sP.y); ctx.lineTo(sP.x-15*sP.s, sP.y-(100*sP.s)); ctx.lineTo(sP.x+15*sP.s, sP.y-(80*sP.s)); ctx.fill();
                 });
 
-                let navText = document.getElementById('nav-hud');
-                if(gameState.level === 1) navText.innerText = `GPS: Finding Partner...`;
-                else navText.innerText = `GPS: Driving together!`;
+                // Fork Visuals
+                if(jState.turnData) {
+                    let fP = proj(0, 0, 1000);
+                    ctx.fillStyle = "#ffeb3b"; ctx.font = `${30*fP.s}px Orbitron`; ctx.fillText(jState.turnData, fP.x-20, fP.y-50);
+                }
 
-                // Obstacle Logic
-                if(gameState.obstacle) {
-                    obsZ -= (speed * 4);
-                    let zScale = 400 / (400 + obsZ);
-                    let laneOffset = (gameState.obstacle.lane - 1) * 200; // -200, 0, 200
-                    let curveOff = (roadCurve * 0.05) * obsZ;
-                    let oX = (canvas.width/2) + (laneOffset * zScale) + curveOff;
-                    let oY = horizonY + ((canvas.height - horizonY) * zScale);
-
-                    if(obsZ > 20) {
-                        drawObject(oX, oY, zScale * 1.5, gameState.obstacle.type);
-                    } else if(obsZ > -50) {
-                        let myLane = playerNum === 1 ? gameState.p1Lane : gameState.p2Lane;
-                        if(myLane === gameState.obstacle.lane && playerNum === 1) {
-                            if(gameState.obstacle.type === 'health') {
-                                updateDoc(gameDocRef, { p1Life: Math.min(100, gameState.p1Life + 10), p2Life: Math.min(100, gameState.p2Life + 10), obstacle: null });
-                            } else {
-                                updateDoc(gameDocRef, { p1Life: gameState.p1Life - 15, p2Life: gameState.p2Life - 15, obstacle: null });
-                            }
-                            obsZ = 3000;
+                // Obstacles
+                if(jState.obstacle) {
+                    oZ -= spd*3; let lX = (jState.obstacle.lane - 1)*150;
+                    let oP = proj(lX + (curve*oZ*0.05), 0, oZ);
+                    
+                    if(oZ > 20) {
+                        if(jState.obstacle.type === 'heart') { ctx.fillStyle="#ff0844"; ctx.font=`${40*oP.s}px Arial`; ctx.fillText("❤️", oP.x-10, oP.y); }
+                        else { ctx.fillStyle="#333"; ctx.beginPath(); ctx.moveTo(oP.x,oP.y); ctx.lineTo(oP.x-30*oP.s, oP.y-40*oP.s); ctx.lineTo(oP.x+30*oP.s, oP.y-40*oP.s); ctx.fill(); }
+                    } else if(oZ > -50) {
+                        let myLane = playerNum === 1 ? jState.p1Lane : jState.p2Lane;
+                        if(myLane === jState.obstacle.lane && playerNum === 1) {
+                            if(jState.obstacle.type === 'heart') { playSFX('magic'); updateDoc(docRef, { p1Life: Math.min(100, jState.p1Life+15), p2Life: Math.min(100, jState.p2Life+15), obstacle: null }); }
+                            else { playSFX('hit'); updateDoc(docRef, { p1Life: jState.p1Life-15, p2Life: jState.p2Life-15, obstacle: null }); }
+                            oZ = 2000;
                         }
-                    } else {
-                        obsZ = 3000; if(playerNum === 1) updateDoc(gameDocRef, { obstacle: null });
-                    }
+                    } else { oZ = 2000; if(playerNum===1) updateDoc(docRef, { obstacle:null }); }
                 }
 
-                // Render Cars
-                let targetP1X = (gameState.p1Lane - 1) * 200; let targetP2X = (gameState.p2Lane - 1) * 200;
-                renderP1X += (targetP1X - renderP1X) * 0.15; renderP2X += (targetP2X - renderP2X) * 0.15;
-                let carY = canvas.height - 100;
-                let p1Proj = { x: (canvas.width/2) + renderP1X, y: carY }; let p2Proj = { x: (canvas.width/2) + renderP2X, y: carY };
-                let p1Color = gameState.p1Gender === 'boy' ? '#00f2fe' : '#ff0844'; let p2Color = gameState.p2Gender === 'boy' ? '#00f2fe' : '#ff0844';
+                // Players
+                p1Rx += (((jState.p1Lane-1)*150) - p1Rx)*0.2; p2Rx += (((jState.p2Lane-1)*150) - p2Rx)*0.2;
+                let cY = c.height - 120;
+                let p1P = proj(p1Rx, 0, 150); let p2P = proj(p2Rx, 0, 150);
+                p1P.y = cY; p2P.y = cY;
 
-                if(gameState.level === 1) {
-                    if(playerNum === 1) drawCar(p1Proj.x, p1Proj.y, 1.2, p1Color); else drawCar(p2Proj.x, p2Proj.y, 1.2, p2Color);
+                // Level 1: Only draw self. Level 2+: Draw both & connect line
+                if(jState.level === 1) {
+                    if(playerNum === 1) drawOrb(p1P.x, p1P.y, p1P.s, '#00f2fe'); else drawOrb(p2P.x, p2P.y, p2P.s, '#ff0844');
                 } else {
-                    drawCar(p1Proj.x, p1Proj.y, 1.2, p1Color); drawCar(p2Proj.x, p2Proj.y, 1.2, p2Color);
+                    ctx.strokeStyle = "rgba(255,255,255,0.3)"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(p1P.x, p1P.y); ctx.lineTo(p2P.x, p2P.y); ctx.stroke();
+                    drawOrb(p1P.x, p1P.y, p1P.s, '#00f2fe'); drawOrb(p2P.x, p2P.y, p2P.s, '#ff0844');
                 }
 
                 requestAnimationFrame(render);
