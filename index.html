@@ -8,97 +8,90 @@
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600;800&family=Orbitron:wght@700;900&display=swap');
         
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
-        body { font-family: 'Poppins', sans-serif; background: #0a0a1a; color: white; height: 100vh; width: 100vw; overflow: hidden; touch-action: none; }
+        body { font-family: 'Poppins', sans-serif; background: #050508; color: white; height: 100vh; width: 100vw; overflow: hidden; touch-action: none; }
         
         .screen { display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle at center, #1a0033, #000); z-index: 10; }
         .active { display: flex; }
         
-        h1 { font-family: 'Dancing Script', cursive; font-size: 50px; color: #ff007f; text-shadow: 0 0 20px #ff007f; text-align: center; margin-bottom: 10px;}
+        h1 { font-family: 'Dancing Script', cursive; font-size: 55px; color: #ff007f; text-shadow: 0 0 20px #ff007f; text-align: center; margin-bottom: 5px;}
         .subtitle { font-family: 'Orbitron', sans-serif; font-size: 14px; color: #00f2fe; margin-bottom: 25px; letter-spacing: 2px;}
         
-        .card { background: rgba(0, 0, 0, 0.7); padding: 25px; border-radius: 20px; border: 1px solid #ff007f; width: 90%; max-width: 400px; box-shadow: 0 0 30px rgba(255, 0, 127, 0.4); text-align: center; backdrop-filter: blur(10px);}
+        .card { background: rgba(10, 10, 20, 0.85); padding: 25px; border-radius: 20px; border: 1px solid #ff007f; width: 90%; max-width: 400px; box-shadow: 0 0 30px rgba(255, 0, 127, 0.3); text-align: center; backdrop-filter: blur(15px);}
 
         input, select, button { width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: none; font-size: 16px; font-family: 'Poppins', sans-serif; text-align: center; font-weight: bold; transition: 0.2s;}
-        input, select { background: rgba(255,255,255,0.9); color: #333; }
-        input:focus { border: 2px solid #00f2fe; }
+        input, select { background: rgba(255,255,255,0.95); color: #111; }
+        input:focus { border: 2px solid #00f2fe; outline: none; }
         
         .btn-primary { background: linear-gradient(90deg, #ff007f, #ff758c); color: #fff; text-transform: uppercase; cursor: pointer; box-shadow: 0 5px 15px rgba(255,0,127,0.4);}
         .btn-secondary { background: transparent; border: 2px solid #00f2fe; color: #00f2fe; }
         .btn-success { background: #25D366; color: white; }
 
-        /* Comm HUD (Chat & Voice) */
-        #comm-hud { display: none; position: absolute; top: 10px; right: 10px; z-index: 100; flex-direction: column; gap: 10px; }
-        .comm-btn { width: 45px; height: 45px; border-radius: 50%; background: rgba(0,0,0,0.8); border: 1px solid #00f2fe; color: #00f2fe; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 20px; }
-        .comm-btn.muted { color: #ff0055; border-color: #ff0055; }
+        /* Floating Nav & Comm HUD */
+        #top-nav { display: none; position: absolute; top: 15px; left: 15px; right: 15px; justify-content: space-between; z-index: 100; pointer-events: none;}
+        .glass-btn { pointer-events: auto; width: 45px; height: 45px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: #fff; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 20px; backdrop-filter: blur(10px); box-shadow: 0 5px 15px rgba(0,0,0,0.5); transition: 0.3s; }
+        .glass-btn:active { transform: scale(0.9); }
+        .muted { color: #ff0055; border-color: #ff0055; }
         
-        #chat-panel { display: none; position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; height: 250px; background: rgba(0,0,0,0.85); border: 1px solid #ff007f; border-radius: 15px; z-index: 100; flex-direction: column; }
-        #chat-msgs { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; font-size: 13px; }
-        .msg { padding: 8px 12px; border-radius: 15px; max-width: 80%; word-wrap: break-word; }
-        .msg.me { background: #ff007f; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
-        .msg.them { background: #00f2fe; color: black; align-self: flex-start; border-bottom-left-radius: 2px; }
-        #chat-input-area { display: flex; padding: 5px; gap: 5px; }
-        #chat-input-area input { margin: 0; padding: 10px; border-radius: 20px; }
-        #chat-input-area button { width: 60px; margin: 0; padding: 10px; border-radius: 20px; }
+        #chat-panel { display: none; position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; height: 300px; background: rgba(10,10,20,0.95); border: 1px solid #00f2fe; border-radius: 15px; z-index: 100; flex-direction: column; box-shadow: 0 10px 30px rgba(0,242,254,0.3); backdrop-filter: blur(10px);}
+        #chat-msgs { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; font-size: 14px; }
+        .msg { padding: 10px 15px; border-radius: 20px; max-width: 80%; word-wrap: break-word; }
+        .msg.me { background: linear-gradient(90deg, #ff007f, #ff758c); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .msg.them { background: linear-gradient(90deg, #00f2fe, #4facfe); color: black; align-self: flex-start; border-bottom-left-radius: 2px; }
+        #chat-input-area { display: flex; padding: 10px; gap: 10px; border-top: 1px solid rgba(255,255,255,0.1);}
+        #chat-input-area input { margin: 0; padding: 12px; border-radius: 20px; font-size: 14px;}
+        #chat-input-area button { width: 60px; margin: 0; padding: 12px; border-radius: 20px; }
 
-        /* Game HUD */
-        #game-area { display: none; position: absolute; top:0; left:0; width: 100vw; height: 100vh; z-index: 5; flex-direction: column; align-items: center; justify-content: center; background: #050505;}
+        /* Game Area Base */
+        #game-area { display: none; position: absolute; top:0; left:0; width: 100vw; height: 100vh; z-index: 5; flex-direction: column; align-items: center; justify-content: center; background: #050508;}
         canvas { display: none; position: absolute; top:0; left:0; width: 100vw; height: 100vh; z-index: 1; }
         
-        #score-hud { position: absolute; top: 15px; width: 100%; padding: 0 15px; display: flex; justify-content: space-between; z-index: 20; pointer-events: none; }
-        .score-box { background: rgba(0,0,0,0.7); border: 1px solid #fff; border-radius: 10px; padding: 10px 20px; text-align: center; }
-        .score-box h3 { font-family: 'Orbitron'; font-size: 14px; color: #ff007f; }
-        .score-box p { font-size: 20px; font-weight: bold; color: #00f2fe; margin:0;}
+        #score-hud { position: absolute; top: 75px; width: 100%; padding: 0 20px; display: flex; justify-content: space-between; z-index: 20; pointer-events: none; }
+        .score-box { background: rgba(0,0,0,0.8); border: 1px solid #fff; border-radius: 12px; padding: 10px 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.5);}
+        .score-box h3 { font-family: 'Orbitron'; font-size: 12px; color: #ff007f; }
+        .score-box p { font-size: 22px; font-weight: bold; color: #00f2fe; margin:0; font-family: 'Orbitron';}
+        
+        #level-title-hud { font-family: 'Orbitron'; font-size: 22px; color: #fff; text-shadow: 0 0 10px #ff007f; margin-top: 10px; z-index: 20;}
 
-        /* Mini Games CSS */
-        .grid-game { display: grid; gap: 10px; z-index: 10; margin-top: 50px; }
-        .match-card { width: 70px; height: 70px; background: #222; border: 2px solid #ff007f; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 35px; cursor: pointer; transition: 0.3s;}
-        .match-card.flipped { background: #fff; transform: rotateY(180deg); }
-        .ttt-cell { width: 90px; height: 90px; background: #111; border: 2px solid #00f2fe; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 50px; font-family: 'Orbitron'; cursor: pointer; }
+        /* Level 1: Memory Match */
+        .grid-game { display: grid; gap: 12px; z-index: 10; margin-top: 20px; }
+        .match-card { width: 75px; height: 75px; background: rgba(255,255,255,0.1); border: 2px solid #ff007f; border-radius: 15px; display: flex; justify-content: center; align-items: center; font-size: 35px; cursor: pointer; transition: transform 0.4s, background 0.4s; box-shadow: inset 0 0 15px rgba(255,0,127,0.2);}
+        .match-card.flipped { background: #fff; transform: rotateY(180deg); border-color: #fff; box-shadow: 0 0 20px #fff;}
+        
+        /* Level 2: Tic Tac Toe */
+        .ttt-cell { width: 95px; height: 95px; background: rgba(0,242,254,0.05); border: 2px solid #00f2fe; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 55px; font-family: 'Orbitron'; cursor: pointer; box-shadow: inset 0 0 20px rgba(0,242,254,0.2); transition: 0.2s;}
+        
+        /* Level 3: Heart Popper */
+        #popper-area { display: none; position: absolute; top: 150px; left: 10px; right: 10px; bottom: 10px; z-index: 10; border: 2px dashed rgba(255,0,127,0.3); border-radius: 20px; }
+        .pop-target { position: absolute; font-size: 50px; cursor: pointer; animation: pulse 1s infinite; filter: drop-shadow(0 0 10px #ff007f); }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+        /* Level 4: Word Scramble */
+        #scramble-area { display: none; z-index: 10; flex-direction: column; align-items: center; gap: 20px; margin-top: 50px; width: 90%; max-width: 400px;}
+        #scramble-word { font-family: 'Orbitron'; font-size: 45px; color: #ffeb3b; text-shadow: 0 0 20px #ffeb3b; letter-spacing: 10px; text-align: center;}
 
         /* Overlays */
-        #overlay { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 150; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-        #ov-title { font-family: 'Orbitron'; font-size: 35px; color: #00f2fe; margin-bottom: 15px; }
-        #ov-quote { font-size: 22px; color: #ff9a9e; font-family: 'Dancing Script', cursive; width: 85%; margin-bottom: 25px; line-height: 1.4;}
+        #overlay { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5,5,8,0.95); z-index: 150; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px;}
+        #ov-title { font-family: 'Orbitron'; font-size: 40px; color: #00f2fe; margin-bottom: 20px; text-shadow: 0 0 20px #00f2fe;}
+        #ov-quote { font-size: 24px; color: #ff9a9e; font-family: 'Dancing Script', cursive; margin-bottom: 30px; line-height: 1.5;}
         
         /* FINALE ANIMATION */
         #final-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 200; overflow: hidden; flex-direction: column; align-items: center; justify-content: center; }
-        .heart-particle { position: absolute; font-size: 25px; animation: zoomOutHeart 3s forwards cubic-bezier(0.1, 0.8, 0.3, 1); }
-        #final-text { font-family: 'Dancing Script'; font-size: 45px; z-index: 210; opacity: 0; animation: fadeInText 3s 1s forwards; text-align: center;
-                      background: linear-gradient(90deg, #ff007f, #00f2fe, #ff758c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 10px rgba(255,0,127,0.5));}
+        .heart-particle { position: absolute; font-size: 30px; animation: zoomOutHeart 3.5s forwards cubic-bezier(0.1, 0.8, 0.3, 1); }
+        #final-text { font-family: 'Dancing Script'; font-size: 55px; z-index: 210; opacity: 0; animation: fadeInText 3s 1s forwards; text-align: center;
+                      background: linear-gradient(90deg, #ff007f, #00f2fe, #ff758c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 15px rgba(255,0,127,0.6));}
         
-        @keyframes zoomOutHeart { 0% { transform: scale(0) translate(0,0); opacity: 1; } 100% { transform: scale(20) translate(var(--tx), var(--ty)); opacity: 0; } }
+        @keyframes zoomOutHeart { 0% { transform: scale(0) translate(0,0); opacity: 1; } 100% { transform: scale(25) translate(var(--tx), var(--ty)); opacity: 0; } }
         @keyframes fadeInText { to { opacity: 1; transform: scale(1.1); } }
     </style>
 </head>
 <body>
 
-    <div id="home-screen" class="screen active">
-        <h1>Love Games</h1>
-        <div class="subtitle">BY NANI CREATIONS</div>
-        <div class="card" id="auth-card">
-            <input type="text" id="playerName" placeholder="Your Name" required>
-            <button id="btnCreate" class="btn-primary">Host New Journey</button>
-            <div id="returning-user" style="display:none; margin-top: 15px;">
-                <p style="color:#00f2fe; font-size: 13px;">Previous partner found!</p>
-                <button id="btnPingPartner" class="btn-success">Ping <span id="partnerNameSpan">Partner</span></button>
-            </div>
-            <div style="margin: 15px 0; color: #555;">OR</div>
-            <input type="text" id="joinCode" placeholder="Enter Code" style="text-transform: uppercase;">
-            <button id="btnJoin" class="btn-secondary">Join Game</button>
+    <div id="top-nav">
+        <div class="glass-btn" id="btnHome" title="Main Menu">🏠</div>
+        <div style="display: flex; gap: 15px;">
+            <div class="glass-btn" id="btnMic">🎤</div>
+            <div class="glass-btn" id="btnChat">💬</div>
         </div>
-    </div>
-
-    <div id="lobby-screen" class="screen">
-        <h2 style="color: #00f2fe; margin-bottom: 20px;">Awaiting Connection...</h2>
-        <div class="card">
-            <h1 id="displayCode" style="font-size: 45px; color: #ff007f; margin: 10px 0;">XXXXX</h1>
-            <button id="btnShare" class="btn-success" style="margin-top: 20px;">Invite via WhatsApp</button>
-        </div>
-    </div>
-
-    <div id="comm-hud">
-        <div class="comm-btn" id="btnMic">🎤</div>
-        <div class="comm-btn" id="btnChat">💬</div>
     </div>
 
     <div id="chat-panel">
@@ -109,10 +102,32 @@
         </div>
     </div>
 
+    <div id="home-screen" class="screen active">
+        <h1>Love Hub</h1>
+        <div class="subtitle">BY NANI CREATIONS</div>
+        <div class="card">
+            <input type="text" id="playerName" placeholder="Your Name" required>
+            <button id="btnCreate" class="btn-primary">Start New Journey</button>
+            <div style="margin: 20px 0; color: #777; font-weight:bold;">OR</div>
+            <input type="text" id="joinCode" placeholder="Enter Friend's Code" style="text-transform: uppercase;">
+            <button id="btnJoin" class="btn-secondary">Join Game</button>
+        </div>
+    </div>
+
+    <div id="lobby-screen" class="screen">
+        <h2 style="color: #00f2fe; margin-bottom: 20px; font-family:'Orbitron';">Waiting for Partner...</h2>
+        <div class="card">
+            <h1 id="displayCode" style="font-size: 50px; color: #ff007f; margin: 10px 0; font-family:'Orbitron';">XXXXX</h1>
+            <p style="color:#aaa; font-size:14px; margin-bottom:20px;">Share this code with your partner</p>
+            <button id="btnShare" class="btn-success">Invite via WhatsApp</button>
+            <button id="btnCopy" class="btn-secondary" style="margin-top:10px;">Copy Link</button>
+        </div>
+    </div>
+
     <div id="game-area">
+        <h2 id="level-title-hud">LEVEL 1</h2>
         <div id="score-hud">
             <div class="score-box"><h3 id="name1">P1</h3><p id="score1">0</p></div>
-            <h2 id="level-title-hud" style="margin-top:10px;">LEVEL 1</h2>
             <div class="score-box"><h3 id="name2">P2</h3><p id="score2">0</p></div>
         </div>
         
@@ -120,23 +135,32 @@
         
         <div id="ttt-board" class="grid-game" style="grid-template-columns: repeat(3, 1fr); display:none;"></div>
         
+        <div id="popper-area"></div>
+
+        <div id="scramble-area">
+            <div id="scramble-word"></div>
+            <input type="text" id="scramble-input" placeholder="Type the real word..." style="text-transform:uppercase;">
+            <button id="btnScramble" class="btn-primary">Guess</button>
+        </div>
+
         <canvas id="game-canvas"></canvas>
     </div>
 
     <div id="overlay">
         <h1 id="ov-title">LEVEL 1</h1>
         <div id="ov-quote" class="quote"></div>
-        <button id="ov-btn" class="btn-primary" style="display:none; width: 200px;">Continue</button>
+        <button id="ov-btn" class="btn-primary" style="display:none; width: 250px;">Continue</button>
     </div>
 
     <div id="final-screen">
-        <div id="final-text">True Love Prevails<br><br><span id="finalNames"></span></div>
+        <div id="final-text">True Love Prevails<br><br><span id="finalNames" style="color:#00f2fe; font-size:40px;"></span></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, doc, setDoc, onSnapshot, updateDoc, getDoc, collection, addDoc, query, orderBy, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
+        // FIREBASE SETUP
         const firebaseConfig = {
             apiKey: "AIzaSyCZmqyLmyWesuoj6djTbyfrOJ1v7_FCWcQ",
             authDomain: "game-bf78a.firebaseapp.com",
@@ -147,47 +171,32 @@
         };
         const app = initializeApp(firebaseConfig); const db = getFirestore(app);
 
-        // --- GLOBAL VARIABLES ---
+        // GLOBAL VARS
         let gameId = "", playerNum = 0, myName = "", docRef = null, messagesRef = null;
         let gState = { level: 1, p1Score: 0, p2Score: 0, status: 'waiting' };
         
-        // Quotes
         const quotes = [
             "“Distance means so little when someone means so much.”",
+            "“Two souls but a single thought, two hearts that beat as one.”",
             "“In a sea of people, my eyes will always search for you.”",
-            "“Love is a journey starting at forever and ending at never.”",
-            "“We are tied together with an invisible thread of love.”"
+            "“We are tied together with an invisible thread of love.”",
+            "“Love is a journey starting at forever and ending at never.”"
         ];
 
-        // --- UI UTILS ---
+        // UI UTILS
         function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); if(document.getElementById(id)) document.getElementById(id).classList.add('active'); }
         function showOverlay(title, quote, showBtn=false, btnAction=null) {
             document.getElementById('ov-title').innerText = title; document.getElementById('ov-quote').innerText = quote;
             let btn = document.getElementById('ov-btn');
             if(showBtn) { btn.style.display='block'; btn.onclick=()=>{ document.getElementById('overlay').style.display='none'; if(btnAction) btnAction(); }; }
-            else { btn.style.display='none'; setTimeout(()=>document.getElementById('overlay').style.display='none', 4000); }
+            else { btn.style.display='none'; setTimeout(()=>document.getElementById('overlay').style.display='none', 4500); }
             document.getElementById('overlay').style.display = 'flex';
         }
 
-        // --- AUTO JOIN & PERSISTENCE ---
-        window.onload = () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            if(urlParams.get('game')) { document.getElementById('joinCode').value = urlParams.get('game'); }
-            
-            // Check past friend
-            let pastGame = localStorage.getItem('lastGameId');
-            let pastPartner = localStorage.getItem('lastPartner');
-            if(pastGame && pastPartner) {
-                document.getElementById('returning-user').style.display = 'block';
-                document.getElementById('partnerNameSpan').innerText = pastPartner;
-                document.getElementById('btnPingPartner').onclick = () => {
-                    document.getElementById('joinCode').value = pastGame;
-                    document.getElementById('btnJoin').click();
-                };
-            }
-        };
+        // HOME BUTTON / RESTART
+        document.getElementById('btnHome').onclick = () => { window.location.reload(); };
 
-        // --- INITIALIZATION ---
+        // INITIALIZATION
         document.getElementById('btnCreate').addEventListener('click', async () => {
             myName = document.getElementById('playerName').value.trim(); if(!myName) return;
             playerNum = 1; gameId = Math.random().toString(36).substring(2, 7).toUpperCase();
@@ -195,7 +204,10 @@
             
             await setDoc(docRef, { 
                 status: 'waiting', level: 1, p1Name: myName, p2Name: "", p1Score: 0, p2Score: 0, 
-                memBoard: generateMemoryBoard(), memTurn: 1, tttBoard: ['','','','','','','','',''], tttTurn: 'X',
+                memBoard: generateMemoryBoard(), memTurn: 1, 
+                tttBoard: ['','','','','','','','',''], tttTurn: 'X',
+                popHeart: null,
+                scramble: { word: "ROMANCE", jumbled: "M C A O E R N", solved: false },
                 surfProg: 0, surfP1Lane: 1, surfP2Lane: 1, surfObs: null
             });
             
@@ -210,17 +222,19 @@
             let snap = await getDoc(docRef);
             if(snap.exists()) {
                 await updateDoc(docRef, { p2Name: myName, status: 'playing' });
-                localStorage.setItem('lastGameId', gameId); localStorage.setItem('lastPartner', snap.data().p1Name);
                 setupSync(); setupChat(); setupWebRTC();
-            } else alert("Room closed.");
+            } else alert("Room closed or invalid.");
         });
 
-        document.getElementById('btnShare').addEventListener('click', () => {
-            const url = `${window.location.origin}${window.location.pathname}?game=${gameId}`;
-            window.location.href = `whatsapp://send?text=${encodeURIComponent('Join my Love Journey! ' + url)}`;
-        });
+        // SHARE LINKS
+        const getShareURL = () => `${window.location.origin}${window.location.pathname}?game=${gameId}`;
+        document.getElementById('btnShare').onclick = () => window.location.href = `whatsapp://send?text=${encodeURIComponent('Join my Love Journey! ' + getShareURL())}`;
+        document.getElementById('btnCopy').onclick = () => { navigator.clipboard.writeText(getShareURL()); alert("Link Copied!"); };
 
-        // --- SYNC ENGINE ---
+        // AUTO JOIN IF LINK CLICKED
+        window.onload = () => { if(new URLSearchParams(window.location.search).get('game')) { document.getElementById('joinCode').value = new URLSearchParams(window.location.search).get('game').toUpperCase(); }};
+
+        // --- MAIN SYNC ENGINE ---
         function setupSync() {
             onSnapshot(docRef, (snap) => {
                 if(!snap.exists()) return;
@@ -229,63 +243,70 @@
                 if(gState.status === 'playing') {
                     if(document.getElementById('game-area').style.display !== 'flex') {
                         showScreen('none'); document.getElementById('game-area').style.display = 'flex';
-                        document.getElementById('comm-hud').style.display = 'flex';
+                        document.getElementById('top-nav').style.display = 'flex';
                         document.getElementById('name1').innerText = gState.p1Name; document.getElementById('name2').innerText = gState.p2Name;
-                        if(playerNum===1) localStorage.setItem('lastGameId', gameId); localStorage.setItem('lastPartner', gState.p2Name);
                     }
                     
                     document.getElementById('score1').innerText = gState.p1Score; document.getElementById('score2').innerText = gState.p2Score;
                     document.getElementById('level-title-hud').innerText = `LEVEL ${gState.level}`;
 
                     if(gState.level > oldLvl) {
-                        if(gState.level > 3) triggerFinale();
+                        if(gState.level > 5) triggerFinale();
                         else showOverlay(`LEVEL ${gState.level}`, quotes[gState.level-1]);
                     }
 
-                    // Level Routers
+                    // Level Dispatcher
+                    hideAllLevels();
                     if(gState.level === 1) renderMemory();
                     else if(gState.level === 2) renderTTT();
-                    else if(gState.level === 3) { document.getElementById('game-canvas').style.display='block'; startSurfEngine(); if(playerNum===1) hostSurf(); }
+                    else if(gState.level === 3) { document.getElementById('popper-area').style.display='block'; renderPopper(); if(playerNum===1) hostPopper(); }
+                    else if(gState.level === 4) { document.getElementById('scramble-area').style.display='flex'; renderScramble(); }
+                    else if(gState.level === 5) { document.getElementById('game-canvas').style.display='block'; startSurfEngine(); if(playerNum===1) hostSurf(); }
                 }
             });
+        }
+
+        function hideAllLevels() {
+            document.getElementById('memory-board').style.display = 'none'; document.getElementById('ttt-board').style.display = 'none';
+            document.getElementById('popper-area').style.display = 'none'; document.getElementById('scramble-area').style.display = 'none';
         }
 
         // --- LEVEL 1: MEMORY MATCH ---
         function generateMemoryBoard() {
             let emojis = ['❤️','😍','💍','🌹','🧸','💌','🥂','🎁'];
-            let deck = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
-            return deck.map(e => ({ e: e, flipped: false, solved: false }));
+            return [...emojis, ...emojis].sort(() => Math.random() - 0.5).map(e => ({ e: e, flipped: false, solved: false }));
         }
 
         let firstPick = null;
         function renderMemory() {
             document.getElementById('memory-board').style.display = 'grid';
-            document.getElementById('ttt-board').style.display = 'none';
             let board = document.getElementById('memory-board'); board.innerHTML = '';
             
-            let solvedCount = 0;
             gState.memBoard.forEach((card, i) => {
-                if(card.solved) solvedCount++;
-                let el = document.createElement('div'); el.className = `match-card ${card.flipped || card.solved ? 'flipped' : ''}`;
-                el.innerText = card.flipped || card.solved ? card.e : '❓';
+                let el = document.createElement('div'); el.className = `match-card ${(card.flipped || card.solved) ? 'flipped' : ''}`;
+                el.innerText = (card.flipped || card.solved) ? card.e : '❓';
                 el.onclick = () => handleMemoryClick(i);
                 board.appendChild(el);
             });
-
-            if(solvedCount === 16 && playerNum === 1) setTimeout(() => updateDoc(docRef, { level: 2 }), 1500);
         }
 
         async function handleMemoryClick(i) {
             if(gState.memTurn !== playerNum || gState.memBoard[i].flipped || gState.memBoard[i].solved) return;
-            let newBoard = [...gState.memBoard]; newBoard[i].flipped = true;
+            let nb = [...gState.memBoard]; nb[i].flipped = true;
             
             if(firstPick === null) {
-                firstPick = i; await updateDoc(docRef, { memBoard: newBoard });
+                firstPick = i; await updateDoc(docRef, { memBoard: nb });
             } else {
-                await updateDoc(docRef, { memBoard: newBoard, memTurn: playerNum === 1 ? 2 : 1 });
+                await updateDoc(docRef, { memBoard: nb, memTurn: playerNum === 1 ? 2 : 1 });
                 setTimeout(async () => {
                     let snap = await getDoc(docRef); let b = snap.data().memBoard;
-                    if(b[firstPick].e === b[i].e) { b[firstPick].solved = true; b[i].solved = true; updateDoc(docRef, { memBoard: b, [playerNum===1?'p1Score':'p2Score']: gState[playerNum===1?'p1Score':'p2Score']+10 }); } 
+                    if(b[firstPick].e === b[i].e) { 
+                        b[firstPick].solved = true; b[i].solved = true; 
+                        let sc = playerNum===1?'p1Score':'p2Score';
+                        await updateDoc(docRef, { memBoard: b, [sc]: gState[sc]+10 }); 
+                        // Bug Fix: Check level up safely
+                        if(b.every(x=>x.solved) && playerNum === 1) setTimeout(() => updateDoc(docRef, { level: 2 }), 1500);
+                    } 
                     else { b[firstPick].flipped = false; b[i].flipped = false; updateDoc(docRef, { memBoard: b }); }
                     firstPick = null;
                 }, 800);
@@ -294,7 +315,7 @@
 
         // --- LEVEL 2: TIC TAC TOE ---
         function renderTTT() {
-            document.getElementById('memory-board').style.display = 'none'; document.getElementById('ttt-board').style.display = 'grid';
+            document.getElementById('ttt-board').style.display = 'grid';
             let board = document.getElementById('ttt-board'); board.innerHTML = '';
             gState.tttBoard.forEach((cell, i) => {
                 let el = document.createElement('div'); el.className = 'ttt-cell'; el.innerText = cell;
@@ -311,35 +332,67 @@
             let win = lines.find(l => nb[l[0]] && nb[l[0]]===nb[l[1]] && nb[l[0]]===nb[l[2]]);
             
             if(win) {
-                await updateDoc(docRef, { tttBoard: nb, [playerNum===1?'p1Score':'p2Score']: gState[playerNum===1?'p1Score':'p2Score']+50 });
+                let sc = playerNum===1?'p1Score':'p2Score'; await updateDoc(docRef, { tttBoard: nb, [sc]: gState[sc]+50 });
                 if(playerNum===1) setTimeout(()=>updateDoc(docRef, {level: 3}), 2000);
-            } else if(!nb.includes('')) {
-                await updateDoc(docRef, { tttBoard: ['','','','','','','','',''] }); // Reset Tie
-            } else { await updateDoc(docRef, { tttBoard: nb, tttTurn: mySym==='X'?'O':'X' }); }
+            } else if(!nb.includes('')) { await updateDoc(docRef, { tttBoard: ['','','','','','','','',''] }); } 
+            else { await updateDoc(docRef, { tttBoard: nb, tttTurn: mySym==='X'?'O':'X' }); }
         }
 
-        // --- LEVEL 3: MAGICAL SURF (CANVAS) ---
+        // --- LEVEL 3: HEART POPPER ---
+        let popInt = null;
+        function hostPopper() {
+            if(popInt) return;
+            popInt = setInterval(() => {
+                if(gState.level !== 3 || gState.p1Score + gState.p2Score >= 300) { clearInterval(popInt); if(gState.p1Score + gState.p2Score >= 300) updateDoc(docRef, {level: 4}); return; }
+                updateDoc(docRef, { popHeart: { x: Math.random()*80, y: Math.random()*80, id: Date.now() } });
+            }, 1200);
+        }
+        function renderPopper() {
+            let area = document.getElementById('popper-area'); area.innerHTML = '';
+            if(gState.popHeart) {
+                let h = document.createElement('div'); h.className = 'pop-target'; h.innerText = '❤️';
+                h.style.left = gState.popHeart.x + '%'; h.style.top = gState.popHeart.y + '%';
+                h.onclick = () => {
+                    let sc = playerNum===1?'p1Score':'p2Score';
+                    updateDoc(docRef, { popHeart: null, [sc]: gState[sc]+10 });
+                };
+                area.appendChild(h);
+            }
+        }
+
+        // --- LEVEL 4: SOULMATE SCRAMBLE ---
+        function renderScramble() {
+            document.getElementById('scramble-word').innerText = gState.scramble.jumbled;
+            if(gState.scramble.solved && playerNum === 1) setTimeout(()=>updateDoc(docRef, {level: 5}), 1500);
+        }
+        document.getElementById('btnScramble').onclick = async () => {
+            let val = document.getElementById('scramble-input').value.trim().toUpperCase();
+            if(val === gState.scramble.word) {
+                let sc = playerNum===1?'p1Score':'p2Score';
+                await updateDoc(docRef, { scramble: { ...gState.scramble, solved: true, jumbled: "CORRECT!" }, [sc]: gState[sc]+50 });
+            } else alert("Try again!");
+        };
+
+        // --- LEVEL 5: MAGICAL SURF (CANVAS) ---
         let c = document.getElementById('game-canvas'); let ctx = c.getContext('2d');
         function res() { c.width = window.innerWidth; c.height = window.innerHeight; } window.addEventListener('resize', res); res();
-
         let tX = 0; document.addEventListener('touchstart', e => tX = e.changedTouches[0].screenX);
         document.addEventListener('touchend', async e => {
-            if(gState.level !== 3) return;
-            let dx = e.changedTouches[0].screenX - tX; let laneKey = playerNum===1 ? 'surfP1Lane' : 'surfP2Lane';
-            if(dx > 40 && gState[laneKey] < 2) await updateDoc(docRef, { [laneKey]: gState[laneKey]+1 });
-            else if(dx < -40 && gState[laneKey] > 0) await updateDoc(docRef, { [laneKey]: gState[laneKey]-1 });
+            if(gState.level !== 5) return;
+            let dx = e.changedTouches[0].screenX - tX; let lk = playerNum===1 ? 'surfP1Lane' : 'surfP2Lane';
+            if(dx > 40 && gState[lk] < 2) await updateDoc(docRef, { [lk]: gState[lk]+1 }); else if(dx < -40 && gState[lk] > 0) await updateDoc(docRef, { [lk]: gState[lk]-1 });
         });
 
-        let hostInt = null;
+        let surfInt = null;
         function hostSurf() {
-            if(hostInt) return;
-            hostInt = setInterval(async () => {
-                if(gState.level !== 3 || gState.status !== 'playing') return;
-                let p = gState.surfProg + 2;
-                if(p >= 100) { clearInterval(hostInt); updateDoc(docRef, { level: 4 }); } // Trigger Finale
+            if(surfInt) return;
+            surfInt = setInterval(async () => {
+                if(gState.level !== 5) return;
+                let p = gState.surfProg + 3;
+                if(p >= 100) { clearInterval(surfInt); updateDoc(docRef, { level: 6 }); } // Finale
                 else {
                     let u = { surfProg: p };
-                    if(!gState.surfObs && Math.random()>0.5) u.surfObs = { lane: Math.floor(Math.random()*3), z: 2000, t: Math.random()>0.5?'heart':'rock' };
+                    if(!gState.surfObs && Math.random()>0.4) u.surfObs = { lane: Math.floor(Math.random()*3), z: 2000 };
                     await updateDoc(docRef, u);
                 }
             }, 500);
@@ -347,56 +400,43 @@
 
         let oZ = 2000, rOff = 0;
         function startSurfEngine() {
-            document.getElementById('ttt-board').style.display = 'none';
             function render() {
-                if(gState.level !== 3) return;
+                if(gState.level !== 5) return;
                 ctx.fillStyle = "#050510"; ctx.fillRect(0,0,c.width,c.height);
-                
                 let hY = c.height*0.4; rOff = (rOff+15)%100;
+                
                 ctx.fillStyle = "#111";
                 for(let y=c.height; y>hY; y-=5) {
                     let z = (c.height-hY)/(y-hY); let rW = 600/z; let pX = c.width/2;
                     ctx.fillRect(pX-rW, y, rW*2, 4);
-                    if((y+rOff)%40>20) { ctx.fillStyle="#00f2fe"; ctx.fillRect(pX-rW/3, y, 4,4); ctx.fillRect(pX+rW/3, y, 4,4); ctx.fillStyle="#111";}
+                    if((y+rOff)%40>20) { ctx.fillStyle="#ff007f"; ctx.fillRect(pX-rW/3, y, 4,4); ctx.fillRect(pX+rW/3, y, 4,4); ctx.fillStyle="#111";}
                 }
 
                 if(gState.surfObs) {
                     oZ -= 60; let oS = 400/(400+oZ); let oX = (c.width/2) + ((gState.surfObs.lane-1)*200*oS); let oY = hY + ((c.height-hY)*oS);
-                    if(oZ > 20) {
-                        ctx.font=`${60*oS}px Arial`; ctx.fillText(gState.surfObs.t==='heart'?'❤️':'🪨', oX-20*oS, oY);
-                    } else if(oZ > -50) {
+                    if(oZ > 20) { ctx.font=`${60*oS}px Arial`; ctx.fillText('💍', oX-20*oS, oY); } 
+                    else if(oZ > -50) {
                         let myL = playerNum===1 ? gState.surfP1Lane : gState.surfP2Lane;
-                        if(myL === gState.surfObs.lane && playerNum===1) {
-                            if(gState.surfObs.t==='heart') updateDoc(docRef, { p1Score: gState.p1Score+20, p2Score: gState.p2Score+20, surfObs: null });
-                            else updateDoc(docRef, { p1Score: Math.max(0, gState.p1Score-10), surfObs: null });
-                            oZ=2000;
-                        }
+                        if(myL === gState.surfObs.lane && playerNum===1) { updateDoc(docRef, { p1Score: gState.p1Score+30, p2Score: gState.p2Score+30, surfObs: null }); oZ=2000; }
                     } else { oZ=2000; if(playerNum===1) updateDoc(docRef, { surfObs:null }); }
                 }
 
-                // Players
-                let p1X = (c.width/2) + ((gState.surfP1Lane-1)*200 * (400/550));
-                let p2X = (c.width/2) + ((gState.surfP2Lane-1)*200 * (400/550));
-                
-                ctx.beginPath(); ctx.arc(p1X, c.height-100, 30, 0, Math.PI*2); ctx.fillStyle="#00f2fe"; ctx.fill();
-                ctx.beginPath(); ctx.arc(p2X, c.height-100, 30, 0, Math.PI*2); ctx.fillStyle="#ff007f"; ctx.fill();
-
+                let p1X = (c.width/2) + ((gState.surfP1Lane-1)*200 * (400/550)); let p2X = (c.width/2) + ((gState.surfP2Lane-1)*200 * (400/550));
+                ctx.beginPath(); ctx.arc(p1X, c.height-120, 30, 0, Math.PI*2); ctx.fillStyle="#00f2fe"; ctx.fill();
+                ctx.beginPath(); ctx.arc(p2X, c.height-120, 30, 0, Math.PI*2); ctx.fillStyle="#ff007f"; ctx.fill();
                 requestAnimationFrame(render);
             }
             render();
         }
 
-        // --- TEXT CHAT SYSTEM (Firestore Auto-Delete) ---
+        // --- CHAT SYSTEM ---
         let chatOpen = false;
         document.getElementById('btnChat').onclick = () => { chatOpen = !chatOpen; document.getElementById('chat-panel').style.display = chatOpen ? 'flex' : 'none'; };
         
         function setupChat() {
             onSnapshot(query(messagesRef, orderBy("ts")), (snap) => {
                 let box = document.getElementById('chat-msgs'); box.innerHTML = '';
-                snap.forEach(d => {
-                    let m = d.data(); let el = document.createElement('div');
-                    el.className = `msg ${m.sender === playerNum ? 'me' : 'them'}`; el.innerText = m.text; box.appendChild(el);
-                });
+                snap.forEach(d => { let m = d.data(); let el = document.createElement('div'); el.className = `msg ${m.sender === playerNum ? 'me' : 'them'}`; el.innerText = m.text; box.appendChild(el); });
                 box.scrollTop = box.scrollHeight;
             });
         }
@@ -406,55 +446,43 @@
             if(t) { await addDoc(messagesRef, { text: t, sender: playerNum, ts: Date.now() }); document.getElementById('chatInput').value = ''; }
         };
 
-        // --- WEBRTC VOICE CHAT ---
+        // --- WEBRTC VOICE ---
         let localStream, peerConn, isMuted = false;
-        const servers = { iceServers: [{ urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'] }] };
-
         async function setupWebRTC() {
             try {
                 localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                peerConn = new RTCPeerConnection(servers);
+                peerConn = new RTCPeerConnection({ iceServers: [{ urls: ['stun:stun1.l.google.com:19302'] }] });
                 localStream.getTracks().forEach(t => peerConn.addTrack(t, localStream));
+                peerConn.ontrack = (e) => { let audio = new Audio(); audio.srcObject = e.streams[0]; audio.play(); };
                 
-                peerConn.ontrack = (e) => {
-                    let audio = new Audio(); audio.srcObject = e.streams[0]; audio.play();
-                };
-
-                const callDoc = doc(db, "calls", gameId);
-                const offerCandidates = collection(callDoc, "offerCandidates");
-                const answerCandidates = collection(callDoc, "answerCandidates");
-
-                peerConn.onicecandidate = e => { e.candidate && addDoc(playerNum===1 ? offerCandidates : answerCandidates, e.candidate.toJSON()); };
+                const callDoc = doc(db, "calls", gameId); const offerC = collection(callDoc, "offerC"); const answerC = collection(callDoc, "answerC");
+                peerConn.onicecandidate = e => { e.candidate && addDoc(playerNum===1 ? offerC : answerC, e.candidate.toJSON()); };
 
                 if(playerNum === 1) {
-                    let offer = await peerConn.createOffer(); await peerConn.setLocalDescription(offer);
-                    await setDoc(callDoc, { offer: { type: offer.type, sdp: offer.sdp }});
+                    let offer = await peerConn.createOffer(); await peerConn.setLocalDescription(offer); await setDoc(callDoc, { offer: { type: offer.type, sdp: offer.sdp }});
                     onSnapshot(callDoc, (snap) => { let data = snap.data(); if(data?.answer && !peerConn.currentRemoteDescription) peerConn.setRemoteDescription(new RTCSessionDescription(data.answer)); });
-                    onSnapshot(answerCandidates, snap => snap.docChanges().forEach(c => { if(c.type === 'added') peerConn.addIceCandidate(new RTCIceCandidate(c.doc.data())); }));
+                    onSnapshot(answerC, snap => snap.docChanges().forEach(c => { if(c.type === 'added') peerConn.addIceCandidate(new RTCIceCandidate(c.doc.data())); }));
                 } else {
                     onSnapshot(callDoc, async (snap) => {
                         let data = snap.data();
                         if(data?.offer && !peerConn.currentRemoteDescription) {
                             await peerConn.setRemoteDescription(new RTCSessionDescription(data.offer));
-                            let ans = await peerConn.createAnswer(); await peerConn.setLocalDescription(ans);
-                            await updateDoc(callDoc, { answer: { type: ans.type, sdp: ans.sdp }});
+                            let ans = await peerConn.createAnswer(); await peerConn.setLocalDescription(ans); await updateDoc(callDoc, { answer: { type: ans.type, sdp: ans.sdp }});
                         }
                     });
-                    onSnapshot(offerCandidates, snap => snap.docChanges().forEach(c => { if(c.type === 'added') peerConn.addIceCandidate(new RTCIceCandidate(c.doc.data())); }));
+                    onSnapshot(offerC, snap => snap.docChanges().forEach(c => { if(c.type === 'added') peerConn.addIceCandidate(new RTCIceCandidate(c.doc.data())); }));
                 }
 
                 document.getElementById('btnMic').onclick = () => {
                     isMuted = !isMuted; localStream.getAudioTracks()[0].enabled = !isMuted;
-                    document.getElementById('btnMic').classList.toggle('muted');
-                    document.getElementById('btnMic').innerText = isMuted ? '🔇' : '🎤';
+                    document.getElementById('btnMic').classList.toggle('muted'); document.getElementById('btnMic').innerText = isMuted ? '🔇' : '🎤';
                 };
-            } catch(e) { console.log("Mic access denied."); }
+            } catch(e) { console.log("Mic error"); }
         }
 
         // --- FINALE ---
         async function triggerFinale() {
-            document.getElementById('game-area').style.display = 'none';
-            document.getElementById('comm-hud').style.display = 'none';
+            document.getElementById('game-area').style.display = 'none'; document.getElementById('top-nav').style.display = 'none';
             let fScreen = document.getElementById('final-screen'); fScreen.style.display = 'flex';
             document.getElementById('finalNames').innerText = `${gState.p1Name} & ${gState.p2Name}`;
             
@@ -466,11 +494,7 @@
                 h.style.setProperty('--tx', (Math.cos(a)*d)+'px'); h.style.setProperty('--ty', (Math.sin(a)*d)+'px');
                 h.style.animationDelay = (Math.random() * 3) + 's'; fScreen.appendChild(h);
             }
-
-            // Cleanup Chat Data
-            if(playerNum === 1) {
-                let msgs = await getDocs(messagesRef); msgs.forEach(m => deleteDoc(m.ref));
-            }
+            if(playerNum === 1) { let msgs = await getDocs(messagesRef); msgs.forEach(m => deleteDoc(m.ref)); } // Cleanup Chat
         }
     </script>
 </body>
