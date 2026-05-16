@@ -3,58 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Love Games 💖</title>
+    <title>Journey of Love 💖</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600;800&family=Orbitron:wght@700&display=swap');
         
         * { box-sizing: border-box; user-select: none; -webkit-user-select: none; margin: 0; padding: 0; }
-        body { font-family: 'Poppins', sans-serif; background: #050505; color: white; height: 100vh; width: 100vw; overflow: hidden; touch-action: none; }
+        body { font-family: 'Poppins', sans-serif; background: #0f0c29; color: white; height: 100vh; width: 100vw; overflow: hidden; touch-action: none; }
         
-        .screen { display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle, #0a0a1a, #000); z-index: 10; }
+        .screen { display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle at center, #240b36, #c31432); z-index: 10; }
         .active { display: flex; }
         
-        h1 { font-family: 'Orbitron', sans-serif; font-size: 32px; color: #00f2fe; text-transform: uppercase; text-shadow: 0 0 15px #00f2fe; text-align: center; margin-bottom: 20px;}
+        h1 { font-family: 'Dancing Script', cursive; font-size: 55px; color: #ff9a9e; text-shadow: 0 0 15px #ff0844; text-align: center; margin-bottom: 20px;}
+        h2 { font-family: 'Orbitron', sans-serif; font-size: 20px; color: #fff; text-shadow: 0 0 10px #ff0844; }
         
-        .card { background: rgba(10, 10, 20, 0.9); padding: 25px; border-radius: 20px; border: 2px solid #00f2fe; width: 90%; max-width: 400px; box-shadow: 0 0 25px rgba(0, 242, 254, 0.4); text-align: center; backdrop-filter: blur(10px);}
+        .card { background: rgba(0, 0, 0, 0.6); padding: 30px; border-radius: 20px; border: 2px solid #ff0844; width: 90%; max-width: 400px; box-shadow: 0 0 30px rgba(255, 8, 68, 0.5); text-align: center; backdrop-filter: blur(10px);}
 
         input, select, button { width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: none; font-size: 16px; font-family: 'Poppins', sans-serif; text-align: center; font-weight: bold; transition: 0.2s;}
-        input, select { background: #fff; color: #000; }
+        input, select { background: rgba(255,255,255,0.9); color: #333; }
+        input:focus { border: 2px solid #ff0844; }
         
-        .btn-primary { background: linear-gradient(90deg, #00f2fe, #4facfe); color: #000; text-transform: uppercase; cursor: pointer; box-shadow: 0 5px 15px rgba(0,242,254,0.4);}
-        .btn-game { background: transparent; border: 2px solid #00f2fe; color: #00f2fe; margin: 15px 0; }
-        .btn-whatsapp { background: #25D366; color: #fff; }
-        .btn-copy { background: #555; color: #fff; }
+        .btn-primary { background: linear-gradient(90deg, #ff0844, #ffb199); color: #fff; text-transform: uppercase; cursor: pointer; box-shadow: 0 5px 15px rgba(255,8,68,0.4);}
+        .btn-game { background: transparent; border: 2px solid #ffb199; color: #ffb199; margin: 15px 0; }
+        .btn-whatsapp { background: #25D366; color: #fff; box-shadow: 0 0 15px #25D366; margin-top: 20px;}
 
-        /* Game specific UI */
-        #game-canvas { display: none; position: absolute; top:0; left:0; width: 100vw; height: 100vh; z-index: 5; }
-        
         /* Tic Tac Toe UI */
         .ttt-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 300px; margin: 20px auto; }
-        .ttt-cell { width: 90px; height: 90px; background: rgba(255,255,255,0.1); border: 2px solid #00f2fe; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 50px; font-family: 'Orbitron'; cursor: pointer; box-shadow: inset 0 0 15px rgba(0,242,254,0.2); }
-        .ttt-x { color: #00f2fe; text-shadow: 0 0 15px #00f2fe; }
-        .ttt-o { color: #ff0844; text-shadow: 0 0 15px #ff0844; }
+        .ttt-cell { width: 90px; height: 90px; background: rgba(255,0,100,0.1); border: 2px solid #ff0844; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 50px; cursor: pointer; box-shadow: inset 0 0 15px rgba(255,8,68,0.2); }
+        .ttt-x { color: #ff9a9e; text-shadow: 0 0 15px #ff9a9e; font-family: 'Orbitron';}
+        .ttt-o { color: #fff; text-shadow: 0 0 15px #fff; font-family: 'Orbitron';}
 
-        /* HUD & Overlays */
+        /* Journey UI & Canvas */
+        #game-canvas { display: none; position: absolute; top:0; left:0; width: 100vw; height: 100vh; z-index: 5; }
+        
         #hud { position: absolute; top: 15px; width: 100%; padding: 0 15px; display: flex; justify-content: space-between; z-index: 20; pointer-events: none; }
-        .life-container { width: 38%; background: rgba(0,0,0,0.7); border: 2px solid #fff; border-radius: 8px; padding: 5px; }
-        .life-bar { height: 10px; border-radius: 4px; transition: width 0.3s; }
-        #p1-life { background: #00f2fe; box-shadow: 0 0 10px #00f2fe; width: 100%; }
-        #p2-life { background: #ff0844; box-shadow: 0 0 10px #ff0844; width: 100%; }
-        .name-tag { font-family: 'Orbitron'; font-size: 10px; margin-bottom: 5px; text-transform: uppercase; color: #fff; }
+        .life-container { width: 40%; background: rgba(0,0,0,0.5); border: 1px solid #ff9a9e; border-radius: 10px; padding: 5px; }
+        .life-fill { height: 12px; border-radius: 5px; transition: width 0.3s ease-out; }
+        #p1-life { background: linear-gradient(90deg, #00c6ff, #0072ff); box-shadow: 0 0 10px #00c6ff; width: 100%; }
+        #p2-life { background: linear-gradient(90deg, #f857a6, #ff5858); box-shadow: 0 0 10px #ff5858; width: 100%; }
+        .name-tag { font-family: 'Orbitron'; font-size: 11px; margin-bottom: 5px; color: #fff; }
         
-        #instruction { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); border: 1px solid #ffeb3b; color: #ffeb3b; padding: 10px 20px; border-radius: 20px; z-index: 20; text-align: center; display: none;}
-        
-        #emoji-bar { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 15px; z-index: 30; }
-        .emoji-btn { background: rgba(255,255,255,0.2); border: 1px solid #fff; border-radius: 50%; width: 45px; height: 45px; font-size: 22px; cursor: pointer; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-        .floating-emoji { position: absolute; font-size: 45px; animation: floatUp 2s forwards ease-out; z-index: 40; pointer-events: none; }
-        @keyframes floatUp { 0% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -150px) scale(1.5); } }
+        #progress-bar { position: absolute; top: 70px; left: 50%; transform: translateX(-50%); width: 80%; height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; z-index: 20; }
+        #progress-fill { height: 100%; background: #ffeb3b; width: 0%; border-radius: 3px; transition: width 0.5s linear; position: relative; }
+        #progress-icon { position: absolute; right: -10px; top: -8px; font-size: 16px; }
 
-        #overlay { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 50; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-        .quote { font-size: 18px; color: #ff9a9e; font-style: italic; margin: 20px; font-family: 'Georgia', serif; }
+        #nav-hud { position: absolute; top: 95px; left: 50%; transform: translateX(-50%); font-family: 'Orbitron'; font-size: 12px; color: #ffeb3b; text-align: center; text-shadow: 0 0 5px #000; z-index: 20; width: 85%; }
+        #alert-center { position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%); font-family: 'Orbitron'; font-size: 40px; color: #ffeb3b; text-shadow: 0 0 20px #ffeb3b; z-index: 25; text-align: center; display: none; }
+
+        /* Emoji Reactions */
+        #emoji-bar { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 15px; z-index: 30; }
+        .emoji-btn { background: rgba(255,255,255,0.2); border: 1px solid #ff9a9e; border-radius: 50%; width: 45px; height: 45px; font-size: 22px; cursor: pointer; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .floating-emoji { position: absolute; font-size: 45px; animation: floatUp 2.5s forwards ease-out; z-index: 40; pointer-events: none; }
+        @keyframes floatUp { 0% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -200px) scale(1.5); } }
+
+        /* Quotes & Overlays */
+        #overlay { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.92); z-index: 50; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow: hidden;}
+        #ov-title { font-family: 'Orbitron'; font-size: 35px; color: #ff0844; margin-bottom: 15px; z-index: 55; text-shadow: 0 0 15px #ff0844;}
+        #ov-quote { font-size: 20px; color: #ff9a9e; font-family: 'Dancing Script', cursive; width: 85%; margin-bottom: 25px; z-index: 55; line-height: 1.4;}
         
+        .sparkle { position: absolute; background: white; border-radius: 50%; box-shadow: 0 0 10px #fff, 0 0 20px #ff9a9e; animation: blink 1.5s infinite linear; }
+        @keyframes blink { 0% { transform: scale(0); opacity: 0; } 50% { transform: scale(1); opacity: 1; } 100% { transform: scale(0); opacity: 0; } }
+
         /* Final Love Particles */
-        .particle { position: absolute; animation: explode 2s forwards; }
-        @keyframes explode { 0% { transform: scale(0) translate(0,0); opacity: 1; } 100% { transform: scale(5) translate(var(--tx), var(--ty)); opacity: 0; } }
+        #final-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: radial-gradient(circle, #240b36, #c31432); z-index: 100; overflow: hidden; flex-direction: column; align-items: center; justify-content: center; }
+        #final-text { font-family: 'Dancing Script'; font-size: 50px; color: #fff; text-shadow: 0 0 20px #ff0844; z-index: 110; opacity: 0; animation: fadeInText 3s 1s forwards; text-align: center;}
+        @keyframes fadeInText { to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -62,26 +74,26 @@
     <div id="join-screen" class="screen">
         <h1>Join Partner 💖</h1>
         <div class="card">
-            <p>You've been invited!</p>
             <input type="text" id="joinName" placeholder="Your Name" required>
             <select id="joinGender">
                 <option value="boy">I am the Boy</option>
                 <option value="girl">I am the Girl</option>
             </select>
-            <button id="btnAutoJoin" class="btn-primary">Enter Game</button>
+            <button id="btnAutoJoin" class="btn-primary">Enter Journey</button>
         </div>
     </div>
 
     <div id="menu-screen" class="screen active">
-        <h1>Select Game</h1>
+        <h1>Love Games</h1>
         <div class="card">
+            <p style="color: #ddd; margin-bottom:15px;">Select your journey:</p>
             <button onclick="startGameSetup('ttt')" class="btn-primary btn-game">Tic Tac Toe (Find Partner)</button>
-            <button onclick="startGameSetup('journey')" class="btn-primary btn-game">Journey (Car Race)</button>
+            <button onclick="startGameSetup('journey')" class="btn-primary btn-game">Magical Journey (Race)</button>
         </div>
     </div>
 
     <div id="setup-screen" class="screen">
-        <h1 id="setupTitle">Setup Game</h1>
+        <h1 id="setupTitle" style="font-family: 'Orbitron'; font-size: 28px;">Setup Game</h1>
         <div class="card">
             <input type="text" id="hostName" placeholder="Your Name" required>
             <select id="hostGender">
@@ -93,41 +105,48 @@
     </div>
 
     <div id="ttt-screen" class="screen">
-        <h2 id="ttt-status" style="color:#00f2fe; margin-bottom: 20px;">Level 1: Defeat the System</h2>
+        <h2 id="ttt-status">Level 1: Defeat the System</h2>
         <div class="ttt-board" id="board"></div>
-        <div id="ttt-invite" style="display: none; margin-top: 20px; text-align: center; width: 90%; max-width: 300px;">
-            <p style="color:#00ff00; margin-bottom:10px;">System Defeated! You proved your love.</p>
-            <button id="btnTTTInvite" class="btn-whatsapp">WhatsApp Invite</button>
-            <button id="btnTTTCopy" class="btn-copy">Copy Link</button>
+        <div id="ttt-invite" style="display: none; margin-top: 20px; text-align: center; width: 90%;">
+            <p style="color:#25D366; margin-bottom:10px; font-weight:bold;">System Defeated! You proved your love.</p>
+            <button id="btnNativeShare" class="btn-whatsapp">Share Link & Invite Partner</button>
         </div>
     </div>
 
     <div id="journey-hud" style="display:none;">
         <canvas id="game-canvas"></canvas>
         <div id="hud">
-            <div class="life-container"><div class="name-tag" id="name1">P1</div><div class="life-bar" id="p1-life"></div></div>
-            <div class="life-container" style="text-align:right;"><div class="name-tag" id="name2">P2</div><div class="life-bar" id="p2-life" style="float: right;"></div></div>
+            <div class="life-container"><div class="name-tag" id="name1">P1</div><div class="life-bar-bg"><div id="p1-life" class="life-fill"></div></div></div>
+            <div class="life-container" style="text-align:right;"><div class="name-tag" id="name2">P2</div><div class="life-bar-bg"><div id="p2-life" class="life-fill" style="float:right;"></div></div></div>
         </div>
         
+        <div id="progress-bar"><div id="progress-fill"><div id="progress-icon">🚗</div></div></div>
+        <div id="nav-hud">GPS: Connecting...</div>
+        <div id="alert-center"></div>
+
         <div id="emoji-bar">
             <button class="emoji-btn" onclick="sendEmoji('❤️')">❤️</button>
-            <button class="emoji-btn" onclick="sendEmoji('😂')">😂</button>
-            <button class="emoji-btn" onclick="sendEmoji('😡')">😡</button>
+            <button class="emoji-btn" onclick="sendEmoji('😍')">😍</button>
+            <button class="emoji-btn" onclick="sendEmoji('😱')">😱</button>
+            <button class="emoji-btn" onclick="sendEmoji('🚨')">🚨</button>
         </div>
-
-        <div id="instruction">SWIPE TO MOVE!</div>
     </div>
 
     <div id="overlay">
-        <h1 id="ov-title" style="color: #00f2fe;">MESSAGE</h1>
+        <h1 id="ov-title">MESSAGE</h1>
         <div id="ov-quote" class="quote"></div>
         <button id="ov-btn" class="btn-primary" style="display:none; width: 200px;">Continue</button>
+    </div>
+
+    <div id="final-screen">
+        <div id="final-text">True Love Never Ends<br><br><span id="finalNames" style="font-family: 'Poppins'; font-weight: bold; font-size: 30px;"></span></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, doc, setDoc, onSnapshot, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
+        // FIREBASE SETUP
         const firebaseConfig = {
             apiKey: "AIzaSyCZmqyLmyWesuoj6djTbyfrOJ1v7_FCWcQ",
             authDomain: "game-bf78a.firebaseapp.com",
@@ -138,27 +157,60 @@
         };
         const app = initializeApp(firebaseConfig); const db = getFirestore(app);
 
-        // GLOBAL VARS
+        // GLOBALS & ASSETS
         let gameMode = ""; let gameId = ""; let playerNum = 0; let docRef = null;
-
-        // ASSETS
         const imgBoy = new Image(); imgBoy.src = '103503-removebg-preview.png'; 
         const imgGirl = new Image(); imgGirl.src = '103511-removebg-preview.png'; 
         const imgMonster = new Image(); imgMonster.src = '103516-removebg-preview.png'; 
         const imgJeep = new Image(); imgJeep.src = 'Police-Car-PNG-Photo.png';
 
-        function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+        // RANDOM LOVE QUOTES
+        const loveQuotes = [
+            "“Distance means so little when someone means so much.”",
+            "“Two souls but a single thought, two hearts that beat as one.”",
+            "“In a sea of people, my eyes will always search for you.”",
+            "“Together, there are no dead ends, only new paths.”",
+            "“I look at you and see the rest of my life in front of my eyes.”",
+            "“True love is an endless journey.”",
+            "“We are tied together with an invisible thread of love.”",
+            "“You are my today and all of my tomorrows.”"
+        ];
+        function getRandomQuote() { return loveQuotes[Math.floor(Math.random() * loveQuotes.length)]; }
+
+        // UI HELPERS
+        function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); if(document.getElementById(id)) document.getElementById(id).classList.add('active'); }
         
-        function showOverlay(title, quote, showBtn = false, btnAction = null) {
-            document.getElementById('ov-title').innerText = title;
-            document.getElementById('ov-quote').innerText = quote;
+        function showOverlay(title, quote, showBtn = false, btnAction = null, autoHide = 4000) {
+            document.getElementById('ov-title').innerText = title; document.getElementById('ov-quote').innerText = quote;
+            
+            // Sparkles effect
+            let ov = document.getElementById('overlay');
+            document.querySelectorAll('.sparkle').forEach(e => e.remove());
+            for(let i=0; i<20; i++) {
+                let s = document.createElement('div'); s.className = 'sparkle';
+                s.style.width = Math.random()*5+'px'; s.style.height = s.style.width;
+                s.style.left = Math.random()*100+'vw'; s.style.top = Math.random()*100+'vh';
+                s.style.animationDelay = Math.random()*1.5+'s'; ov.appendChild(s);
+            }
+
             let btn = document.getElementById('ov-btn');
-            if(showBtn) { btn.style.display = 'block'; btn.onclick = () => { document.getElementById('overlay').style.display='none'; if(btnAction) btnAction(); }; }
-            else { btn.style.display = 'none'; setTimeout(() => document.getElementById('overlay').style.display='none', 4000); }
-            document.getElementById('overlay').style.display = 'flex';
+            if(showBtn) { btn.style.display = 'block'; btn.onclick = () => { ov.style.display='none'; if(btnAction) btnAction(); }; }
+            else { btn.style.display = 'none'; setTimeout(() => ov.style.display='none', autoHide); }
+            ov.style.display = 'flex';
         }
 
-        // --- AUTO JOIN ---
+        // --- NATIVE SHARE API (Fixes WhatsApp Bug) ---
+        function nativeShare(id, mode) {
+            const url = `${window.location.origin}${window.location.pathname}?game=${id}&mode=${mode}`;
+            if (navigator.share) {
+                navigator.share({ title: 'Love Games 💖', text: 'Come join my game! Let us play together:', url: url }).catch(e => console.log('Share canceled'));
+            } else {
+                // Fallback
+                window.location.href = `whatsapp://send?text=${encodeURIComponent('Join my game! ' + url)}`;
+            }
+        }
+
+        // --- AUTO JOIN INTERCEPTOR ---
         const urlParams = new URLSearchParams(window.location.search);
         if(urlParams.get('game') && urlParams.get('mode')) {
             gameMode = urlParams.get('mode'); gameId = urlParams.get('game').toUpperCase();
@@ -167,13 +219,18 @@
 
         document.getElementById('btnAutoJoin').addEventListener('click', async () => {
             let name = document.getElementById('joinName').value.trim();
+            let gender = document.getElementById('joinGender').value;
             if(!name) return; playerNum = 2;
+            
+            // Ensure full screen on mobile when interacting
+            if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(e=>{});
+            
             docRef = doc(db, "games", gameId);
             let snap = await getDoc(docRef);
             if(snap.exists()) {
-                await updateDoc(docRef, { p2Name: name, status: 'playing', p2Active: true });
+                await updateDoc(docRef, { p2Name: name, p2Gender: gender, status: 'playing', p2Active: true });
                 initMultiplayerListeners();
-            } else alert("Room closed or invalid.");
+            } else alert("Room is closed or invalid.");
         });
 
         // --- MENU & HOST ---
@@ -183,34 +240,23 @@
         }
 
         document.getElementById('btnHost').addEventListener('click', async () => {
+            if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(e=>{});
             let name = document.getElementById('hostName').value.trim();
             let gender = document.getElementById('hostGender').value;
             if(!name) return; playerNum = 1;
             
-            if(gameMode === 'ttt') {
-                initTicTacToeBot(name, gender);
-            } else {
+            if(gameMode === 'ttt') { initTicTacToeBot(name, gender); } 
+            else {
                 gameId = Math.random().toString(36).substring(2, 7).toUpperCase(); docRef = doc(db, "games", gameId);
-                await setDoc(docRef, { mode: 'journey', status: 'waiting', p1Name: name, p1Gender: gender, p1Active: true, level: 1, p1Life: 100, p2Life: 100, progress: 0, p1Lane: 1, p2Lane: 1, p1Jump: false, p2Jump: false, obstacle: null });
-                shareOptions(gameId, 'journey');
-                showOverlay("WAITING", "Invite sent. Waiting for partner...", false);
+                await setDoc(docRef, { mode: 'journey', status: 'waiting', p1Name: name, p1Gender: gender, p1Active: true, level: 1, p1Life: 100, p2Life: 100, progress: 0, p1Lane: 1, p2Lane: 1, p1Jump: false, p2Jump: false, obstacle: null, turnEvent: null });
+                showScreen('ttt-screen'); document.getElementById('ttt-status').innerText = "Generating Link..."; document.getElementById('board').style.display='none';
+                document.getElementById('ttt-invite').style.display = 'block';
+                document.getElementById('btnNativeShare').onclick = () => nativeShare(gameId, 'journey');
                 initMultiplayerListeners();
             }
         });
 
-        function shareOptions(id, mode) {
-            const url = `${window.location.origin}${window.location.pathname}?game=${id}&mode=${mode}`;
-            const text = `Join my game! Click here to play: ${url}`;
-            
-            // Assign to buttons
-            let btnWa = document.getElementById('btnTTTInvite');
-            if(btnWa) btnWa.onclick = () => window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
-            
-            let btnCopy = document.getElementById('btnTTTCopy');
-            if(btnCopy) btnCopy.onclick = () => { navigator.clipboard.writeText(url); alert("Link Copied! Send it to your partner."); }
-        }
-
-        // --- TIC TAC TOE BOT (FIXED) ---
+        // --- TIC TAC TOE BOT (PERFECT LOGIC) ---
         let tttBoard = ['', '', '', '', '', '', '', '', ''];
         let tttActive = true;
         
@@ -234,13 +280,13 @@
         function initTicTacToeBot(pName, pGender) {
             showScreen('ttt-screen');
             tttBoard = ['', '', '', '', '', '', '', '', '']; tttActive = true;
-            document.getElementById('ttt-status').innerText = "Level 1: Defeat the System";
+            document.getElementById('ttt-status').innerText = "Level 1: Defeat the Bot";
             
             drawTTTBoard((i) => {
                 if(!tttActive || tttBoard[i] !== '') return;
                 
-                tttBoard[i] = 'X'; tttActive = false; // Block user
-                drawTTTBoard((i) => {}); // Redraw disabled
+                tttBoard[i] = 'X'; tttActive = false; // Lock user
+                drawTTTBoard((idx) => arguments.callee(idx)); // Redraw with X
                 
                 let win = checkWin(tttBoard);
                 if(win) { handleBotWin(win, pName, pGender); return; }
@@ -250,14 +296,14 @@
                     let empty = tttBoard.map((v, i) => v === '' ? i : null).filter(v => v !== null);
                     if(empty.length > 0) {
                         let move = empty[Math.floor(Math.random() * empty.length)];
-                        tttBoard[move] = 'O';
-                        drawTTTBoard((idx) => arguments.callee(idx)); // Redraw with logic
+                        tttBoard[move] = 'O'; 
+                        drawTTTBoard((idx) => arguments.callee(idx));
                         
                         let bWin = checkWin(tttBoard);
                         if(bWin) { handleBotWin(bWin, pName, pGender); return; }
                     }
-                    tttActive = true; // UNBLOCK user
-                }, 500);
+                    tttActive = true; // Unlock user
+                }, 600);
             });
         }
 
@@ -265,17 +311,17 @@
             tttActive = false;
             if(winner === 'X') {
                 document.getElementById('ttt-invite').style.display = 'block';
-                showOverlay("SYSTEM DEFEATED", `"Love requires patience and skill. You are ready."`, true, () => {});
-                
-                gameId = Math.random().toString(36).substring(2, 7).toUpperCase(); docRef = doc(db, "games", gameId);
-                await setDoc(docRef, { mode: 'ttt', status: 'waiting', p1Name: pName, p1Gender: pGender, p1Active: true, board: ['', '', '', '', '', '', '', '', ''], turn: 'X', level: 2 });
-                shareOptions(gameId, 'ttt'); initMultiplayerListeners();
+                document.getElementById('btnNativeShare').onclick = async () => {
+                    gameId = Math.random().toString(36).substring(2, 7).toUpperCase(); docRef = doc(db, "games", gameId);
+                    await setDoc(docRef, { mode: 'ttt', status: 'waiting', p1Name: pName, p1Gender: pGender, p1Active: true, board: ['', '', '', '', '', '', '', '', ''], turn: 'X', level: 2 });
+                    nativeShare(gameId, 'ttt'); initMultiplayerListeners();
+                };
             } else {
-                showOverlay("FAILED", `"The system won. Try again."`, true, () => initTicTacToeBot(pName, pGender));
+                showOverlay("SYSTEM WON", "Try again to prove your worth.", true, () => initTicTacToeBot(pName, pGender));
             }
         }
 
-        // --- MULTIPLAYER ENGINE ---
+        // --- MULTIPLAYER SYNC ENGINE ---
         let lastEmojiId = 0;
         
         function initMultiplayerListeners() {
@@ -288,11 +334,6 @@
             onSnapshot(docRef, (docSnap) => {
                 if(!docSnap.exists()) return;
                 let data = docSnap.data();
-
-                if(data.status === 'playing' && (!data.p1Active || !data.p2Active)) {
-                    document.getElementById('instruction').innerText = "Partner disconnected! Paused.";
-                    document.getElementById('instruction').style.display = 'block'; return;
-                } else document.getElementById('instruction').style.display = 'none';
 
                 if(data.mode === 'ttt' && data.status === 'playing') {
                     showScreen('ttt-screen'); document.getElementById('ttt-invite').style.display = 'none';
@@ -308,7 +349,7 @@
                         if(winner) {
                             let msg = winner === 'Tie' ? "It's a Tie!" : `${winner === 'X' ? data.p1Name : data.p2Name} Wins!`;
                             await updateDoc(docRef, { board: newBoard, status: 'paused' });
-                            showOverlay(msg, `"Every battle brings us closer."`, true, async () => {
+                            showOverlay(msg, getRandomQuote(), true, async () => {
                                 if(playerNum === 1) await updateDoc(docRef, { board: ['', '', '', '', '', '', '', '', ''], turn: 'X', level: data.level+1, status: 'playing' });
                             });
                         } else { await updateDoc(docRef, { board: newBoard, turn: mySymbol === 'X' ? 'O' : 'X' }); }
@@ -316,7 +357,7 @@
                 }
 
                 if(data.mode === 'journey' && data.status === 'playing') {
-                    if(!document.getElementById('journey-hud').style.display || document.getElementById('journey-hud').style.display === 'none') {
+                    if(document.getElementById('journey-hud').style.display === 'none') {
                         showScreen('menu-screen'); document.getElementById('menu-screen').classList.remove('active');
                         document.getElementById('journey-hud').style.display = 'block'; document.getElementById('game-canvas').style.display = 'block';
                         startJourneyEngine(); if(playerNum === 1) startJourneyHost();
@@ -333,131 +374,218 @@
         let c = document.getElementById('game-canvas'); let ctx = c.getContext('2d');
         let hY = 0; function res() { c.width = window.innerWidth; c.height = window.innerHeight; hY = c.height * 0.45; } window.addEventListener('resize', res); res();
 
-        let tX = 0, tY = 0;
-        document.addEventListener('touchstart', e => { tX = e.changedTouches[0].screenX; tY = e.changedTouches[0].screenY; });
+        let tX = 0, tY = 0, lastTap = 0;
+        document.addEventListener('touchstart', e => { 
+            tX = e.changedTouches[0].screenX; tY = e.changedTouches[0].screenY; 
+            let now = new Date().getTime(); if (now - lastTap < 300 && jState && jState.status === 'playing') shareLife(); lastTap = now;
+        });
+
         document.addEventListener('touchend', async e => {
             if(!jState || jState.status !== 'playing') return;
             let dx = e.changedTouches[0].screenX - tX; let dy = e.changedTouches[0].screenY - tY;
             let myLane = playerNum === 1 ? 'p1Lane' : 'p2Lane'; let myJump = playerNum === 1 ? 'p1Jump' : 'p2Jump';
             
             if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+                if(jState.turnEvent && playerNum === 1) { // Host turns
+                    if((jState.turnEvent === 'LEFT' && dx < 0) || (jState.turnEvent === 'RIGHT' && dx > 0)) {
+                        await updateDoc(docRef, { turnEvent: null }); 
+                        document.getElementById('alert-center').innerText = "GREAT TURN!"; document.getElementById('alert-center').style.color = "#00ff00";
+                        return;
+                    }
+                }
                 if (dx > 0 && jState[myLane] < 2) await updateDoc(docRef, { [myLane]: jState[myLane] + 1 });
                 else if (dx < 0 && jState[myLane] > 0) await updateDoc(docRef, { [myLane]: jState[myLane] - 1 });
             } else if (Math.abs(dy) > Math.abs(dx) && dy < -40) {
-                if(!jState[myJump]) {
-                    await updateDoc(docRef, { [myJump]: true });
-                    setTimeout(async () => await updateDoc(docRef, { [myJump]: false }), 800);
-                }
+                if(!jState[myJump]) { await updateDoc(docRef, { [myJump]: true }); setTimeout(async () => await updateDoc(docRef, { [myJump]: false }), 800); }
             }
         });
+
+        async function shareLife() {
+            let myLife = playerNum === 1 ? 'p1Life' : 'p2Life'; let ptLife = playerNum === 1 ? 'p2Life' : 'p1Life';
+            if(jState[myLife] > 20 && jState[ptLife] < 100) await updateDoc(docRef, { [myLife]: jState[myLife] - 20, [ptLife]: Math.min(100, jState[ptLife] + 20) });
+        }
 
         function syncJourneyState(data) {
             let oldLvl = jState ? jState.level : 1; jState = data;
             document.getElementById('name1').innerText = data.p1Name; document.getElementById('name2').innerText = data.p2Name;
             document.getElementById('p1-life').style.width = Math.max(0, data.p1Life) + "%";
             document.getElementById('p2-life').style.width = Math.max(0, data.p2Life) + "%";
+            document.getElementById('progress-fill').style.width = data.progress + "%";
 
             if(jState.level > oldLvl) {
-                let quotes = ["Distance means so little when someone means so much.", "Through the shadows, we find our light.", "Together, there are no dead ends.", "Love is the only path."];
-                showOverlay(`LEVEL ${jState.level}`, quotes[(jState.level-1)%4]);
+                if(jState.level > 5) triggerFinalLoveAnimation();
+                else showOverlay(`LEVEL ${jState.level}`, getRandomQuote(), false, null, 5000);
             }
+
+            if(jState.turnEvent) {
+                document.getElementById('alert-center').innerText = `⬅️ SWIPE ${jState.turnEvent}! ➡️`;
+                document.getElementById('alert-center').style.color = "#ffeb3b";
+                document.getElementById('alert-center').style.display = 'block';
+            } else { document.getElementById('alert-center').style.display = 'none'; }
 
             if(jState.latestEmoji && jState.latestEmoji.id !== lastEmojiId) {
                 lastEmojiId = jState.latestEmoji.id;
                 let div = document.createElement('div'); div.className = 'floating-emoji'; div.innerText = jState.latestEmoji.e;
                 div.style.left = jState.latestEmoji.p === 1 ? '20%' : '80%'; div.style.top = '60%';
-                document.getElementById('journey-hud').appendChild(div); setTimeout(() => div.remove(), 2000);
+                document.getElementById('journey-hud').appendChild(div); setTimeout(() => div.remove(), 2500);
             }
 
-            if(jState.p1Life <= 0 || jState.p2Life <= 0) showOverlay("JOURNEY FAILED", "You crashed. Reload page to start over.", false);
+            if(jState.p1Life <= 0 || jState.p2Life <= 0) {
+                showOverlay("JOURNEY FAILED", "You lost each other. Restarting...", true, async () => {
+                    if(playerNum === 1) await updateDoc(docRef, { level: 1, progress: 0, p1Life: 100, p2Life: 100, obstacle: null, turnEvent: null });
+                });
+            }
+        }
+
+        function triggerFinalLoveAnimation() {
+            document.getElementById('journey-hud').style.display = 'none';
+            let finalScreen = document.getElementById('final-screen'); finalScreen.style.display = 'flex';
+            document.getElementById('finalNames').innerText = `${jState.p1Name} & ${jState.p2Name}`;
+            const colors = ['#ff0844', '#ffb199', '#ff9a9e', '#fecfef'];
+            for(let i=0; i<80; i++) {
+                let h = document.createElement('div'); h.innerHTML = '❤️'; h.className = 'particle';
+                h.style.color = colors[Math.floor(Math.random() * colors.length)]; h.style.left = '50%'; h.style.top = '50%';
+                let angle = Math.random() * Math.PI * 2; let dist = 100 + Math.random() * 400;
+                h.style.setProperty('--tx', (Math.cos(angle) * dist) + 'px'); h.style.setProperty('--ty', (Math.sin(angle) * dist) + 'px');
+                h.style.animationDelay = (Math.random() * 2) + 's'; finalScreen.appendChild(h);
+            }
         }
 
         // --- HOST LOGIC ---
+        let lastTurn = 0, lastObs = 0;
         function startJourneyHost() {
             setInterval(async () => {
-                if(!jState || jState.status !== 'playing' || jState.p1Life <= 0 || jState.p2Life <= 0) return;
-                let prog = jState.progress + 2;
-                if(prog >= 100) { await updateDoc(docRef, { level: jState.level + 1, progress: 0, obstacle: null }); } 
+                if(!jState || jState.status !== 'playing' || jState.level > 5 || jState.p1Life <= 0 || jState.p2Life <= 0) return;
+                
+                let prog = jState.progress + 1; // 1% per tick
+
+                if(prog >= 100) { await updateDoc(docRef, { level: jState.level + 1, progress: 0, obstacle: null, turnEvent: null }); lastTurn=0; lastObs=0; } 
                 else {
                     let update = { progress: prog };
-                    if(!jState.obstacle && Math.random() > 0.5) {
-                        let t = jState.level % 2 === 0 ? 'monster' : 'jeep';
-                        update.obstacle = { lane: Math.floor(Math.random()*3), z: 2000, type: Math.random()>0.8 ? 'heart' : t };
+                    
+                    // Turns Logic
+                    if(prog - lastTurn > 20 && !jState.turnEvent && jState.level > 1) {
+                        lastTurn = prog; update.turnEvent = Math.random() > 0.5 ? 'LEFT' : 'RIGHT';
+                        setTimeout(async () => { let snap = await getDoc(docRef); if(snap.data().turnEvent) updateDoc(docRef, { p1Life: snap.data().p1Life - 20, p2Life: snap.data().p2Life - 20, turnEvent: null }); }, 3000);
+                    }
+
+                    // Obstacle Logic
+                    if(!jState.obstacle && prog - lastObs > 5 && !jState.turnEvent) {
+                        lastObs = prog;
+                        let type = Math.random() > 0.7 ? 'heart' : (jState.level % 2 === 0 ? 'monster' : 'jeep');
+                        update.obstacle = { lane: Math.floor(Math.random()*3), type: type, z: 3000, id: Date.now() };
                     }
                     await updateDoc(docRef, update);
                 }
             }, 800);
         }
 
-        // --- 3D CANVAS RENDERER (Cars & Images) ---
-        let oZ = 2000, rOff = 0;
-        let rP1X = 1, rP2X = 1, jP1Y = 0, jP2Y = 0; // Smoothing vars
+        // --- 3D RENDERING ---
+        let oZ = 3000, rOff = 0;
+        let rP1X = 1, rP2X = 1, jP1Y = 0, jP2Y = 0, curve = 0, tCurve = 0;
+        let scenery = []; for(let i=0; i<20; i++) scenery.push({ side: Math.random()>0.5?1:-1, z: Math.random()*3000, t: Math.random()>0.5?'lamp':'tree' });
 
-        function proj(x,y,z) { let s = 350/(350+z); return { x: (c.width/2)+(x*s), y: hY+((c.height-hY)*s), s:s }; }
+        function proj(x,y,z) { let s = 400/(400+z); return { x: (c.width/2)+(x*s), y: hY+((c.height-hY)*s), s:s }; }
 
-        function drawEntity(img, x, y, size) {
-            ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.beginPath(); ctx.ellipse(x, y+size/2, size*0.4, size*0.1, 0, 0, Math.PI*2); ctx.fill();
-            try { ctx.drawImage(img, x - size/2, y - size/2, size, size); } catch(e) {}
+        function drawEntity(img, x, y, size, isJump) {
+            let bobY = isJump ? -100 : Math.sin(Date.now()*0.005) * 5; 
+            ctx.fillStyle = "rgba(0,0,0,0.6)"; ctx.beginPath(); ctx.ellipse(x, y+size/2, size*0.4, size*0.1, 0, 0, Math.PI*2); ctx.fill();
+            try { ctx.drawImage(img, x - size/2, y - size/2 + bobY, size, size); } catch(e) {}
+        }
+
+        function drawScenery(x, y, s, type) {
+            if(type === 'lamp') {
+                ctx.fillStyle = "#333"; ctx.fillRect(x-5*s, y-150*s, 10*s, 150*s); // Pole
+                ctx.fillStyle = "#ff9a9e"; ctx.beginPath(); ctx.arc(x, y-150*s, 15*s, 0, Math.PI*2); ctx.fill(); // Light
+                ctx.fillStyle = "rgba(255,154,158,0.3)"; ctx.beginPath(); ctx.arc(x, y-150*s, 60*s, 0, Math.PI*2); ctx.fill(); // Glow
+            } else {
+                ctx.fillStyle = "#ff0844"; ctx.beginPath(); ctx.moveTo(x, y-100*s); ctx.lineTo(x-40*s, y); ctx.lineTo(x+40*s, y); ctx.fill(); // Romantic red tree
+            }
         }
 
         function startJourneyEngine() {
+            if(jState && jState.level === 1) showOverlay("LEVEL 1", getRandomQuote(), false, null, 4000);
+
             function render() {
                 if(!jState || jState.status !== 'playing') { requestAnimationFrame(render); return; }
                 
                 // Sky
-                let g = ctx.createLinearGradient(0,0,0,hY); g.addColorStop(0,"#0a0a2a"); g.addColorStop(1,"#1a1a3a");
-                ctx.fillStyle = g; ctx.fillRect(0,0,c.width,hY);
+                let grad = ctx.createLinearGradient(0,0,0,hY); grad.addColorStop(0,"#240b36"); grad.addColorStop(1,"#c31432");
+                ctx.fillStyle = grad; ctx.fillRect(0,0,c.width,hY);
 
-                // Ground & Road
-                ctx.fillStyle = "#111"; ctx.fillRect(0,hY,c.width,c.height);
+                // Ground & Road Base
+                ctx.fillStyle = "#0f0c29"; ctx.fillRect(0,hY,c.width,c.height);
                 let spd = 8 + jState.level; rOff = (rOff+spd)%100;
                 
-                ctx.fillStyle = "#222";
-                for(let y=c.height; y>hY; y-=5) {
-                    let z = (c.height-hY)/(y-hY); let pX = c.width/2; let rW = 600/z;
-                    ctx.fillRect(pX-rW, y, rW*2, 5);
-                    if((y+rOff)%40 > 20) { ctx.fillStyle = "#fff"; ctx.fillRect(pX-rW/3, y, 4, 4); ctx.fillRect(pX+rW/3, y, 4, 4); ctx.fillStyle = "#222"; }
+                tCurve = jState.turnEvent ? (jState.turnEvent==='LEFT'?-60:60) : 0;
+                curve += (tCurve - curve)*0.05;
+
+                // 3D Road
+                let dx = 0; 
+                for(let y=c.height; y>hY; y-=4) {
+                    let z = (c.height-hY)/(y-hY); dx += curve*0.05*z;
+                    let pX = (c.width/2)+dx; let rW = 800/z;
+                    let isStripe = (y+rOff)%40 > 20;
+                    
+                    ctx.fillStyle = isStripe ? "#2a0845" : "#111"; // Road color
+                    ctx.fillRect(pX-rW/2, y, rW, 4);
+                    if(isStripe) { ctx.fillStyle = "#ff9a9e"; ctx.fillRect(pX-rW/6, y, 4, 4); ctx.fillRect(pX+rW/6, y, 4, 4); }
                 }
 
-                // Obstacles
+                // Render Scenery
+                scenery.forEach(s => {
+                    s.z -= spd*2; if(s.z<0) s.z=3000;
+                    let sP = proj(s.side * 500 + (curve*s.z*0.05), 0, s.z);
+                    drawScenery(sP.x, sP.y, sP.s, s.t);
+                });
+
+                // HUD Text
+                document.getElementById('nav-hud').innerText = jState.level === 1 ? `GPS: Finding Partner...` : `GPS: Driving together!`;
+
+                // Obstacle
                 if(jState.obstacle) {
-                    oZ -= spd*3; let lX = (jState.obstacle.lane - 1)*200;
-                    let oP = proj(lX, 0, oZ);
+                    oZ -= spd*4; let lX = (jState.obstacle.lane - 1)*200;
+                    let oP = proj(lX + (curve*oZ*0.05), 0, oZ);
                     
                     if(oZ > 20) {
-                        let sz = 180 * oP.s;
-                        if(jState.obstacle.type === 'heart') { ctx.fillStyle="#ff0844"; ctx.font=`${40*oP.s}px Arial`; ctx.fillText("❤️", oP.x-10, oP.y); }
-                        else if (jState.obstacle.type === 'jeep') drawEntity(imgJeep, oP.x, oP.y, sz);
-                        else drawEntity(imgMonster, oP.x, oP.y, sz);
+                        let sz = 160 * oP.s;
+                        if(jState.obstacle.type === 'heart') { ctx.fillStyle="#ff0844"; ctx.font=`${60*oP.s}px Arial`; ctx.fillText("❤️", oP.x-15, oP.y); }
+                        else if (jState.obstacle.type === 'jeep') drawEntity(imgJeep, oP.x, oP.y, sz, false);
+                        else drawEntity(imgMonster, oP.x, oP.y, sz, false);
                     } else if(oZ > -50) {
                         let mLane = playerNum === 1 ? jState.p1Lane : jState.p2Lane;
                         let mJump = playerNum === 1 ? jState.p1Jump : jState.p2Jump;
                         if(mLane === jState.obstacle.lane && !mJump && playerNum === 1) {
                             if(jState.obstacle.type === 'heart') updateDoc(docRef, { p1Life: Math.min(100, jState.p1Life+15), p2Life: Math.min(100, jState.p2Life+15), obstacle: null });
-                            else updateDoc(docRef, { p1Life: jState.p1Life-20, p2Life: jState.p2Life-20, obstacle: null });
-                            oZ = 2000;
+                            else updateDoc(docRef, { p1Life: jState.p1Life-15, p2Life: jState.p2Life-15, obstacle: null });
+                            oZ = 3000;
                         }
-                    } else { oZ = 2000; if(playerNum===1) updateDoc(docRef, { obstacle:null }); }
+                    } else { oZ = 3000; if(playerNum===1) updateDoc(docRef, { obstacle:null }); }
                 }
 
-                // Players (Smooth Interpolation)
+                // Players
                 rP1X += (((jState.p1Lane-1)*200) - rP1X)*0.15; rP2X += (((jState.p2Lane-1)*200) - rP2X)*0.15;
                 jP1Y += ((jState.p1Jump ? -150 : 0) - jP1Y)*0.2; jP2Y += ((jState.p2Jump ? -150 : 0) - jP2Y)*0.2;
                 
-                let p1P = proj(rP1X, jP1Y, 150); let p2P = proj(rP2X, jP2Y, 150);
+                let p1P = proj(rP1X, 0, 150); let p2P = proj(rP2X, 0, 150);
+                p1P.y = c.height - 120 + jP1Y; p2P.y = c.height - 120 + jP2Y;
 
-                if(jState.level === 1) { // Separate roads illusion
-                    if(playerNum === 1) { drawEntity(jState.p1Gender==='boy'?imgBoy:imgGirl, p1P.x, p1P.y, 160*p1P.s); }
-                    else { drawEntity(jState.p2Gender==='boy'?imgBoy:imgGirl, p2P.x, p2P.y, 160*p2P.s); }
+                if(jState.level === 1) { // Separation Wall
+                    ctx.fillStyle = "rgba(255, 8, 68, 0.3)";
+                    let wT = proj(0, -200, 3000); let wB = proj(0, 200, 0);
+                    ctx.beginPath(); ctx.moveTo(wT.x-10, wT.y); ctx.lineTo(wT.x+10, wT.y); ctx.lineTo(wB.x+30, wB.y); ctx.lineTo(wB.x-30, wB.y); ctx.fill();
+                    
+                    if(playerNum === 1) drawEntity(jState.p1Gender==='boy'?imgBoy:imgGirl, p1P.x, p1P.y, 160*p1P.s, jState.p1Jump);
+                    else drawEntity(jState.p2Gender==='boy'?imgBoy:imgGirl, p2P.x, p2P.y, 160*p2P.s, jState.p2Jump);
                 } else {
-                    drawEntity(jState.p1Gender==='boy'?imgBoy:imgGirl, p1P.x, p1P.y, 160*p1P.s);
-                    drawEntity(jState.p2Gender==='boy'?imgBoy:imgGirl, p2P.x, p2P.y, 160*p2P.s);
+                    ctx.strokeStyle = "rgba(255, 154, 158, 0.6)"; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(p1P.x, p1P.y); ctx.lineTo(p2P.x, p2P.y); ctx.stroke();
+                    drawEntity(jState.p1Gender==='boy'?imgBoy:imgGirl, p1P.x, p1P.y, 160*p1P.s, jState.p1Jump);
+                    drawEntity(jState.p2Gender==='boy'?imgBoy:imgGirl, p2P.x, p2P.y, 160*p2P.s, jState.p2Jump);
                 }
 
-                // Names under players
-                ctx.fillStyle="#fff"; ctx.font="12px Orbitron"; ctx.textAlign="center";
-                if(jState.level > 1 || playerNum === 1) ctx.fillText(jState.p1Name, p1P.x, p1P.y+50);
-                if(jState.level > 1 || playerNum === 2) ctx.fillText(jState.p2Name, p2P.x, p2P.y+50);
+                ctx.fillStyle="#fff"; ctx.font="14px Orbitron"; ctx.textAlign="center";
+                if(jState.level > 1 || playerNum === 1) ctx.fillText(jState.p1Name, p1P.x, p1P.y+70);
+                if(jState.level > 1 || playerNum === 2) ctx.fillText(jState.p2Name, p2P.x, p2P.y+70);
 
                 requestAnimationFrame(render);
             }
