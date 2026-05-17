@@ -12,56 +12,55 @@
         body { 
             font-family: 'Poppins', sans-serif; 
             color: white; height: 100vh; width: 100vw; overflow: hidden; touch-action: none;
-            background: linear-gradient(-45deg, #2b0018, #0a000a, #4a0024, #1a0011);
+            background: linear-gradient(-45deg, #1a0011, #050011, #2b0033, #0a000a);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
         }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
         .bg-hearts { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; z-index: 0; overflow: hidden; }
-        .bg-heart { position: absolute; color: rgba(255, 0, 127, 0.15); font-size: 20px; animation: floatUp 10s linear infinite; bottom: -50px; }
+        .bg-heart { position: absolute; color: rgba(255, 0, 127, 0.1); font-size: 20px; animation: floatUp 12s linear infinite; bottom: -50px; }
         @keyframes floatUp { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; } }
 
         .screen { display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; flex-direction: column; align-items: center; justify-content: center; z-index: 10; }
         .active { display: flex; }
         
-        h1 { font-family: 'Dancing Script', cursive; font-size: 60px; color: #ff4d85; text-shadow: 0 0 20px rgba(255, 77, 133, 0.8); text-align: center; margin-bottom: 5px;}
-        .subtitle { font-family: 'Orbitron', sans-serif; font-size: 14px; color: #ffb3c6; margin-bottom: 30px; letter-spacing: 3px; text-shadow: 0 0 10px rgba(255, 179, 198, 0.5);}
+        h1 { font-family: 'Dancing Script', cursive; font-size: 65px; color: #ff007f; text-shadow: 0 0 25px rgba(255, 0, 127, 0.8); text-align: center; margin-bottom: 5px;}
+        .subtitle { font-family: 'Orbitron', sans-serif; font-size: 14px; color: #00f2fe; margin-bottom: 30px; letter-spacing: 4px; text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);}
         
-        .card { background: rgba(20, 5, 15, 0.6); padding: 30px; border-radius: 25px; border: 1px solid rgba(255, 77, 133, 0.4); width: 90%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 0 20px rgba(255, 77, 133, 0.1); text-align: center; backdrop-filter: blur(15px);}
+        .card { background: rgba(10, 5, 20, 0.7); padding: 30px; border-radius: 25px; border: 1px solid rgba(0, 242, 254, 0.4); width: 90%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 0 20px rgba(0, 242, 254, 0.1); text-align: center; backdrop-filter: blur(15px);}
 
         input, select, button { width: 100%; padding: 15px; margin: 12px 0; border-radius: 15px; border: none; font-size: 16px; font-family: 'Poppins', sans-serif; text-align: center; font-weight: bold; transition: all 0.3s ease;}
-        input, select { background: rgba(255,255,255,0.9); color: #333; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); }
-        input:focus { border: 2px solid #ff4d85; outline: none; transform: scale(1.02); }
+        input, select { background: rgba(255,255,255,0.9); color: #111; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); }
+        input:focus { border: 2px solid #ff007f; outline: none; transform: scale(1.02); }
         
-        .btn-primary { background: linear-gradient(90deg, #ff0055, #ff4d85); color: #fff; text-transform: uppercase; cursor: pointer; box-shadow: 0 8px 20px rgba(255, 0, 85, 0.4); letter-spacing: 1px;}
-        .btn-primary:active { transform: scale(0.95); box-shadow: 0 4px 10px rgba(255, 0, 85, 0.4); }
-        .btn-secondary { background: rgba(255, 255, 255, 0.1); border: 1px solid #ffb3c6; color: #ffb3c6; }
+        .btn-primary { background: linear-gradient(90deg, #ff007f, #ff758c); color: #fff; text-transform: uppercase; cursor: pointer; box-shadow: 0 8px 20px rgba(255, 0, 127, 0.4); letter-spacing: 1px;}
+        .btn-primary:active { transform: scale(0.95); box-shadow: 0 4px 10px rgba(255, 0, 127, 0.4); }
+        .btn-secondary { background: rgba(255, 255, 255, 0.05); border: 1px solid #00f2fe; color: #00f2fe; }
         .btn-success { background: linear-gradient(90deg, #1D976C, #25D366); color: white; box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);}
 
         /* Floating Nav & Comm HUD */
         #top-nav { display: none; position: absolute; top: 15px; left: 15px; right: 15px; justify-content: space-between; z-index: 1000; pointer-events: none;}
-        .glass-btn { position: relative; pointer-events: auto; width: 45px; height: 45px; border-radius: 50%; background: rgba(255, 77, 133, 0.15); border: 1px solid rgba(255, 77, 133, 0.4); color: #fff; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 20px; backdrop-filter: blur(10px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: 0.3s; }
+        .glass-btn { position: relative; pointer-events: auto; width: 45px; height: 45px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3); color: #fff; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 20px; backdrop-filter: blur(10px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: 0.3s; }
         .glass-btn:active { transform: scale(0.9); }
-        .muted { background: rgba(255, 0, 0, 0.2); border-color: #ff0000; color: #ff5555;}
-        
+        .muted { background: rgba(255, 0, 0, 0.3); border-color: #ff0000; color: #ff5555;}
         #chat-badge { display: none; position: absolute; top: 0; right: 0; width: 12px; height: 12px; background: #ff0055; border-radius: 50%; box-shadow: 0 0 5px #ff0055; border: 1px solid #fff; }
 
         /* Chat Panel */
-        #chat-panel { display: none; position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; height: 300px; background: rgba(15, 5, 15, 0.95); border: 1px solid #ff4d85; border-radius: 20px; z-index: 2000; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.8); backdrop-filter: blur(15px);}
+        #chat-panel { display: none; position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; height: 350px; background: rgba(10, 5, 20, 0.95); border: 1px solid #00f2fe; border-radius: 20px; z-index: 2000; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.8); backdrop-filter: blur(15px);}
         #chat-msgs { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; font-size: 14px; scroll-behavior: smooth; }
         .msg { padding: 12px 18px; border-radius: 20px; max-width: 80%; word-wrap: break-word; box-shadow: 0 2px 5px rgba(0,0,0,0.2);}
-        .msg.me { background: linear-gradient(135deg, #ff0055, #ff4d85); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .msg.me { background: linear-gradient(135deg, #00f2fe, #4facfe); color: black; align-self: flex-end; border-bottom-right-radius: 4px; font-weight: 600;}
         .msg.them { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; align-self: flex-start; border-bottom-left-radius: 4px; }
-        #chat-input-area { display: flex; padding: 10px; gap: 10px; border-top: 1px solid rgba(255,77,133,0.3); background: rgba(0,0,0,0.3); border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;}
+        #chat-input-area { display: flex; padding: 10px; gap: 10px; border-top: 1px solid rgba(0,242,254,0.3); background: rgba(0,0,0,0.4); border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;}
         #chat-input-area input { margin: 0; padding: 12px 15px; border-radius: 20px; font-size: 14px; background: rgba(255,255,255,0.1); color: white; border: none;}
         #chat-input-area button { width: 50px; margin: 0; border-radius: 50%; display: flex; justify-content: center; align-items: center;}
 
         /* Quick Emojis */
         #emoji-bar { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 15px; z-index: 1500; }
-        .emoji-btn { background: rgba(255,255,255,0.1); border: 1px solid #ff4d85; border-radius: 50%; width: 45px; height: 45px; font-size: 22px; cursor: pointer; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); transition: 0.2s;}
+        .emoji-btn { background: rgba(255,255,255,0.1); border: 1px solid #ff007f; border-radius: 50%; width: 45px; height: 45px; font-size: 22px; cursor: pointer; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); transition: 0.2s;}
         .emoji-btn:active { transform: scale(0.8); }
-        .floating-emoji { position: absolute; font-size: 45px; animation: floatUpEmoji 2s forwards ease-out; z-index: 2500; pointer-events: none; }
+        .floating-emoji { position: absolute; font-size: 45px; animation: floatUpEmoji 2s forwards ease-out; z-index: 2500; pointer-events: none; filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));}
         @keyframes floatUpEmoji { 0% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -200px) scale(1.5); } }
 
         /* Game Area Base */
@@ -69,49 +68,61 @@
         canvas { display: none; position: absolute; top:0; left:0; width: 100vw; height: 100vh; z-index: 1; }
         
         #score-hud { position: absolute; top: 75px; width: 100%; padding: 0 20px; display: flex; justify-content: space-between; z-index: 20; pointer-events: none; }
-        .score-box { background: rgba(0,0,0,0.6); border: 1px solid rgba(255,77,133,0.5); border-radius: 15px; padding: 8px 25px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.4); backdrop-filter: blur(5px);}
-        .score-box h3 { font-family: 'Orbitron'; font-size: 11px; color: #ffb3c6; text-transform: uppercase; letter-spacing: 1px;}
-        .score-box p { font-size: 24px; font-weight: bold; color: #fff; margin:0; font-family: 'Orbitron'; text-shadow: 0 0 10px #ff0055;}
+        .score-box { background: rgba(0,0,0,0.7); border: 1px solid #00f2fe; border-radius: 15px; padding: 8px 25px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.4); backdrop-filter: blur(5px);}
+        .score-box h3 { font-family: 'Orbitron'; font-size: 11px; color: #00f2fe; text-transform: uppercase; letter-spacing: 1px;}
+        .score-box p { font-size: 24px; font-weight: bold; color: #fff; margin:0; font-family: 'Orbitron'; text-shadow: 0 0 10px #00f2fe;}
         
-        #level-title-hud { font-family: 'Orbitron'; font-size: 24px; color: #fff; text-shadow: 0 0 15px #ff0055; margin-top: 15px; z-index: 20; letter-spacing: 2px;}
+        #level-title-hud { font-family: 'Orbitron'; font-size: 24px; color: #ff007f; text-shadow: 0 0 15px #ff007f; margin-top: 15px; z-index: 20; letter-spacing: 2px;}
 
-        /* Level 1: THE SPARK (NEW) */
+        /* Level 1: THE SPARK (Harder) */
         #spark-area { display: none; position: absolute; top: 150px; left: 15px; right: 15px; bottom: 20px; z-index: 10; flex-direction: column; align-items: center; justify-content: center; }
-        #spark-meter-bg { width: 80%; height: 20px; background: rgba(255,255,255,0.1); border: 2px solid #ff4d85; border-radius: 10px; margin-bottom: 40px; overflow: hidden; box-shadow: 0 0 15px rgba(255,77,133,0.4);}
-        #spark-meter-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #ff0055, #ff4d85); transition: width 0.2s;}
-        .giant-heart { font-size: 120px; cursor: pointer; filter: drop-shadow(0 0 30px rgba(255,0,85,0.8)); transition: transform 0.1s;}
-        .giant-heart:active { transform: scale(0.85); }
-        .tap-instruction { font-size: 16px; color: #ffb3c6; margin-top: 20px; font-weight: bold; letter-spacing: 1px;}
+        #spark-meter-bg { width: 80%; height: 25px; background: rgba(255,255,255,0.1); border: 2px solid #00f2fe; border-radius: 12px; margin-bottom: 40px; overflow: hidden; box-shadow: 0 0 15px rgba(0,242,254,0.4);}
+        #spark-meter-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #00f2fe, #4facfe); transition: width 0.1s;}
+        .giant-heart { font-size: 130px; cursor: pointer; filter: drop-shadow(0 0 35px rgba(255,0,127,0.8)); transition: transform 0.05s;}
+        .giant-heart:active { transform: scale(0.85); filter: drop-shadow(0 0 50px #00f2fe); }
+        .tap-instruction { font-size: 16px; color: #ffb3c6; margin-top: 20px; font-weight: bold; letter-spacing: 1px; text-align: center;}
 
         /* Mini Games Layouts */
         .grid-game { display: grid; gap: 12px; z-index: 10; margin-top: 30px; }
+        .match-card { width: 75px; height: 75px; background: rgba(0,242,254,0.1); border: 2px solid rgba(0,242,254,0.5); border-radius: 18px; display: flex; justify-content: center; align-items: center; font-size: 35px; cursor: pointer; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.3);}
+        .match-card.flipped { background: rgba(255,255,255,0.95); transform: rotateY(180deg); border-color: #fff; box-shadow: 0 0 25px rgba(255,255,255,0.6);}
+        .ttt-cell { width: 95px; height: 95px; background: rgba(255,0,127,0.05); border: 2px solid rgba(255,0,127,0.6); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 55px; font-family: 'Orbitron'; cursor: pointer; box-shadow: inset 0 0 20px rgba(255,0,127,0.1); transition: 0.2s;}
         
-        .ttt-cell { width: 95px; height: 95px; background: rgba(255,77,133,0.05); border: 2px solid rgba(255,77,133,0.6); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 55px; font-family: 'Orbitron'; cursor: pointer; box-shadow: inset 0 0 20px rgba(255,77,133,0.1); transition: 0.2s;}
-        
-        #sudden-death-area { display: none; position: absolute; top: 150px; left: 15px; right: 15px; bottom: 20px; z-index: 10; border: 2px solid #ffeb3b; border-radius: 25px; background: rgba(0,0,0,0.3); box-shadow: inset 0 0 30px rgba(255,235,59,0.2);}
-        .golden-heart { position: absolute; font-size: 60px; cursor: pointer; filter: drop-shadow(0 0 20px #ffeb3b); animation: shake 0.2s infinite; }
+        #sudden-death-area { display: none; position: absolute; top: 150px; left: 15px; right: 15px; bottom: 20px; z-index: 10; border: 2px solid #ffeb3b; border-radius: 25px; background: rgba(0,0,0,0.4); box-shadow: inset 0 0 30px rgba(255,235,59,0.2);}
+        .golden-heart { position: absolute; font-size: 65px; cursor: pointer; filter: drop-shadow(0 0 25px #ffeb3b); animation: shake 0.2s infinite; }
         @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 25% { transform: translate(-1px, -2px) rotate(-1deg); } 50% { transform: translate(-3px, 0px) rotate(1deg); } 75% { transform: translate(3px, 2px) rotate(0deg); } 100% { transform: translate(1px, -1px) rotate(-1deg); } }
 
-        #popper-area { display: none; position: absolute; top: 150px; left: 15px; right: 15px; bottom: 20px; z-index: 10; border: 2px dashed rgba(255,77,133,0.4); border-radius: 25px; background: rgba(0,0,0,0.2);}
-        .pop-target { position: absolute; font-size: 55px; cursor: pointer; animation: pulseBeat 0.8s infinite alternate; filter: drop-shadow(0 0 15px rgba(255,0,85,0.8)); transition: transform 0.1s;}
+        /* Level 3: Popper (Harder) */
+        #popper-area { display: none; position: absolute; top: 150px; left: 15px; right: 15px; bottom: 20px; z-index: 10; border: 2px dashed rgba(0,242,254,0.4); border-radius: 25px; background: rgba(0,0,0,0.2);}
+        .pop-target { position: absolute; font-size: 55px; cursor: pointer; animation: pulseBeat 0.6s infinite alternate; filter: drop-shadow(0 0 15px rgba(255,0,127,0.8)); transition: transform 0.1s;}
         
+        /* Level 4: Scramble */
         #scramble-area { display: none; z-index: 10; flex-direction: column; align-items: center; gap: 25px; margin-top: 60px; width: 90%; max-width: 400px;}
-        #scramble-word { font-family: 'Orbitron'; font-size: 45px; color: #fff; text-shadow: 0 0 20px #ff0055, 0 0 40px #ff0055; letter-spacing: 12px; text-align: center;}
+        #scramble-word { font-family: 'Orbitron'; font-size: 40px; color: #fff; text-shadow: 0 0 20px #00f2fe, 0 0 40px #00f2fe; letter-spacing: 10px; text-align: center;}
+        #scramble-progress { font-family: 'Poppins'; font-size: 14px; color: #ffb3c6; }
 
         /* Overlays */
-        #overlay { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(10,0,5,0.95); z-index: 3000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 25px; backdrop-filter: blur(10px);}
-        #ov-title { font-family: 'Orbitron'; font-size: 45px; color: #ff4d85; margin-bottom: 20px; text-shadow: 0 0 25px rgba(255,77,133,0.8); letter-spacing: 3px;}
-        #ov-quote { font-size: 26px; color: #ffb3c6; font-family: 'Dancing Script', cursive; margin-bottom: 40px; line-height: 1.6; text-shadow: 0 2px 4px rgba(0,0,0,0.5);}
+        #overlay { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5,0,10,0.95); z-index: 3000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 25px; backdrop-filter: blur(15px);}
+        #ov-title { font-family: 'Orbitron'; font-size: 45px; color: #ff007f; margin-bottom: 20px; text-shadow: 0 0 25px rgba(255,0,127,0.8); letter-spacing: 3px;}
+        #ov-quote { font-size: 26px; color: #00f2fe; font-family: 'Dancing Script', cursive; margin-bottom: 40px; line-height: 1.6; text-shadow: 0 2px 4px rgba(0,0,0,0.5);}
         
-        /* FINALE ANIMATION */
-        #final-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: radial-gradient(circle at center, #3d001a, #000); z-index: 4000; overflow: hidden; flex-direction: column; align-items: center; justify-content: center; }
+        /* FINALE SCREEN (Interactive) */
+        #final-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: radial-gradient(circle at center, #1a0033, #000); z-index: 4000; overflow: hidden; flex-direction: column; align-items: center; justify-content: center; }
+        .finale-stats { display: flex; gap: 30px; margin-top: 30px; z-index: 220; opacity: 0; animation: fadeInText 2s 2s forwards;}
+        .stat-box { background: rgba(0,0,0,0.6); border: 1px solid #ff007f; border-radius: 15px; padding: 15px 30px; text-align: center; box-shadow: 0 0 20px rgba(255,0,127,0.4);}
+        .stat-box h4 { font-family: 'Orbitron'; font-size: 14px; color: #ffb3c6; }
+        .stat-box p { font-size: 35px; font-weight: bold; color: #fff; font-family: 'Orbitron'; text-shadow: 0 0 15px #00f2fe;}
+        
         .heart-particle { position: absolute; font-size: 35px; animation: zoomOutHeart 3.5s forwards cubic-bezier(0.1, 0.8, 0.3, 1); filter: drop-shadow(0 0 10px rgba(255,0,85,0.8));}
         #final-text { font-family: 'Dancing Script', cursive; font-size: 65px; z-index: 210; opacity: 0; animation: fadeInText 3s 1s forwards; text-align: center; color: #fff; text-shadow: 0 0 20px #ff0055, 0 0 40px #ff0055; line-height: 1.2;}
-        .final-names { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 30px; letter-spacing: 2px; text-transform: uppercase; background: linear-gradient(90deg, #ffb3c6, #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
+        .final-names { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 35px; letter-spacing: 2px; text-transform: uppercase; background: linear-gradient(90deg, #00f2fe, #ff007f); -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
         
+        .touch-ripple { position: absolute; width: 20px; height: 20px; background: rgba(0, 242, 254, 0.8); border-radius: 50%; transform: translate(-50%, -50%); animation: rippleAnim 1s ease-out forwards; pointer-events: none;}
+        @keyframes rippleAnim { 0% { width: 0px; height: 0px; opacity: 1; } 100% { width: 150px; height: 150px; opacity: 0; } }
+
         @keyframes pulseBeat { 0% { transform: scale(1); } 100% { transform: scale(1.15); } }
         @keyframes zoomOutHeart { 0% { transform: scale(0) translate(0,0); opacity: 1; } 100% { transform: scale(25) translate(var(--tx), var(--ty)); opacity: 0; } }
-        @keyframes fadeInText { to { opacity: 1; transform: scale(1.05); } }
+        @keyframes fadeInText { to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
@@ -134,32 +145,33 @@
         <button class="emoji-btn" onclick="sendEmoji('😍')">😍</button>
         <button class="emoji-btn" onclick="sendEmoji('😂')">😂</button>
         <button class="emoji-btn" onclick="sendEmoji('😡')">😡</button>
+        <button class="emoji-btn" onclick="sendEmoji('🔥')">🔥</button>
     </div>
 
     <div id="chat-panel">
         <div id="chat-msgs"></div>
         <div id="chat-input-area">
             <input type="text" id="chatInput" placeholder="Type a message...">
-            <button id="btnSendChat" class="btn-primary" style="padding: 12px;">➤</button>
+            <button id="btnSendChat" class="btn-primary" style="padding: 12px; width: 60px;">➤</button>
         </div>
     </div>
 
     <div id="home-screen" class="screen active">
         <h1>Love Hub</h1>
-        <div class="subtitle">BY NANI CREATIONS</div>
+        <div class="subtitle">THE ULTIMATE JOURNEY</div>
         <div class="card">
             <input type="text" id="playerName" placeholder="Your Name" required>
             <button id="btnCreate" class="btn-primary">Start New Journey</button>
-            <div style="margin: 25px 0; color: #ffb3c6; font-size: 14px; letter-spacing: 2px;">OR</div>
+            <div style="margin: 25px 0; color: #00f2fe; font-size: 14px; letter-spacing: 2px;">OR</div>
             <input type="text" id="joinCode" placeholder="Enter Partner's Code" style="text-transform: uppercase;">
             <button id="btnJoin" class="btn-secondary">Join Journey</button>
         </div>
     </div>
 
     <div id="lobby-screen" class="screen">
-        <h2 style="color: #ffb3c6; margin-bottom: 15px; font-family:'Poppins'; font-weight: 400;">Waiting for Partner...</h2>
+        <h2 style="color: #00f2fe; margin-bottom: 15px; font-family:'Poppins'; font-weight: 400;">Waiting for Partner...</h2>
         <div class="card">
-            <h1 id="displayCode" style="font-size: 55px; color: #fff; margin: 15px 0; font-family:'Orbitron'; text-shadow: 0 0 20px #ff0055;">XXXXX</h1>
+            <h1 id="displayCode" style="font-size: 55px; color: #fff; margin: 15px 0; font-family:'Orbitron'; text-shadow: 0 0 20px #ff007f;">XXXXX</h1>
             <p style="color:rgba(255,255,255,0.6); font-size:14px; margin-bottom:25px;">Share this code to connect souls</p>
             <button id="btnShare" class="btn-success">Invite via WhatsApp</button>
             <button id="btnCopy" class="btn-secondary" style="margin-top:15px;">Copy Link</button>
@@ -176,17 +188,21 @@
         <div id="spark-area">
             <div id="spark-meter-bg"><div id="spark-meter-fill"></div></div>
             <div class="giant-heart" id="sparkBtn">💖</div>
-            <div class="tap-instruction">TAP TOGETHER TO FILL THE METER!</div>
+            <div class="tap-instruction">TAP FAST! METER DROPS QUICKLY!</div>
         </div>
 
+        <div id="memory-board" class="grid-game" style="grid-template-columns: repeat(4, 1fr); display:none;"></div>
         <div id="ttt-board" class="grid-game" style="grid-template-columns: repeat(3, 1fr); display:none;"></div>
         <div id="sudden-death-area"></div>
         <div id="popper-area"></div>
+        
         <div id="scramble-area">
+            <div id="scramble-progress">Word 1 of 3</div>
             <div id="scramble-word"></div>
             <input type="text" id="scramble-input" placeholder="Type the true word..." style="text-transform:uppercase;">
             <button id="btnScramble" class="btn-primary">Guess</button>
         </div>
+        
         <canvas id="game-canvas"></canvas>
     </div>
 
@@ -198,6 +214,11 @@
 
     <div id="final-screen">
         <div id="final-text">Our Love is Eternal<br><br><span id="finalNames" class="final-names"></span></div>
+        <div class="finale-stats">
+            <div class="stat-box"><h4>P1 SCORE</h4><p id="fs-p1">0</p></div>
+            <div class="stat-box"><h4>P2 SCORE</h4><p id="fs-p2">0</p></div>
+        </div>
+        <button class="btn-secondary" id="btnFinalRestart" style="margin-top: 50px; z-index: 220; width: 250px; border-radius: 25px; opacity: 0; animation: fadeInText 2s 3s forwards;">Play Again</button>
     </div>
 
     <script type="module">
@@ -223,29 +244,33 @@
             osc.connect(g); g.connect(audioCtx.destination);
             
             if(type === 'click') {
-                osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.1);
+                osc.type = 'sine'; osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.1);
                 g.gain.setValueAtTime(0.3, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
                 osc.start(); osc.stop(audioCtx.currentTime + 0.1);
             } else if(type === 'match') {
-                osc.type = 'triangle'; osc.frequency.setValueAtTime(400, audioCtx.currentTime);
-                osc.frequency.linearRampToValueAtTime(800, audioCtx.currentTime + 0.3);
+                osc.type = 'triangle'; osc.frequency.setValueAtTime(500, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(1000, audioCtx.currentTime + 0.3);
                 g.gain.setValueAtTime(0.3, audioCtx.currentTime); g.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
                 osc.start(); osc.stop(audioCtx.currentTime + 0.3);
             } else if(type === 'levelUp') {
-                osc.type = 'square'; osc.frequency.setValueAtTime(300, audioCtx.currentTime);
-                osc.frequency.setValueAtTime(400, audioCtx.currentTime + 0.1);
-                osc.frequency.setValueAtTime(500, audioCtx.currentTime + 0.2);
-                g.gain.setValueAtTime(0.2, audioCtx.currentTime); g.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+                osc.type = 'square'; osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime + 0.1);
+                osc.frequency.setValueAtTime(800, audioCtx.currentTime + 0.2);
+                g.gain.setValueAtTime(0.2, audioCtx.currentTime); g.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.6);
+            } else if(type === 'bad') {
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                g.gain.setValueAtTime(0.4, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
             }
         }
 
         const bgContainer = document.getElementById('bgHearts');
         for(let i=0; i<15; i++) {
             let h = document.createElement('div'); h.className = 'bg-heart'; h.innerText = '❤';
-            h.style.left = Math.random() * 100 + 'vw'; h.style.animationDuration = (8 + Math.random() * 10) + 's';
-            h.style.animationDelay = Math.random() * 5 + 's'; h.style.fontSize = (15 + Math.random() * 25) + 'px';
+            h.style.left = Math.random() * 100 + 'vw'; h.style.animationDuration = (10 + Math.random() * 10) + 's';
+            h.style.animationDelay = Math.random() * 5 + 's'; h.style.fontSize = (15 + Math.random() * 30) + 'px';
             bgContainer.appendChild(h);
         }
 
@@ -253,12 +278,14 @@
         let gState = { level: 1, p1Score: 0, p2Score: 0, status: 'waiting' };
         
         const quotes = [
+            "“Love is a spark that ignites the soul.”",
             "“Distance means so little when someone means so much.”",
             "“Two souls but a single thought, two hearts that beat as one.”",
             "“Every heartbeat brings me closer to you.”",
             "“You are the missing piece to my puzzle.”",
             "“Love is a journey starting at forever and ending at never.”"
         ];
+        const scrambleWords = ["FOREVER", "SOULMATE", "ETERNAL"];
 
         function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); if(document.getElementById(id)) document.getElementById(id).classList.add('active'); }
         function showOverlay(title, quote, showBtn=false, btnAction=null) {
@@ -272,21 +299,23 @@
 
         document.getElementById('btnHome').onclick = () => { window.location.reload(); };
 
-        // HOST ONLY RESTART
-        document.getElementById('btnRestart').onclick = async () => {
-            if(confirm("Are you sure you want to restart the journey?")) {
-                await updateDoc(docRef, { 
-                    level: 1, p1Score: 0, p2Score: 0, 
-                    sparkClicks: 0,
-                    tttBoard: ['','','','','','','','',''], tttTurn: 'X',
-                    popHeart: null, sdTarget: null,
-                    scramble: { word: "FOREVER", jumbled: "R V O E F E R", solved: false },
-                    surfProg: 0, surfP1Lane: 1, surfP2Lane: 1, surfObs: null
-                });
-            }
-        };
+        // HOST RESTART
+        async function performRestart() {
+            firstPick = null; memProcessing = false;
+            document.getElementById('final-screen').style.display = 'none';
+            await updateDoc(docRef, { 
+                level: 1, p1Score: 0, p2Score: 0, 
+                sparkClicks: 0,
+                memBoard: generateMemoryBoard(), memTurn: 1, 
+                tttBoard: ['','','','','','','','',''], tttTurn: 'X',
+                popHeart: null, sdTarget: null,
+                scramble: { wordIdx: 0, jumbled: scrambleWords[0].split('').sort(()=>Math.random()-0.5).join(' '), solved: false },
+                canvasProg: 0, cP1X: 50, cP2X: 50, canvasObj: null
+            });
+        }
+        document.getElementById('btnRestart').onclick = async () => { if(confirm("Restart the journey?")) performRestart(); };
+        document.getElementById('btnFinalRestart').onclick = () => { if(playerNum===1) performRestart(); else alert("Only Host can restart."); };
 
-        // EMOJI SYSTEM
         window.sendEmoji = async function(emoji) { 
             if(audioCtx.state === 'suspended') audioCtx.resume();
             if(gState && gState.status === 'playing') await updateDoc(docRef, { latestEmoji: { e: emoji, p: playerNum, id: Date.now() } }); 
@@ -301,14 +330,15 @@
             await setDoc(docRef, { 
                 status: 'waiting', level: 1, p1Name: myName, p2Name: "", p1Score: 0, p2Score: 0, 
                 sparkClicks: 0,
+                memBoard: generateMemoryBoard(), memTurn: 1, 
                 tttBoard: ['','','','','','','','',''], tttTurn: 'X',
                 popHeart: null, sdTarget: null,
-                scramble: { word: "FOREVER", jumbled: "R V O E F E R", solved: false },
-                surfProg: 0, surfP1Lane: 1, surfP2Lane: 1, surfObs: null
+                scramble: { wordIdx: 0, jumbled: scrambleWords[0].split('').sort(()=>Math.random()-0.5).join(' '), solved: false },
+                canvasProg: 0, cP1X: 50, cP2X: 50, canvasObj: null
             });
             
             document.getElementById('displayCode').innerText = gameId;
-            document.getElementById('btnRestart').style.display = 'flex'; // Show restart to host only
+            document.getElementById('btnRestart').style.display = 'flex'; 
             showScreen('lobby-screen'); setupSync(); setupChat(); setupWebRTC();
         });
 
@@ -318,10 +348,8 @@
             if(audioCtx.state === 'suspended') audioCtx.resume();
             docRef = doc(db, "games", gameId); messagesRef = collection(db, "games", gameId, "messages");
             let snap = await getDoc(docRef);
-            if(snap.exists()) {
-                await updateDoc(docRef, { p2Name: myName, status: 'playing' });
-                setupSync(); setupChat(); setupWebRTC();
-            } else alert("Room closed or invalid.");
+            if(snap.exists()) { await updateDoc(docRef, { p2Name: myName, status: 'playing' }); setupSync(); setupChat(); setupWebRTC(); } 
+            else alert("Room closed or invalid.");
         });
 
         const getShareURL = () => `${window.location.origin}${window.location.pathname}?game=${gameId}`;
@@ -347,17 +375,15 @@
                     document.getElementById('score1').innerText = gState.p1Score; document.getElementById('score2').innerText = gState.p2Score;
                     document.getElementById('level-title-hud').innerText = gState.level === 2.5 ? "SUDDEN DEATH!" : `LEVEL ${Math.floor(gState.level)}`;
 
-                    // Handle restarts and progressions safely
                     if(gState.level !== oldLvl) {
                         if(gState.level > 5) triggerFinale();
                         else {
                             let idx = Math.floor(gState.level) - 1;
                             if(gState.level === 2.5) showOverlay("TIE BREAKER", "React faster than your partner to win!");
-                            else showOverlay(`LEVEL ${gState.level}`, quotes[idx]);
+                            else showOverlay(`LEVEL ${Math.floor(gState.level)}`, quotes[idx]);
                         }
                     }
 
-                    // Render Quick Emojis
                     if(gState.latestEmoji && gState.latestEmoji.id !== lastEmojiId) {
                         lastEmojiId = gState.latestEmoji.id;
                         let div = document.createElement('div'); div.className = 'floating-emoji'; div.innerText = gState.latestEmoji.e;
@@ -366,44 +392,80 @@
                     }
 
                     hideAllLevels();
-                    if(gState.level === 1) { document.getElementById('spark-area').style.display='flex'; renderSpark(); }
-                    else if(gState.level === 2) renderTTT();
+                    if(gState.level === 1) { document.getElementById('spark-area').style.display='flex'; renderSpark(); if(playerNum===1) hostSpark(); }
+                    else if(gState.level === 1.5) { document.getElementById('memory-board').style.display='grid'; renderMemory(); } // Just mapping levels logically
+                    else if(gState.level === 2) { document.getElementById('ttt-board').style.display='grid'; renderTTT(); }
                     else if(gState.level === 2.5) { document.getElementById('sudden-death-area').style.display='block'; renderSuddenDeath(); if(playerNum===1) hostSuddenDeath(); }
                     else if(gState.level === 3) { document.getElementById('popper-area').style.display='block'; renderPopper(); if(playerNum===1) hostPopper(); }
                     else if(gState.level === 4) { document.getElementById('scramble-area').style.display='flex'; renderScramble(); }
-                    else if(gState.level === 5) { document.getElementById('game-canvas').style.display='block'; startSurfEngine(); if(playerNum===1) hostSurf(); }
+                    else if(gState.level === 5) { document.getElementById('game-canvas').style.display='block'; startCanvasEngine(); if(playerNum===1) hostCanvas(); }
                 }
             });
         }
 
         function hideAllLevels() {
-            document.getElementById('spark-area').style.display = 'none'; document.getElementById('ttt-board').style.display = 'none';
-            document.getElementById('sudden-death-area').style.display = 'none'; document.getElementById('popper-area').style.display = 'none'; 
-            document.getElementById('scramble-area').style.display = 'none'; document.getElementById('game-canvas').style.display = 'none';
+            document.getElementById('spark-area').style.display = 'none'; document.getElementById('memory-board').style.display = 'none'; 
+            document.getElementById('ttt-board').style.display = 'none'; document.getElementById('sudden-death-area').style.display = 'none'; 
+            document.getElementById('popper-area').style.display = 'none'; document.getElementById('scramble-area').style.display = 'none'; 
+            document.getElementById('game-canvas').style.display = 'none';
         }
 
-        // --- LEVEL 1: THE SPARK (NEW - BUG FREE) ---
-        function renderSpark() {
-            let meter = document.getElementById('spark-meter-fill');
-            meter.style.width = gState.sparkClicks + '%';
+        // --- LEVEL 1: THE SPARK (HARD DECAY) ---
+        let sparkInt = null;
+        function hostSpark() {
+            if(sparkInt) return;
+            sparkInt = setInterval(async () => {
+                if(gState.level !== 1) { clearInterval(sparkInt); sparkInt = null; return; }
+                if(gState.sparkClicks > 0) updateDoc(docRef, { sparkClicks: Math.max(0, gState.sparkClicks - 5) });
+            }, 1000); // Decays 5 points every second!
         }
-
+        function renderSpark() { document.getElementById('spark-meter-fill').style.width = gState.sparkClicks + '%'; }
         document.getElementById('sparkBtn').onclick = async () => {
-            if(gState.level !== 1) return;
-            playSound('click');
-            let newClicks = gState.sparkClicks + 2; // 50 total clicks needed
-            
-            if(newClicks >= 100) {
-                playSound('match');
-                await updateDoc(docRef, { sparkClicks: 100, level: 2 });
-            } else {
-                await updateDoc(docRef, { sparkClicks: newClicks });
-            }
+            if(gState.level !== 1) return; playSound('click');
+            let n = gState.sparkClicks + 5; 
+            if(n >= 100) { playSound('match'); let sc = playerNum===1?'p1Score':'p2Score'; await updateDoc(docRef, { sparkClicks: 100, level: 1.5, [sc]: gState[sc]+50 }); } 
+            else await updateDoc(docRef, { sparkClicks: n });
         };
+
+        // --- LEVEL 1.5: MEMORY MATCH ---
+        function generateMemoryBoard() {
+            let emojis = ['❤️','😍','💍','🌹','🧸','💌','🥂','🎁'];
+            return [...emojis, ...emojis].sort(() => Math.random() - 0.5).map(e => ({ e: e, flipped: false, solved: false }));
+        }
+
+        let firstPick = null; let memProcessing = false;
+        function renderMemory() {
+            let board = document.getElementById('memory-board'); board.innerHTML = '';
+            gState.memBoard.forEach((card, i) => {
+                let el = document.createElement('div'); el.className = `match-card ${(card.flipped || card.solved) ? 'flipped' : ''}`;
+                el.innerText = (card.flipped || card.solved) ? card.e : '❓';
+                el.onclick = () => handleMemoryClick(i); board.appendChild(el);
+            });
+        }
+
+        async function handleMemoryClick(i) {
+            if(gState.memTurn !== playerNum || gState.memBoard[i].flipped || gState.memBoard[i].solved || memProcessing) return;
+            playSound('click'); let nb = [...gState.memBoard]; nb[i].flipped = true;
+            if(firstPick === null) { firstPick = i; await updateDoc(docRef, { memBoard: nb }); } 
+            else {
+                memProcessing = true; await updateDoc(docRef, { memBoard: nb, memTurn: playerNum === 1 ? 2 : 1 });
+                setTimeout(async () => {
+                    let snap = await getDoc(docRef); let b = snap.data().memBoard;
+                    if(b[firstPick].e === b[i].e) { 
+                        playSound('match'); b[firstPick].solved = true; b[i].solved = true; 
+                        let sc = playerNum===1?'p1Score':'p2Score';
+                        let isDone = b.every(x => x.solved);
+                        let updateData = { memBoard: b, [sc]: gState[sc]+10 };
+                        if(isDone) updateData.level = 2; 
+                        await updateDoc(docRef, updateData);
+                    } else { b[firstPick].flipped = false; b[i].flipped = false; await updateDoc(docRef, { memBoard: b }); }
+                    firstPick = null; memProcessing = false;
+                }, 800);
+            }
+        }
 
         // --- LEVEL 2: TIC TAC TOE ---
         function renderTTT() {
-            document.getElementById('ttt-board').style.display = 'grid';
             let board = document.getElementById('ttt-board'); board.innerHTML = '';
             gState.tttBoard.forEach((cell, i) => {
                 let el = document.createElement('div'); el.className = 'ttt-cell'; el.innerText = cell;
@@ -415,18 +477,15 @@
         async function handleTTTClick(i) {
             let mySym = playerNum === 1 ? 'X' : 'O';
             if(gState.tttTurn !== mySym || gState.tttBoard[i] !== '') return;
-            playSound('click');
-            let nb = [...gState.tttBoard]; nb[i] = mySym;
+            playSound('click'); let nb = [...gState.tttBoard]; nb[i] = mySym;
             let lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
             let win = lines.find(l => nb[l[0]] && nb[l[0]]===nb[l[1]] && nb[l[0]]===nb[l[2]]);
             
             if(win) {
-                playSound('match');
-                let sc = playerNum===1?'p1Score':'p2Score'; 
+                playSound('match'); let sc = playerNum===1?'p1Score':'p2Score'; 
                 await updateDoc(docRef, { tttBoard: nb, [sc]: gState[sc]+50, level: 3 });
-            } else if(!nb.includes('')) { 
-                await updateDoc(docRef, { tttBoard: nb, level: 2.5 }); // Tie breaker
-            } else { await updateDoc(docRef, { tttBoard: nb, tttTurn: mySym==='X'?'O':'X' }); }
+            } else if(!nb.includes('')) { await updateDoc(docRef, { tttBoard: nb, level: 2.5 }); } 
+            else { await updateDoc(docRef, { tttBoard: nb, tttTurn: mySym==='X'?'O':'X' }); }
         }
 
         // --- LEVEL 2.5: SUDDEN DEATH ---
@@ -436,126 +495,139 @@
             sdInt = setInterval(() => {
                 if(gState.level !== 2.5) { clearInterval(sdInt); sdInt = null; return; }
                 updateDoc(docRef, { sdTarget: { x: Math.random()*80, y: Math.random()*80, id: Date.now() } });
-            }, 800);
+            }, 700);
         }
         function renderSuddenDeath() {
             let area = document.getElementById('sudden-death-area'); area.innerHTML = '';
             if(gState.sdTarget) {
                 let h = document.createElement('div'); h.className = 'golden-heart'; h.innerText = '💛';
                 h.style.left = gState.sdTarget.x + '%'; h.style.top = gState.sdTarget.y + '%';
-                h.onclick = () => {
-                    playSound('match');
-                    let sc = playerNum===1?'p1Score':'p2Score';
-                    updateDoc(docRef, { sdTarget: null, [sc]: gState[sc]+50, level: 3 });
-                };
+                h.onclick = () => { playSound('match'); let sc = playerNum===1?'p1Score':'p2Score'; updateDoc(docRef, { sdTarget: null, [sc]: gState[sc]+50, level: 3 }); };
                 area.appendChild(h);
             }
         }
 
-        // --- LEVEL 3: HEART POPPER ---
+        // --- LEVEL 3: HEART POPPER (HARDER) ---
         let popInt = null;
         function hostPopper() {
             if(popInt) return;
             popInt = setInterval(() => {
                 if(gState.level !== 3) { clearInterval(popInt); popInt = null; return; }
-                if(gState.p1Score + gState.p2Score >= 300) { clearInterval(popInt); popInt = null; updateDoc(docRef, {level: 4}); return; }
-                updateDoc(docRef, { popHeart: { x: Math.random()*80, y: Math.random()*80, id: Date.now() } });
-            }, 1000);
+                if(gState.p1Score + gState.p2Score >= 500) { clearInterval(popInt); popInt = null; updateDoc(docRef, {level: 4}); return; }
+                let t = Math.random() > 0.7 ? 'bad' : 'good'; // 30% chance for broken heart
+                updateDoc(docRef, { popHeart: { x: Math.random()*80, y: Math.random()*80, id: Date.now(), t: t } });
+            }, 800); // Faster
         }
         function renderPopper() {
             let area = document.getElementById('popper-area'); area.innerHTML = '';
             if(gState.popHeart) {
-                let h = document.createElement('div'); h.className = 'pop-target'; h.innerText = '❤️';
+                let h = document.createElement('div'); h.className = 'pop-target'; h.innerText = gState.popHeart.t === 'bad' ? '💔' : '❤️';
                 h.style.left = gState.popHeart.x + '%'; h.style.top = gState.popHeart.y + '%';
-                h.onclick = () => { playSound('click'); let sc = playerNum===1?'p1Score':'p2Score'; updateDoc(docRef, { popHeart: null, [sc]: gState[sc]+10 }); };
+                h.onclick = () => { 
+                    let sc = playerNum===1?'p1Score':'p2Score'; 
+                    if(gState.popHeart.t === 'bad') { playSound('bad'); updateDoc(docRef, { popHeart: null, [sc]: Math.max(0, gState[sc]-20) }); }
+                    else { playSound('click'); updateDoc(docRef, { popHeart: null, [sc]: gState[sc]+20 }); }
+                };
                 area.appendChild(h);
             }
         }
 
-        // --- LEVEL 4: SOULMATE SCRAMBLE ---
+        // --- LEVEL 4: SOULMATE SCRAMBLE (MULTI-WORD) ---
         function renderScramble() {
+            document.getElementById('scramble-progress').innerText = `Word ${gState.scramble.wordIdx + 1} of 3`;
             document.getElementById('scramble-word').innerText = gState.scramble.jumbled;
-            if(gState.scramble.solved && playerNum === 1) setTimeout(()=>updateDoc(docRef, {level: 5}), 1500);
         }
         document.getElementById('btnScramble').onclick = async () => {
             playSound('click');
             let val = document.getElementById('scramble-input').value.trim().toUpperCase();
-            if(val === gState.scramble.word) {
-                playSound('match');
+            if(val === scrambleWords[gState.scramble.wordIdx]) {
+                playSound('match'); document.getElementById('scramble-input').value = '';
                 let sc = playerNum===1?'p1Score':'p2Score';
-                await updateDoc(docRef, { scramble: { ...gState.scramble, solved: true, jumbled: "PERFECT!" }, [sc]: gState[sc]+50 });
-            } else { document.getElementById('scramble-input').value = ''; alert("Try again!"); }
+                let nextIdx = gState.scramble.wordIdx + 1;
+                
+                if(nextIdx >= 3) {
+                    await updateDoc(docRef, { scramble: { ...gState.scramble, solved: true, jumbled: "PERFECT!" }, [sc]: gState[sc]+50, level: 5 });
+                } else {
+                    let nextJumbled = scrambleWords[nextIdx].split('').sort(()=>Math.random()-0.5).join(' ');
+                    await updateDoc(docRef, { scramble: { wordIdx: nextIdx, jumbled: nextJumbled, solved: false }, [sc]: gState[sc]+30 });
+                }
+            } else { document.getElementById('scramble-input').value = ''; playSound('bad'); alert("Wrong! Try again."); }
         };
 
-        // --- LEVEL 5: MAGICAL SURF ---
-        const imgBoy = new Image(); imgBoy.src = '103503-removebg-preview.png'; 
-        const imgGirl = new Image(); imgGirl.src = '103511-removebg-preview.png'; 
-        const imgMonster = new Image(); imgMonster.src = '103516-removebg-preview.png'; 
-        const imgJeep = new Image(); imgJeep.src = 'Police-Car-PNG-Photo.png';
-
+        // --- LEVEL 5: COSMIC DODGE (2D Canvas Vertical Scroller - Smooth & Beautiful) ---
         let c = document.getElementById('game-canvas'); let ctx = c.getContext('2d');
         function res() { c.width = window.innerWidth; c.height = window.innerHeight; } window.addEventListener('resize', res); res();
-        let tX = 0; document.addEventListener('touchstart', e => tX = e.changedTouches[0].screenX);
-        document.addEventListener('touchend', async e => {
-            if(gState.level !== 5) return;
-            let dx = e.changedTouches[0].screenX - tX; let lk = playerNum===1 ? 'surfP1Lane' : 'surfP2Lane';
-            if(dx > 40 && gState[lk] < 2) await updateDoc(docRef, { [lk]: gState[lk]+1 }); else if(dx < -40 && gState[lk] > 0) await updateDoc(docRef, { [lk]: gState[lk]-1 });
+        
+        let tX = 0; 
+        c.addEventListener('touchstart', e => tX = e.changedTouches[0].screenX);
+        c.addEventListener('touchmove', async e => {
+            if(gState.level !== 5 || playerNum === 0) return;
+            let nx = e.changedTouches[0].screenX; let pct = (nx / c.width) * 100;
+            let lk = playerNum===1 ? 'cP1X' : 'cP2X';
+            await updateDoc(docRef, { [lk]: Math.max(10, Math.min(90, pct)) });
         });
 
-        let surfInt = null;
-        function hostSurf() {
-            if(surfInt) return;
-            surfInt = setInterval(async () => {
+        let canInt = null;
+        function hostCanvas() {
+            if(canInt) return;
+            canInt = setInterval(async () => {
                 if(gState.level !== 5) return;
-                let p = gState.surfProg + 3;
-                if(p >= 100) { clearInterval(surfInt); updateDoc(docRef, { level: 6 }); } 
+                let p = gState.canvasProg + 2;
+                if(p >= 100) { clearInterval(canInt); updateDoc(docRef, { level: 6 }); } // Finale
                 else {
-                    let u = { surfProg: p };
-                    if(!gState.surfObs && Math.random()>0.4) u.surfObs = { lane: Math.floor(Math.random()*3), z: 2000, t: Math.random()>0.5?'heart':'rock' };
+                    let u = { canvasProg: p };
+                    if(!gState.canvasObj && Math.random()>0.3) u.canvasObj = { x: Math.random()*80+10, y: -10, type: Math.random()>0.6?'heart':'rock', id: Date.now() };
                     await updateDoc(docRef, u);
                 }
-            }, 500);
+            }, 600);
         }
 
-        let oZ = 2000, rOff = 0;
-        let rP1X = 1, rP2X = 1;
-        function startSurfEngine() {
+        let p1X_smooth = 50, p2X_smooth = 50, objY = -10;
+        function startCanvasEngine() {
+            let stars = []; for(let i=0; i<50; i++) stars.push({x:Math.random()*c.width, y:Math.random()*c.height, s:Math.random()*3+1});
+            
             function render() {
                 if(gState.level !== 5) return;
-                ctx.fillStyle = "rgba(5, 5, 8, 0.4)"; ctx.fillRect(0,0,c.width,c.height);
-                let hY = c.height*0.4; rOff = (rOff+15)%100;
                 
-                ctx.fillStyle = "#111";
-                for(let y=c.height; y>hY; y-=5) {
-                    let z = (c.height-hY)/(y-hY); let rW = 600/z; let pX = c.width/2;
-                    ctx.fillRect(pX-rW, y, rW*2, 4);
-                    if((y+rOff)%40>20) { ctx.fillStyle="#ff007f"; ctx.fillRect(pX-rW/3, y, 4,4); ctx.fillRect(pX+rW/3, y, 4,4); ctx.fillStyle="#111";}
-                }
+                // Background
+                ctx.fillStyle = "rgba(5,0,15,0.4)"; ctx.fillRect(0,0,c.width,c.height);
+                ctx.fillStyle = "#fff";
+                stars.forEach(st => { 
+                    st.y += st.s * 2; if(st.y > c.height) st.y = -10;
+                    ctx.beginPath(); ctx.arc(st.x, st.y, st.s, 0, Math.PI*2); ctx.fill(); 
+                });
 
-                if(gState.surfObs) {
-                    oZ -= 60; let oS = 400/(400+oZ); let oX = (c.width/2) + ((gState.surfObs.lane-1)*200*oS); let oY = hY + ((c.height-hY)*oS);
-                    if(oZ > 20) {
-                        ctx.font=`${60*oS}px Arial`; ctx.fillText(gState.surfObs.t==='heart'?'❤️':'🪨', oX-20*oS, oY);
-                    } else if(oZ > -50) {
-                        let myL = playerNum===1 ? gState.surfP1Lane : gState.surfP2Lane;
-                        if(myL === gState.surfObs.lane && playerNum===1) {
-                            if(gState.surfObs.t==='heart') { playSound('match'); updateDoc(docRef, { p1Score: gState.p1Score+20, p2Score: gState.p2Score+20, surfObs: null }); }
-                            else { updateDoc(docRef, { p1Score: Math.max(0, gState.p1Score-10), surfObs: null }); }
-                            oZ=2000;
+                // Smooth Players
+                p1X_smooth += (gState.cP1X - p1X_smooth) * 0.2; p2X_smooth += (gState.cP2X - p2X_smooth) * 0.2;
+                let px1 = (p1X_smooth/100) * c.width; let px2 = (p2X_smooth/100) * c.width; let py = c.height - 100;
+
+                // Draw Players
+                ctx.shadowBlur = 20; ctx.shadowColor = "#00f2fe"; ctx.fillStyle = "#00f2fe";
+                ctx.beginPath(); ctx.arc(px1, py, 25, 0, Math.PI*2); ctx.fill();
+                ctx.shadowColor = "#ff007f"; ctx.fillStyle = "#ff007f";
+                ctx.beginPath(); ctx.arc(px2, py, 25, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
+
+                // Names
+                ctx.fillStyle = "#fff"; ctx.font = "12px Orbitron"; ctx.textAlign = "center";
+                ctx.fillText(gState.p1Name, px1, py+45); ctx.fillText(gState.p2Name, px2, py+45);
+
+                // Obstacle Logic
+                if(gState.canvasObj) {
+                    objY += 8; // Speed
+                    let ox = (gState.canvasObj.x/100) * c.width;
+                    
+                    ctx.font = "40px Arial"; ctx.fillText(gState.canvasObj.type==='heart'?'💛':'🪨', ox, objY);
+
+                    // Collision (Host Only checks)
+                    if(playerNum === 1 && objY > py - 30 && objY < py + 30) {
+                        let hitP1 = Math.abs(ox - px1) < 40; let hitP2 = Math.abs(ox - px2) < 40;
+                        if(hitP1 || hitP2) {
+                            if(gState.canvasObj.type === 'heart') { playSound('match'); updateDoc(docRef, { p1Score: gState.p1Score+20, p2Score: gState.p2Score+20, canvasObj: null }); }
+                            else { playSound('bad'); updateDoc(docRef, { p1Score: hitP1 ? Math.max(0, gState.p1Score-20) : gState.p1Score, p2Score: hitP2 ? Math.max(0, gState.p2Score-20) : gState.p2Score, canvasObj: null }); }
                         }
-                    } else { oZ=2000; if(playerNum===1) updateDoc(docRef, { surfObs:null }); }
-                }
-
-                rP1X += (((gState.surfP1Lane-1)*200) - rP1X)*0.2; rP2X += (((gState.surfP2Lane-1)*200) - rP2X)*0.2;
-                let p1X = (c.width/2) + (rP1X * (400/550)); let p2X = (c.width/2) + (rP2X * (400/550));
-                
-                try {
-                    ctx.drawImage(imgBoy, p1X-40, c.height-120-40, 80, 80);
-                    ctx.drawImage(imgGirl, p2X-40, c.height-120-40, 80, 80);
-                } catch(e) {
-                    ctx.beginPath(); ctx.arc(p1X, c.height-120, 30, 0, Math.PI*2); ctx.fillStyle="#00f2fe"; ctx.fill();
-                    ctx.beginPath(); ctx.arc(p2X, c.height-120, 30, 0, Math.PI*2); ctx.fillStyle="#ff007f"; ctx.fill();
-                }
+                    }
+                    if(objY > c.height) { if(playerNum===1) updateDoc(docRef, { canvasObj: null }); objY = -10; }
+                } else { objY = -10; } // Reset Y when null
 
                 requestAnimationFrame(render);
             }
@@ -565,9 +637,8 @@
         // --- CHAT SYSTEM ---
         let chatOpen = false;
         document.getElementById('btnChat').onclick = () => { 
-            chatOpen = !chatOpen; 
-            document.getElementById('chat-panel').style.display = chatOpen ? 'flex' : 'none'; 
-            document.getElementById('chat-badge').style.display = 'none'; // Hide badge when opened
+            chatOpen = !chatOpen; document.getElementById('chat-panel').style.display = chatOpen ? 'flex' : 'none'; 
+            document.getElementById('chat-badge').style.display = 'none';
         };
         
         function setupChat() {
@@ -576,8 +647,6 @@
                 snap.forEach(d => { 
                     let m = d.data(); let el = document.createElement('div'); 
                     el.className = `msg ${m.sender === playerNum ? 'me' : 'them'}`; el.innerText = m.text; box.appendChild(el); 
-                    
-                    // Show notification badge if chat is closed and partner sent a message
                     if(!chatOpen && m.sender !== playerNum) document.getElementById('chat-badge').style.display = 'block';
                 });
                 box.scrollTop = box.scrollHeight;
@@ -620,24 +689,33 @@
                     isMuted = !isMuted; localStream.getAudioTracks()[0].enabled = !isMuted;
                     document.getElementById('btnMic').classList.toggle('muted'); document.getElementById('btnMic').innerText = isMuted ? '🔇' : '🎤';
                 };
-            } catch(e) { console.log("Mic error or denied"); }
+            } catch(e) { console.log("Mic error"); }
         }
 
-        // --- FINALE ---
+        // --- INTERACTIVE FINALE ---
         async function triggerFinale() {
             playSound('levelUp');
             document.getElementById('game-area').style.display = 'none'; document.getElementById('top-nav').style.display = 'none'; document.getElementById('emoji-bar').style.display = 'none';
             let fScreen = document.getElementById('final-screen'); fScreen.style.display = 'flex';
             document.getElementById('finalNames').innerText = `${gState.p1Name} & ${gState.p2Name}`;
+            document.getElementById('fs-p1').innerText = gState.p1Score; document.getElementById('fs-p2').innerText = gState.p2Score;
             
             const colors = ['#ff007f', '#00f2fe', '#ff758c', '#ffeb3b', '#00ffcc'];
-            for(let i=0; i<150; i++) {
+            for(let i=0; i<100; i++) {
                 let h = document.createElement('div'); h.innerHTML = '❤️'; h.className = 'heart-particle';
                 h.style.color = colors[Math.floor(Math.random() * colors.length)]; h.style.left = '50%'; h.style.top = '50%';
                 let a = Math.random() * Math.PI * 2; let d = 100 + Math.random() * 500;
                 h.style.setProperty('--tx', (Math.cos(a)*d)+'px'); h.style.setProperty('--ty', (Math.sin(a)*d)+'px');
-                h.style.animationDelay = (Math.random() * 3) + 's'; fScreen.appendChild(h);
+                h.style.animationDelay = (Math.random() * 2) + 's'; fScreen.appendChild(h);
             }
+
+            // Interactive Ripples on touch
+            fScreen.addEventListener('touchstart', e => {
+                let r = document.createElement('div'); r.className = 'touch-ripple';
+                r.style.left = e.touches[0].clientX + 'px'; r.style.top = e.touches[0].clientY + 'px';
+                fScreen.appendChild(r); setTimeout(()=>r.remove(), 1000);
+            });
+
             if(playerNum === 1) { let msgs = await getDocs(messagesRef); msgs.forEach(m => deleteDoc(m.ref)); } // Cleanup Chat
         }
     </script>
