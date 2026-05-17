@@ -41,13 +41,15 @@
 
         /* Floating Nav & Comm HUD */
         #top-nav { display: none; position: absolute; top: 15px; left: 15px; right: 15px; justify-content: space-between; z-index: 1000; pointer-events: none;}
-        .glass-btn { pointer-events: auto; width: 45px; height: 45px; border-radius: 50%; background: rgba(255, 77, 133, 0.15); border: 1px solid rgba(255, 77, 133, 0.4); color: #fff; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 20px; backdrop-filter: blur(10px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: 0.3s; }
+        .glass-btn { position: relative; pointer-events: auto; width: 45px; height: 45px; border-radius: 50%; background: rgba(255, 77, 133, 0.15); border: 1px solid rgba(255, 77, 133, 0.4); color: #fff; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 20px; backdrop-filter: blur(10px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: 0.3s; }
         .glass-btn:active { transform: scale(0.9); }
         .muted { background: rgba(255, 0, 0, 0.2); border-color: #ff0000; color: #ff5555;}
         
+        #chat-badge { display: none; position: absolute; top: 0; right: 0; width: 12px; height: 12px; background: #ff0055; border-radius: 50%; box-shadow: 0 0 5px #ff0055; border: 1px solid #fff; }
+
         /* Chat Panel */
         #chat-panel { display: none; position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; height: 300px; background: rgba(15, 5, 15, 0.95); border: 1px solid #ff4d85; border-radius: 20px; z-index: 2000; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.8); backdrop-filter: blur(15px);}
-        #chat-msgs { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; font-size: 14px; }
+        #chat-msgs { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; font-size: 14px; scroll-behavior: smooth; }
         .msg { padding: 12px 18px; border-radius: 20px; max-width: 80%; word-wrap: break-word; box-shadow: 0 2px 5px rgba(0,0,0,0.2);}
         .msg.me { background: linear-gradient(135deg, #ff0055, #ff4d85); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
         .msg.them { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; align-self: flex-start; border-bottom-left-radius: 4px; }
@@ -96,6 +98,7 @@
         #ov-title { font-family: 'Orbitron'; font-size: 45px; color: #ff4d85; margin-bottom: 20px; text-shadow: 0 0 25px rgba(255,77,133,0.8); letter-spacing: 3px;}
         #ov-quote { font-size: 26px; color: #ffb3c6; font-family: 'Dancing Script', cursive; margin-bottom: 40px; line-height: 1.6; text-shadow: 0 2px 4px rgba(0,0,0,0.5);}
         
+        /* FINALE ANIMATION */
         #final-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: radial-gradient(circle at center, #3d001a, #000); z-index: 4000; overflow: hidden; flex-direction: column; align-items: center; justify-content: center; }
         .heart-particle { position: absolute; font-size: 35px; animation: zoomOutHeart 3.5s forwards cubic-bezier(0.1, 0.8, 0.3, 1); filter: drop-shadow(0 0 10px rgba(255,0,85,0.8));}
         #final-text { font-family: 'Dancing Script', cursive; font-size: 65px; z-index: 210; opacity: 0; animation: fadeInText 3s 1s forwards; text-align: center; color: #fff; text-shadow: 0 0 20px #ff0055, 0 0 40px #ff0055; line-height: 1.2;}
@@ -117,7 +120,7 @@
         </div>
         <div style="display: flex; gap: 15px;">
             <div class="glass-btn" id="btnMic">🎤</div>
-            <div class="glass-btn" id="btnChat">💬</div>
+            <div class="glass-btn" id="btnChat">💬<span id="chat-badge"></span></div>
         </div>
     </div>
 
@@ -259,9 +262,10 @@
 
         document.getElementById('btnHome').onclick = () => { window.location.reload(); };
 
-        // Host Restart Logic
+        // HOST ONLY RESTART
         document.getElementById('btnRestart').onclick = async () => {
-            if(confirm("Are you sure you want to restart the game?")) {
+            if(confirm("Are you sure you want to restart the journey?")) {
+                firstPick = null; memProcessing = false; // Reset local locks
                 await updateDoc(docRef, { 
                     level: 1, p1Score: 0, p2Score: 0, 
                     memBoard: generateMemoryBoard(), memTurn: 1, 
@@ -295,7 +299,7 @@
             });
             
             document.getElementById('displayCode').innerText = gameId;
-            document.getElementById('btnRestart').style.display = 'flex'; // Show restart to host
+            document.getElementById('btnRestart').style.display = 'flex'; // Show restart to host only
             showScreen('lobby-screen'); setupSync(); setupChat(); setupWebRTC();
         });
 
@@ -327,14 +331,15 @@
                     if(document.getElementById('game-area').style.display !== 'flex') {
                         showScreen('none'); document.getElementById('game-area').style.display = 'flex';
                         document.getElementById('top-nav').style.display = 'flex';
-                        document.getElementById('emoji-bar').style.display = 'flex'; // Show Quick Responses
+                        document.getElementById('emoji-bar').style.display = 'flex';
                         document.getElementById('name1').innerText = gState.p1Name; document.getElementById('name2').innerText = gState.p2Name;
                     }
                     
                     document.getElementById('score1').innerText = gState.p1Score; document.getElementById('score2').innerText = gState.p2Score;
                     document.getElementById('level-title-hud').innerText = gState.level === 2.5 ? "SUDDEN DEATH!" : `LEVEL ${Math.floor(gState.level)}`;
 
-                    if(gState.level > oldLvl) {
+                    // Handle restarts and progressions safely
+                    if(gState.level !== oldLvl) {
                         if(gState.level > 5) triggerFinale();
                         else {
                             let idx = Math.floor(gState.level) - 1;
@@ -343,7 +348,7 @@
                         }
                     }
 
-                    // Render Emojis
+                    // Render Quick Emojis
                     if(gState.latestEmoji && gState.latestEmoji.id !== lastEmojiId) {
                         lastEmojiId = gState.latestEmoji.id;
                         let div = document.createElement('div'); div.className = 'floating-emoji'; div.innerText = gState.latestEmoji.e;
@@ -368,13 +373,14 @@
             document.getElementById('scramble-area').style.display = 'none'; document.getElementById('game-canvas').style.display = 'none';
         }
 
-        // --- LEVEL 1: MEMORY MATCH ---
+        // --- LEVEL 1: MEMORY MATCH (BUG FIXED) ---
         function generateMemoryBoard() {
             let emojis = ['❤️','😍','💍','🌹','🧸','💌','🥂','🎁'];
             return [...emojis, ...emojis].sort(() => Math.random() - 0.5).map(e => ({ e: e, flipped: false, solved: false }));
         }
 
         let firstPick = null;
+        let memProcessing = false; // Lock to prevent multi-click glitches
         function renderMemory() {
             document.getElementById('memory-board').style.display = 'grid';
             let board = document.getElementById('memory-board'); board.innerHTML = '';
@@ -388,13 +394,14 @@
         }
 
         async function handleMemoryClick(i) {
-            if(gState.memTurn !== playerNum || gState.memBoard[i].flipped || gState.memBoard[i].solved) return;
+            if(gState.memTurn !== playerNum || gState.memBoard[i].flipped || gState.memBoard[i].solved || memProcessing) return;
             playSound('click');
             let nb = [...gState.memBoard]; nb[i].flipped = true;
             
             if(firstPick === null) {
                 firstPick = i; await updateDoc(docRef, { memBoard: nb });
             } else {
+                memProcessing = true; // Lock interactions
                 await updateDoc(docRef, { memBoard: nb, memTurn: playerNum === 1 ? 2 : 1 });
                 setTimeout(async () => {
                     let snap = await getDoc(docRef); let b = snap.data().memBoard;
@@ -403,14 +410,13 @@
                         b[firstPick].solved = true; b[i].solved = true; 
                         let sc = playerNum===1?'p1Score':'p2Score';
                         
-                        // FIX: Atomic level progression check to avoid freeze
                         let isDone = b.every(x => x.solved);
                         let updateData = { memBoard: b, [sc]: gState[sc]+10 };
-                        if(isDone) updateData.level = 2; // Moves instantly
+                        if(isDone) updateData.level = 2; // Move safely
                         await updateDoc(docRef, updateData);
                     } 
-                    else { b[firstPick].flipped = false; b[i].flipped = false; updateDoc(docRef, { memBoard: b }); }
-                    firstPick = null;
+                    else { b[firstPick].flipped = false; b[i].flipped = false; await updateDoc(docRef, { memBoard: b }); }
+                    firstPick = null; memProcessing = false; // Unlock
                 }, 800);
             }
         }
@@ -439,8 +445,7 @@
                 let sc = playerNum===1?'p1Score':'p2Score'; 
                 await updateDoc(docRef, { tttBoard: nb, [sc]: gState[sc]+50, level: 3 });
             } else if(!nb.includes('')) { 
-                // TIE BREAKER! Move to Sudden Death
-                await updateDoc(docRef, { tttBoard: nb, level: 2.5 }); 
+                await updateDoc(docRef, { tttBoard: nb, level: 2.5 }); // Tie breaker
             } else { await updateDoc(docRef, { tttBoard: nb, tttTurn: mySym==='X'?'O':'X' }); }
         }
 
@@ -521,7 +526,7 @@
                 if(p >= 100) { clearInterval(surfInt); updateDoc(docRef, { level: 6 }); } 
                 else {
                     let u = { surfProg: p };
-                    if(!gState.surfObs && Math.random()>0.4) u.surfObs = { lane: Math.floor(Math.random()*3), z: 2000, t: 'heart' };
+                    if(!gState.surfObs && Math.random()>0.4) u.surfObs = { lane: Math.floor(Math.random()*3), z: 2000, t: Math.random()>0.5?'heart':'rock' };
                     await updateDoc(docRef, u);
                 }
             }, 500);
@@ -545,11 +550,13 @@
                 if(gState.surfObs) {
                     oZ -= 60; let oS = 400/(400+oZ); let oX = (c.width/2) + ((gState.surfObs.lane-1)*200*oS); let oY = hY + ((c.height-hY)*oS);
                     if(oZ > 20) {
-                        ctx.font=`${60*oS}px Arial`; ctx.fillText('❤️', oX-20*oS, oY);
+                        ctx.font=`${60*oS}px Arial`; ctx.fillText(gState.surfObs.t==='heart'?'❤️':'🪨', oX-20*oS, oY);
                     } else if(oZ > -50) {
                         let myL = playerNum===1 ? gState.surfP1Lane : gState.surfP2Lane;
                         if(myL === gState.surfObs.lane && playerNum===1) {
-                            playSound('match'); updateDoc(docRef, { p1Score: gState.p1Score+20, p2Score: gState.p2Score+20, surfObs: null }); oZ=2000;
+                            if(gState.surfObs.t==='heart') { playSound('match'); updateDoc(docRef, { p1Score: gState.p1Score+20, p2Score: gState.p2Score+20, surfObs: null }); }
+                            else { updateDoc(docRef, { p1Score: Math.max(0, gState.p1Score-10), surfObs: null }); }
+                            oZ=2000;
                         }
                     } else { oZ=2000; if(playerNum===1) updateDoc(docRef, { surfObs:null }); }
                 }
@@ -567,12 +574,22 @@
 
         // --- CHAT SYSTEM ---
         let chatOpen = false;
-        document.getElementById('btnChat').onclick = () => { chatOpen = !chatOpen; document.getElementById('chat-panel').style.display = chatOpen ? 'flex' : 'none'; };
+        document.getElementById('btnChat').onclick = () => { 
+            chatOpen = !chatOpen; 
+            document.getElementById('chat-panel').style.display = chatOpen ? 'flex' : 'none'; 
+            document.getElementById('chat-badge').style.display = 'none'; // Hide badge when opened
+        };
         
         function setupChat() {
             onSnapshot(query(messagesRef, orderBy("ts")), (snap) => {
                 let box = document.getElementById('chat-msgs'); box.innerHTML = '';
-                snap.forEach(d => { let m = d.data(); let el = document.createElement('div'); el.className = `msg ${m.sender === playerNum ? 'me' : 'them'}`; el.innerText = m.text; box.appendChild(el); });
+                snap.forEach(d => { 
+                    let m = d.data(); let el = document.createElement('div'); 
+                    el.className = `msg ${m.sender === playerNum ? 'me' : 'them'}`; el.innerText = m.text; box.appendChild(el); 
+                    
+                    // Show notification badge if chat is closed and partner sent a message
+                    if(!chatOpen && m.sender !== playerNum) document.getElementById('chat-badge').style.display = 'block';
+                });
                 box.scrollTop = box.scrollHeight;
             });
         }
