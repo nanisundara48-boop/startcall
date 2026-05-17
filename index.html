@@ -75,11 +75,16 @@
         
         #level-title-hud { font-family: 'Orbitron'; font-size: 24px; color: #fff; text-shadow: 0 0 15px #ff0055; margin-top: 15px; z-index: 20; letter-spacing: 2px;}
 
+        /* Level 1: THE SPARK (NEW) */
+        #spark-area { display: none; position: absolute; top: 150px; left: 15px; right: 15px; bottom: 20px; z-index: 10; flex-direction: column; align-items: center; justify-content: center; }
+        #spark-meter-bg { width: 80%; height: 20px; background: rgba(255,255,255,0.1); border: 2px solid #ff4d85; border-radius: 10px; margin-bottom: 40px; overflow: hidden; box-shadow: 0 0 15px rgba(255,77,133,0.4);}
+        #spark-meter-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #ff0055, #ff4d85); transition: width 0.2s;}
+        .giant-heart { font-size: 120px; cursor: pointer; filter: drop-shadow(0 0 30px rgba(255,0,85,0.8)); transition: transform 0.1s;}
+        .giant-heart:active { transform: scale(0.85); }
+        .tap-instruction { font-size: 16px; color: #ffb3c6; margin-top: 20px; font-weight: bold; letter-spacing: 1px;}
+
         /* Mini Games Layouts */
         .grid-game { display: grid; gap: 12px; z-index: 10; margin-top: 30px; }
-        
-        .match-card { width: 75px; height: 75px; background: rgba(255,77,133,0.1); border: 2px solid rgba(255,77,133,0.5); border-radius: 18px; display: flex; justify-content: center; align-items: center; font-size: 35px; cursor: pointer; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.3);}
-        .match-card.flipped { background: rgba(255,255,255,0.95); transform: rotateY(180deg); border-color: #fff; box-shadow: 0 0 25px rgba(255,255,255,0.6);}
         
         .ttt-cell { width: 95px; height: 95px; background: rgba(255,77,133,0.05); border: 2px solid rgba(255,77,133,0.6); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 55px; font-family: 'Orbitron'; cursor: pointer; box-shadow: inset 0 0 20px rgba(255,77,133,0.1); transition: 0.2s;}
         
@@ -168,7 +173,12 @@
             <div class="score-box"><h3 id="name2">P2</h3><p id="score2">0</p></div>
         </div>
         
-        <div id="memory-board" class="grid-game" style="grid-template-columns: repeat(4, 1fr);"></div>
+        <div id="spark-area">
+            <div id="spark-meter-bg"><div id="spark-meter-fill"></div></div>
+            <div class="giant-heart" id="sparkBtn">💖</div>
+            <div class="tap-instruction">TAP TOGETHER TO FILL THE METER!</div>
+        </div>
+
         <div id="ttt-board" class="grid-game" style="grid-template-columns: repeat(3, 1fr); display:none;"></div>
         <div id="sudden-death-area"></div>
         <div id="popper-area"></div>
@@ -265,10 +275,9 @@
         // HOST ONLY RESTART
         document.getElementById('btnRestart').onclick = async () => {
             if(confirm("Are you sure you want to restart the journey?")) {
-                firstPick = null; memProcessing = false; // Reset local locks
                 await updateDoc(docRef, { 
                     level: 1, p1Score: 0, p2Score: 0, 
-                    memBoard: generateMemoryBoard(), memTurn: 1, 
+                    sparkClicks: 0,
                     tttBoard: ['','','','','','','','',''], tttTurn: 'X',
                     popHeart: null, sdTarget: null,
                     scramble: { word: "FOREVER", jumbled: "R V O E F E R", solved: false },
@@ -291,7 +300,7 @@
             
             await setDoc(docRef, { 
                 status: 'waiting', level: 1, p1Name: myName, p2Name: "", p1Score: 0, p2Score: 0, 
-                memBoard: generateMemoryBoard(), memTurn: 1, 
+                sparkClicks: 0,
                 tttBoard: ['','','','','','','','',''], tttTurn: 'X',
                 popHeart: null, sdTarget: null,
                 scramble: { word: "FOREVER", jumbled: "R V O E F E R", solved: false },
@@ -357,7 +366,7 @@
                     }
 
                     hideAllLevels();
-                    if(gState.level === 1) renderMemory();
+                    if(gState.level === 1) { document.getElementById('spark-area').style.display='flex'; renderSpark(); }
                     else if(gState.level === 2) renderTTT();
                     else if(gState.level === 2.5) { document.getElementById('sudden-death-area').style.display='block'; renderSuddenDeath(); if(playerNum===1) hostSuddenDeath(); }
                     else if(gState.level === 3) { document.getElementById('popper-area').style.display='block'; renderPopper(); if(playerNum===1) hostPopper(); }
@@ -368,58 +377,29 @@
         }
 
         function hideAllLevels() {
-            document.getElementById('memory-board').style.display = 'none'; document.getElementById('ttt-board').style.display = 'none';
+            document.getElementById('spark-area').style.display = 'none'; document.getElementById('ttt-board').style.display = 'none';
             document.getElementById('sudden-death-area').style.display = 'none'; document.getElementById('popper-area').style.display = 'none'; 
             document.getElementById('scramble-area').style.display = 'none'; document.getElementById('game-canvas').style.display = 'none';
         }
 
-        // --- LEVEL 1: MEMORY MATCH (BUG FIXED) ---
-        function generateMemoryBoard() {
-            let emojis = ['❤️','😍','💍','🌹','🧸','💌','🥂','🎁'];
-            return [...emojis, ...emojis].sort(() => Math.random() - 0.5).map(e => ({ e: e, flipped: false, solved: false }));
+        // --- LEVEL 1: THE SPARK (NEW - BUG FREE) ---
+        function renderSpark() {
+            let meter = document.getElementById('spark-meter-fill');
+            meter.style.width = gState.sparkClicks + '%';
         }
 
-        let firstPick = null;
-        let memProcessing = false; // Lock to prevent multi-click glitches
-        function renderMemory() {
-            document.getElementById('memory-board').style.display = 'grid';
-            let board = document.getElementById('memory-board'); board.innerHTML = '';
-            
-            gState.memBoard.forEach((card, i) => {
-                let el = document.createElement('div'); el.className = `match-card ${(card.flipped || card.solved) ? 'flipped' : ''}`;
-                el.innerText = (card.flipped || card.solved) ? card.e : '❓';
-                el.onclick = () => handleMemoryClick(i);
-                board.appendChild(el);
-            });
-        }
-
-        async function handleMemoryClick(i) {
-            if(gState.memTurn !== playerNum || gState.memBoard[i].flipped || gState.memBoard[i].solved || memProcessing) return;
+        document.getElementById('sparkBtn').onclick = async () => {
+            if(gState.level !== 1) return;
             playSound('click');
-            let nb = [...gState.memBoard]; nb[i].flipped = true;
+            let newClicks = gState.sparkClicks + 2; // 50 total clicks needed
             
-            if(firstPick === null) {
-                firstPick = i; await updateDoc(docRef, { memBoard: nb });
+            if(newClicks >= 100) {
+                playSound('match');
+                await updateDoc(docRef, { sparkClicks: 100, level: 2 });
             } else {
-                memProcessing = true; // Lock interactions
-                await updateDoc(docRef, { memBoard: nb, memTurn: playerNum === 1 ? 2 : 1 });
-                setTimeout(async () => {
-                    let snap = await getDoc(docRef); let b = snap.data().memBoard;
-                    if(b[firstPick].e === b[i].e) { 
-                        playSound('match');
-                        b[firstPick].solved = true; b[i].solved = true; 
-                        let sc = playerNum===1?'p1Score':'p2Score';
-                        
-                        let isDone = b.every(x => x.solved);
-                        let updateData = { memBoard: b, [sc]: gState[sc]+10 };
-                        if(isDone) updateData.level = 2; // Move safely
-                        await updateDoc(docRef, updateData);
-                    } 
-                    else { b[firstPick].flipped = false; b[i].flipped = false; await updateDoc(docRef, { memBoard: b }); }
-                    firstPick = null; memProcessing = false; // Unlock
-                }, 800);
+                await updateDoc(docRef, { sparkClicks: newClicks });
             }
-        }
+        };
 
         // --- LEVEL 2: TIC TAC TOE ---
         function renderTTT() {
@@ -508,6 +488,11 @@
         };
 
         // --- LEVEL 5: MAGICAL SURF ---
+        const imgBoy = new Image(); imgBoy.src = '103503-removebg-preview.png'; 
+        const imgGirl = new Image(); imgGirl.src = '103511-removebg-preview.png'; 
+        const imgMonster = new Image(); imgMonster.src = '103516-removebg-preview.png'; 
+        const imgJeep = new Image(); imgJeep.src = 'Police-Car-PNG-Photo.png';
+
         let c = document.getElementById('game-canvas'); let ctx = c.getContext('2d');
         function res() { c.width = window.innerWidth; c.height = window.innerHeight; } window.addEventListener('resize', res); res();
         let tX = 0; document.addEventListener('touchstart', e => tX = e.changedTouches[0].screenX);
@@ -564,8 +549,13 @@
                 rP1X += (((gState.surfP1Lane-1)*200) - rP1X)*0.2; rP2X += (((gState.surfP2Lane-1)*200) - rP2X)*0.2;
                 let p1X = (c.width/2) + (rP1X * (400/550)); let p2X = (c.width/2) + (rP2X * (400/550));
                 
-                ctx.beginPath(); ctx.arc(p1X, c.height-120, 30, 0, Math.PI*2); ctx.fillStyle="#00f2fe"; ctx.fill(); ctx.shadowBlur = 20; ctx.shadowColor = "#00f2fe";
-                ctx.beginPath(); ctx.arc(p2X, c.height-120, 30, 0, Math.PI*2); ctx.fillStyle="#ff007f"; ctx.fill(); ctx.shadowBlur = 20; ctx.shadowColor = "#ff007f"; ctx.shadowBlur = 0;
+                try {
+                    ctx.drawImage(imgBoy, p1X-40, c.height-120-40, 80, 80);
+                    ctx.drawImage(imgGirl, p2X-40, c.height-120-40, 80, 80);
+                } catch(e) {
+                    ctx.beginPath(); ctx.arc(p1X, c.height-120, 30, 0, Math.PI*2); ctx.fillStyle="#00f2fe"; ctx.fill();
+                    ctx.beginPath(); ctx.arc(p2X, c.height-120, 30, 0, Math.PI*2); ctx.fillStyle="#ff007f"; ctx.fill();
+                }
 
                 requestAnimationFrame(render);
             }
