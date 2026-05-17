@@ -9,134 +9,129 @@
         
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
         
-        body { 
-            font-family: 'Poppins', sans-serif; 
-            color: white; height: 100vh; width: 100vw; overflow: hidden; touch-action: none;
-            background: linear-gradient(-45deg, #1a0011, #050011, #2b0033, #0a000a);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-        }
-        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-
-        .bg-hearts { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; z-index: 0; overflow: hidden; }
-        .bg-heart { position: absolute; color: rgba(255, 0, 127, 0.1); font-size: 20px; animation: floatUp 12s linear infinite; bottom: -50px; }
-        @keyframes floatUp { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; } }
+        body { font-family: 'Poppins', sans-serif; color: white; height: 100vh; width: 100vw; overflow: hidden; touch-action: none; transition: background 1s ease;}
+        
+        /* DYNAMIC THEMES */
+        body.theme-0 { background: linear-gradient(135deg, #1a0011, #0a0a2a); }
+        body.theme-1 { background: linear-gradient(135deg, #2b0018, #4a0024); }
+        body.theme-2 { background: linear-gradient(135deg, #001133, #003366); }
+        body.theme-3 { background: linear-gradient(135deg, #330000, #4d0000); }
+        body.theme-4 { background: linear-gradient(135deg, #002211, #004422); }
+        body.theme-5 { background: linear-gradient(135deg, #110022, #220044); }
+        body.theme-6 { background: linear-gradient(135deg, #441100, #661100); }
 
         .screen { display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; flex-direction: column; align-items: center; justify-content: center; z-index: 10; }
         .active { display: flex; }
         
         h1 { font-family: 'Dancing Script', cursive; font-size: 65px; color: #ff007f; text-shadow: 0 0 25px rgba(255, 0, 127, 0.8); text-align: center; margin-bottom: 5px;}
-        .subtitle { font-family: 'Orbitron', sans-serif; font-size: 14px; color: #00f2fe; margin-bottom: 30px; letter-spacing: 4px; text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);}
+        .subtitle { font-family: 'Orbitron', sans-serif; font-size: 14px; color: #00f2fe; margin-bottom: 30px; letter-spacing: 4px;}
         
-        .card { background: rgba(10, 5, 20, 0.7); padding: 30px; border-radius: 25px; border: 1px solid rgba(0, 242, 254, 0.4); width: 90%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 0 20px rgba(0, 242, 254, 0.1); text-align: center; backdrop-filter: blur(15px);}
+        .card { background: rgba(10, 5, 20, 0.8); padding: 30px; border-radius: 25px; border: 1px solid rgba(0, 242, 254, 0.4); width: 90%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); text-align: center; backdrop-filter: blur(15px);}
 
-        input, select, button { width: 100%; padding: 15px; margin: 12px 0; border-radius: 15px; border: none; font-size: 16px; font-family: 'Poppins', sans-serif; text-align: center; font-weight: bold; transition: all 0.3s ease;}
-        input, select { background: rgba(255,255,255,0.9); color: #111; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); }
-        input:focus { border: 2px solid #ff007f; outline: none; transform: scale(1.02); }
+        input, button { width: 100%; padding: 15px; margin: 10px 0; border-radius: 15px; border: none; font-size: 16px; font-family: 'Poppins', sans-serif; text-align: center; font-weight: bold; transition: 0.3s;}
+        input { background: rgba(255,255,255,0.9); color: #111; }
+        input:focus { border: 2px solid #ff007f; outline: none; }
         
-        .btn-primary { background: linear-gradient(90deg, #ff007f, #ff758c); color: #fff; text-transform: uppercase; cursor: pointer; box-shadow: 0 8px 20px rgba(255, 0, 127, 0.4); letter-spacing: 1px;}
-        .btn-primary:active { transform: scale(0.95); box-shadow: 0 4px 10px rgba(255, 0, 127, 0.4); }
-        .btn-secondary { background: rgba(255, 255, 255, 0.05); border: 1px solid #00f2fe; color: #00f2fe; }
-        .btn-success { background: linear-gradient(90deg, #1D976C, #25D366); color: white; box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);}
+        .btn-primary { background: linear-gradient(90deg, #ff007f, #ff758c); color: #fff; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 0, 127, 0.4);}
+        .btn-primary:active { transform: scale(0.95); }
+        .btn-secondary { background: transparent; border: 1px solid #00f2fe; color: #00f2fe; }
+        .btn-success { background: linear-gradient(90deg, #1D976C, #25D366); color: white; }
+        .btn-share-life { background: #ffeb3b; color: #000; padding: 5px 10px; font-size: 12px; border-radius: 10px; cursor: pointer; margin-top: 5px; display: none; box-shadow: 0 0 10px #ffeb3b;}
 
         /* Floating Nav & Comm HUD */
         #top-nav { display: none; position: absolute; top: 15px; left: 15px; right: 15px; justify-content: space-between; z-index: 1000; pointer-events: none;}
-        .glass-btn { position: relative; pointer-events: auto; width: 45px; height: 45px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3); color: #fff; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 20px; backdrop-filter: blur(10px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: 0.3s; }
+        .glass-btn { pointer-events: auto; width: 45px; height: 45px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3); color: #fff; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 20px; backdrop-filter: blur(10px); transition: 0.3s; }
         .glass-btn:active { transform: scale(0.9); }
         .muted { background: rgba(255, 0, 0, 0.3); border-color: #ff0000; color: #ff5555;}
-        #chat-badge { display: none; position: absolute; top: 0; right: 0; width: 12px; height: 12px; background: #ff0055; border-radius: 50%; box-shadow: 0 0 5px #ff0055; border: 1px solid #fff; }
+        
+        /* Live Toast Notification */
+        #toast-container { position: absolute; top: 80px; left: 50%; transform: translateX(-50%); z-index: 3000; display: flex; flex-direction: column; gap: 10px; pointer-events: none;}
+        .live-toast { background: rgba(0, 242, 254, 0.9); color: #000; padding: 10px 20px; border-radius: 20px; font-weight: bold; font-family: 'Poppins'; box-shadow: 0 5px 15px rgba(0,0,0,0.5); animation: toastAnim 3s forwards; }
+        @keyframes toastAnim { 0% { opacity: 0; transform: translateY(-20px); } 10% { opacity: 1; transform: translateY(0); } 90% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-20px); } }
 
         /* Chat Panel */
-        #chat-panel { display: none; position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; height: 350px; background: rgba(10, 5, 20, 0.95); border: 1px solid #00f2fe; border-radius: 20px; z-index: 2000; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.8); backdrop-filter: blur(15px);}
-        #chat-msgs { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; font-size: 14px; scroll-behavior: smooth; }
-        .msg { padding: 12px 18px; border-radius: 20px; max-width: 80%; word-wrap: break-word; box-shadow: 0 2px 5px rgba(0,0,0,0.2);}
-        .msg.me { background: linear-gradient(135deg, #00f2fe, #4facfe); color: black; align-self: flex-end; border-bottom-right-radius: 4px; font-weight: 600;}
+        #chat-panel { display: none; position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; height: 350px; background: rgba(10, 5, 20, 0.95); border: 1px solid #00f2fe; border-radius: 20px; z-index: 2000; flex-direction: column; backdrop-filter: blur(15px);}
+        #chat-msgs { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; font-size: 14px; }
+        .msg { padding: 12px 18px; border-radius: 20px; max-width: 80%; word-wrap: break-word; }
+        .msg.me { background: linear-gradient(135deg, #00f2fe, #4facfe); color: black; align-self: flex-end; border-bottom-right-radius: 4px; }
         .msg.them { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; align-self: flex-start; border-bottom-left-radius: 4px; }
-        #chat-input-area { display: flex; padding: 10px; gap: 10px; border-top: 1px solid rgba(0,242,254,0.3); background: rgba(0,0,0,0.4); border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;}
-        #chat-input-area input { margin: 0; padding: 12px 15px; border-radius: 20px; font-size: 14px; background: rgba(255,255,255,0.1); color: white; border: none;}
-        #chat-input-area button { width: 50px; margin: 0; border-radius: 50%; display: flex; justify-content: center; align-items: center;}
+        #chat-input-area { display: flex; padding: 10px; gap: 10px; border-top: 1px solid rgba(0,242,254,0.3); background: rgba(0,0,0,0.4); border-radius: 0 0 20px 20px;}
+        #chat-input-area input { margin: 0; padding: 12px; border-radius: 20px; background: rgba(255,255,255,0.1); color: white; border: none;}
+        #chat-input-area button { width: 50px; margin: 0; border-radius: 50%; }
 
-        /* Quick Emojis */
         #emoji-bar { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 15px; z-index: 1500; }
-        .emoji-btn { background: rgba(255,255,255,0.1); border: 1px solid #ff007f; border-radius: 50%; width: 45px; height: 45px; font-size: 22px; cursor: pointer; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); transition: 0.2s;}
-        .emoji-btn:active { transform: scale(0.8); }
-        .floating-emoji { position: absolute; font-size: 45px; animation: floatUpEmoji 2s forwards ease-out; z-index: 2500; pointer-events: none; filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));}
+        .emoji-btn { background: rgba(255,255,255,0.1); border: 1px solid #ff007f; border-radius: 50%; width: 45px; height: 45px; font-size: 22px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s;}
+        .floating-emoji { position: absolute; font-size: 45px; animation: floatUpEmoji 2s forwards ease-out; z-index: 2500; pointer-events: none; }
         @keyframes floatUpEmoji { 0% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -200px) scale(1.5); } }
 
         /* Game Area Base */
         #game-area { display: none; position: absolute; top:0; left:0; width: 100vw; height: 100vh; z-index: 5; flex-direction: column; align-items: center; justify-content: center;}
         canvas { display: none; position: absolute; top:0; left:0; width: 100vw; height: 100vh; z-index: 1; }
         
-        #score-hud { position: absolute; top: 75px; width: 100%; padding: 0 20px; display: flex; justify-content: space-between; z-index: 20; pointer-events: none; }
-        .score-box { background: rgba(0,0,0,0.7); border: 1px solid #00f2fe; border-radius: 15px; padding: 8px 25px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.4); backdrop-filter: blur(5px);}
-        .score-box h3 { font-family: 'Orbitron'; font-size: 11px; color: #00f2fe; text-transform: uppercase; letter-spacing: 1px;}
-        .score-box p { font-size: 24px; font-weight: bold; color: #fff; margin:0; font-family: 'Orbitron'; text-shadow: 0 0 10px #00f2fe;}
-        
-        #level-title-hud { font-family: 'Orbitron'; font-size: 24px; color: #ff007f; text-shadow: 0 0 15px #ff007f; margin-top: 15px; z-index: 20; letter-spacing: 2px;}
+        #score-hud { position: absolute; top: 80px; width: 100%; padding: 0 20px; display: flex; justify-content: space-between; z-index: 20; pointer-events: none; }
+        .score-box { background: rgba(0,0,0,0.6); border: 1px solid #00f2fe; border-radius: 15px; padding: 8px 20px; text-align: center; pointer-events: auto;}
+        .score-box h3 { font-family: 'Orbitron'; font-size: 11px; color: #00f2fe; }
+        .score-box p { font-size: 20px; font-weight: bold; color: #fff; margin:0; font-family: 'Orbitron';}
+        .lives { font-size: 12px; color: #ff4d85; letter-spacing: 2px;}
 
-        /* Level 1: THE SPARK (Team Tap) */
-        #spark-area { display: none; position: absolute; top: 150px; left: 15px; right: 15px; bottom: 20px; z-index: 10; flex-direction: column; align-items: center; justify-content: center; }
-        #spark-meter-bg { width: 80%; height: 25px; background: rgba(255,255,255,0.1); border: 2px solid #00f2fe; border-radius: 12px; margin-bottom: 40px; overflow: hidden; box-shadow: 0 0 15px rgba(0,242,254,0.4);}
-        #spark-meter-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #00f2fe, #4facfe); transition: width 0.1s;}
-        .giant-heart { font-size: 130px; cursor: pointer; filter: drop-shadow(0 0 35px rgba(255,0,127,0.8)); transition: transform 0.05s;}
-        .giant-heart:active { transform: scale(0.85); filter: drop-shadow(0 0 50px #00f2fe); }
-        .tap-instruction { font-size: 16px; color: #ffb3c6; margin-top: 20px; font-weight: bold; letter-spacing: 1px; text-align: center;}
+        #level-title-hud { font-family: 'Orbitron'; font-size: 22px; color: #fff; text-shadow: 0 0 10px #ff007f; margin-top: 15px; z-index: 20; letter-spacing: 2px;}
 
-        /* Level 2: SCRAMBLE */
-        #scramble-area { display: none; z-index: 10; flex-direction: column; align-items: center; gap: 25px; margin-top: 60px; width: 90%; max-width: 400px;}
-        #scramble-word { font-family: 'Orbitron'; font-size: 40px; color: #fff; text-shadow: 0 0 20px #00f2fe, 0 0 40px #00f2fe; letter-spacing: 10px; text-align: center;}
-        #scramble-progress { font-family: 'Poppins'; font-size: 14px; color: #ffb3c6; }
+        /* Level 1: THE SPARK */
+        #spark-area { display: none; flex-direction: column; align-items: center; z-index: 10; }
+        #spark-meter-bg { width: 250px; height: 25px; background: rgba(255,255,255,0.1); border: 2px solid #00f2fe; border-radius: 12px; margin-bottom: 40px; }
+        #spark-meter-fill { width: 0%; height: 100%; background: #00f2fe; transition: width 0.1s;}
+        .giant-heart { font-size: 120px; cursor: pointer; filter: drop-shadow(0 0 20px #ff007f); transition: 0.1s;}
+        .giant-heart:active { transform: scale(0.8); }
+
+        /* Level 2: Scramble */
+        #scramble-area { display: none; z-index: 10; flex-direction: column; align-items: center; gap: 20px; width: 90%; max-width: 400px;}
+        #scramble-word { font-family: 'Orbitron'; font-size: 35px; color: #fff; text-shadow: 0 0 15px #00f2fe; letter-spacing: 10px;}
 
         /* Level 3: TTT */
         .grid-game { display: grid; gap: 12px; z-index: 10; margin-top: 30px; }
-        .ttt-cell { width: 95px; height: 95px; background: rgba(255,0,127,0.05); border: 2px solid rgba(255,0,127,0.6); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 55px; font-family: 'Orbitron'; cursor: pointer; box-shadow: inset 0 0 20px rgba(255,0,127,0.1); transition: 0.2s;}
+        .ttt-cell { width: 90px; height: 90px; background: rgba(255,0,127,0.05); border: 2px solid rgba(255,0,127,0.6); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 50px; font-family: 'Orbitron'; cursor: pointer;}
         
-        /* Level 3.5: Sudden Death */
-        #sudden-death-area { display: none; position: absolute; top: 150px; left: 15px; right: 15px; bottom: 20px; z-index: 10; border: 2px solid #ffeb3b; border-radius: 25px; background: rgba(0,0,0,0.4); box-shadow: inset 0 0 30px rgba(255,235,59,0.2);}
-        .golden-heart { position: absolute; font-size: 65px; cursor: pointer; filter: drop-shadow(0 0 25px #ffeb3b); animation: shake 0.2s infinite; }
-        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 25% { transform: translate(-1px, -2px) rotate(-1deg); } 50% { transform: translate(-3px, 0px) rotate(1deg); } 75% { transform: translate(3px, 2px) rotate(0deg); } 100% { transform: translate(1px, -1px) rotate(-1deg); } }
+        #sudden-death-area { display: none; z-index: 10; border: 2px solid #ffeb3b; width: 90%; height: 60%; position: absolute; border-radius: 25px; pointer-events: none;}
+        .golden-heart { position: absolute; font-size: 60px; cursor: pointer; filter: drop-shadow(0 0 20px #ffeb3b); pointer-events: auto;}
 
         /* Level 4: Popper */
-        #popper-area { display: none; position: absolute; top: 150px; left: 15px; right: 15px; bottom: 20px; z-index: 10; border: 2px dashed rgba(0,242,254,0.4); border-radius: 25px; background: rgba(0,0,0,0.2);}
-        .pop-target { position: absolute; font-size: 55px; cursor: pointer; animation: pulseBeat 0.6s infinite alternate; filter: drop-shadow(0 0 15px rgba(255,0,127,0.8)); transition: transform 0.1s;}
-        
-        /* Overlays */
-        #overlay { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(10,0,5,0.95); z-index: 3000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 25px; backdrop-filter: blur(10px);}
-        #ov-title { font-family: 'Orbitron'; font-size: 45px; color: #ff4d85; margin-bottom: 20px; text-shadow: 0 0 25px rgba(255,77,133,0.8); letter-spacing: 3px;}
-        #ov-quote { font-size: 26px; color: #ffb3c6; font-family: 'Dancing Script', cursive; margin-bottom: 40px; line-height: 1.6; text-shadow: 0 2px 4px rgba(0,0,0,0.5);}
-        
-        /* FINALE SCREEN */
-        #final-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: radial-gradient(circle at center, #1a0033, #000); z-index: 4000; overflow: hidden; flex-direction: column; align-items: center; justify-content: center; }
-        .finale-stats { display: flex; gap: 30px; margin-top: 30px; z-index: 220; opacity: 0; animation: fadeInText 2s 2s forwards;}
-        .stat-box { background: rgba(0,0,0,0.6); border: 1px solid #ff007f; border-radius: 15px; padding: 15px 30px; text-align: center; box-shadow: 0 0 20px rgba(255,0,127,0.4);}
-        .stat-box h4 { font-family: 'Orbitron'; font-size: 14px; color: #ffb3c6; }
-        .stat-box p { font-size: 35px; font-weight: bold; color: #fff; font-family: 'Orbitron'; text-shadow: 0 0 15px #00f2fe;}
-        
-        .heart-particle { position: absolute; font-size: 35px; animation: zoomOutHeart 3.5s forwards cubic-bezier(0.1, 0.8, 0.3, 1); filter: drop-shadow(0 0 10px rgba(255,0,85,0.8));}
-        #final-text { font-family: 'Dancing Script', cursive; font-size: 65px; z-index: 210; opacity: 0; animation: fadeInText 3s 1s forwards; text-align: center;
-                      color: #fff; text-shadow: 0 0 20px #ff0055, 0 0 40px #ff0055; line-height: 1.2;}
-        .final-names { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 35px; letter-spacing: 2px; text-transform: uppercase; background: linear-gradient(90deg, #00f2fe, #ff007f); -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
-        
-        .touch-ripple { position: absolute; width: 20px; height: 20px; background: rgba(0, 242, 254, 0.8); border-radius: 50%; transform: translate(-50%, -50%); animation: rippleAnim 1s ease-out forwards; pointer-events: none;}
-        @keyframes rippleAnim { 0% { width: 0px; height: 0px; opacity: 1; } 100% { width: 150px; height: 150px; opacity: 0; } }
+        #popper-area { display: none; position: absolute; top: 150px; left: 15px; right: 15px; bottom: 20px; z-index: 10; border: 2px dashed #00f2fe; border-radius: 25px; }
+        .pop-target { position: absolute; font-size: 50px; cursor: pointer; }
 
-        @keyframes pulseBeat { 0% { transform: scale(1); } 100% { transform: scale(1.15); } }
-        @keyframes zoomOutHeart { 0% { transform: scale(0) translate(0,0); opacity: 1; } 100% { transform: scale(25) translate(var(--tx), var(--ty)); opacity: 0; } }
-        @keyframes fadeInText { to { opacity: 1; transform: scale(1); } }
+        /* Level 6: Catch Kisses */
+        #catcher-area { display: none; position: absolute; width: 100%; height: 100%; top:0; left:0; z-index: 10; overflow: hidden; pointer-events: none;}
+        .falling-item { position: absolute; font-size: 35px; animation: fallDown 3s linear forwards; pointer-events: auto; cursor: pointer;}
+        @keyframes fallDown { 0% { top: -50px; } 100% { top: 110vh; } }
+
+        /* Overlays & Fail States */
+        #overlay { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5,0,10,0.95); z-index: 3000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 25px;}
+        #ov-title { font-family: 'Orbitron'; font-size: 40px; color: #ff4d85; margin-bottom: 20px; text-shadow: 0 0 20px #ff4d85;}
+        #ov-quote { font-size: 24px; color: #00f2fe; font-family: 'Dancing Script', cursive; margin-bottom: 30px; line-height: 1.5;}
+
+        /* FINALE SCREEN (CONCENTRIC HEARTS) */
+        #final-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 4000; overflow: hidden; flex-direction: column; align-items: center; justify-content: center; }
+        .concentric-heart { position: absolute; width: 50px; height: 50px; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); animation: pulseOut 4s infinite cubic-bezier(0.2, 0.8, 0.4, 1); opacity: 0; }
+        .concentric-heart svg { width: 100%; height: 100%; overflow: visible; }
+        @keyframes pulseOut { 0% { transform: translate(-50%, -50%) scale(0); opacity: 1; stroke-width: 3px;} 100% { transform: translate(-50%, -50%) scale(30); opacity: 0; stroke-width: 0.1px;} }
+        
+        #final-text { font-family: 'Dancing Script', cursive; font-size: 60px; z-index: 4100; opacity: 0; animation: fadeInText 3s 1s forwards; text-align: center; color: #fff; text-shadow: 0 0 20px #ff0055;}
+        .final-names { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 30px; letter-spacing: 2px; text-transform: uppercase; color: #00f2fe;}
+        @keyframes fadeInText { to { opacity: 1; transform: scale(1.05); } }
     </style>
 </head>
-<body>
+<body class="theme-0">
 
     <div class="bg-hearts" id="bgHearts"></div>
+    <div id="toast-container"></div>
 
     <div id="top-nav">
         <div style="display: flex; gap: 15px;">
-            <div class="glass-btn" id="btnHome" title="Main Menu">🏠</div>
-            <div class="glass-btn" id="btnRestart" title="Restart Journey" style="display:none; color: #ffeb3b; border-color: #ffeb3b;">🔄</div>
+            <div class="glass-btn" id="btnHome">🏠</div>
+            <div class="glass-btn" id="btnRestart" style="display:none; color: #ffeb3b; border-color: #ffeb3b;">🔄</div>
         </div>
         <div style="display: flex; gap: 15px;">
             <div class="glass-btn" id="btnMic">🎤</div>
-            <div class="glass-btn" id="btnChat">💬<span id="chat-badge"></span></div>
+            <div class="glass-btn" id="btnChat">💬</div>
         </div>
     </div>
 
@@ -144,45 +139,51 @@
         <button class="emoji-btn" onclick="sendEmoji('❤️')">❤️</button>
         <button class="emoji-btn" onclick="sendEmoji('😍')">😍</button>
         <button class="emoji-btn" onclick="sendEmoji('😂')">😂</button>
-        <button class="emoji-btn" onclick="sendEmoji('😡')">😡</button>
-        <button class="emoji-btn" onclick="sendEmoji('🔥')">🔥</button>
+        <button class="emoji-btn" onclick="sendEmoji('🥺')">🥺</button>
     </div>
 
     <div id="chat-panel">
         <div id="chat-msgs"></div>
         <div id="chat-input-area">
             <input type="text" id="chatInput" placeholder="Type a message...">
-            <button id="btnSendChat" class="btn-primary" style="padding: 12px; width: 60px;">➤</button>
+            <button id="btnSendChat" class="btn-primary">➤</button>
         </div>
     </div>
 
     <div id="home-screen" class="screen active">
         <h1>Love Hub</h1>
-        <div class="subtitle">THE ULTIMATE JOURNEY</div>
+        <div class="subtitle">THE ETERNAL JOURNEY</div>
         <div class="card">
             <input type="text" id="playerName" placeholder="Your Name" required>
             <button id="btnCreate" class="btn-primary">Start New Journey</button>
-            <div style="margin: 25px 0; color: #00f2fe; font-size: 14px; letter-spacing: 2px;">OR</div>
+            <div style="margin: 20px 0; color: #00f2fe; font-size: 14px;">OR</div>
             <input type="text" id="joinCode" placeholder="Enter Partner's Code" style="text-transform: uppercase;">
             <button id="btnJoin" class="btn-secondary">Join Journey</button>
         </div>
     </div>
 
     <div id="lobby-screen" class="screen">
-        <h2 style="color: #00f2fe; margin-bottom: 15px; font-family:'Poppins'; font-weight: 400;">Waiting for Partner...</h2>
+        <h2 style="color: #00f2fe; margin-bottom: 15px;">Waiting for Partner...</h2>
         <div class="card">
-            <h1 id="displayCode" style="font-size: 55px; color: #fff; margin: 15px 0; font-family:'Orbitron'; text-shadow: 0 0 20px #ff007f;">XXXXX</h1>
-            <p style="color:rgba(255,255,255,0.6); font-size:14px; margin-bottom:25px;">Share this code to connect souls</p>
+            <h1 id="displayCode" style="font-size: 55px; color: #fff; margin: 15px 0;">XXXXX</h1>
             <button id="btnShare" class="btn-success">Invite via WhatsApp</button>
-            <button id="btnCopy" class="btn-secondary" style="margin-top:15px;">Copy Link</button>
+            <button id="btnCopy" class="btn-secondary" style="margin-top:10px;">Copy Link</button>
         </div>
     </div>
 
     <div id="game-area">
         <h2 id="level-title-hud">LEVEL 1</h2>
         <div id="score-hud">
-            <div class="score-box"><h3 id="name1">P1</h3><p id="score1">0</p></div>
-            <div class="score-box"><h3 id="name2">P2</h3><p id="score2">0</p></div>
+            <div class="score-box">
+                <h3 id="name1">P1</h3><p id="score1">0</p>
+                <div class="lives" id="lives1">❤️❤️❤️❤️</div>
+                <button class="btn-share-life" id="btnShare1">Share Life 🎁</button>
+            </div>
+            <div class="score-box">
+                <h3 id="name2">P2</h3><p id="score2">0</p>
+                <div class="lives" id="lives2">❤️❤️❤️❤️</div>
+                <button class="btn-share-life" id="btnShare2">Share Life 🎁</button>
+            </div>
         </div>
         
         <div id="spark-area">
@@ -192,34 +193,27 @@
         </div>
 
         <div id="scramble-area">
-            <div id="scramble-progress">Word 1 of 3</div>
+            <div id="scramble-progress" style="color:#00f2fe;">Word 1 of 3</div>
             <div id="scramble-word"></div>
             <input type="text" id="scramble-input" placeholder="Type the true word..." style="text-transform:uppercase;">
             <button id="btnScramble" class="btn-primary">Guess</button>
         </div>
 
-        <div id="ttt-board" class="grid-game" style="grid-template-columns: repeat(3, 1fr); display:none;"></div>
-        
+        <div id="ttt-board" class="grid-game" style="grid-template-columns: repeat(3, 1fr);"></div>
         <div id="sudden-death-area"></div>
-        
         <div id="popper-area"></div>
-        
         <canvas id="game-canvas"></canvas>
+        <div id="catcher-area"></div>
     </div>
 
     <div id="overlay">
         <h1 id="ov-title">LEVEL 1</h1>
         <div id="ov-quote" class="quote"></div>
-        <button id="ov-btn" class="btn-primary" style="display:none; width: 250px; margin-top: 20px;">Continue Journey</button>
+        <button id="ov-btn" class="btn-primary" style="display:none; width: 250px; margin-top: 20px;">Continue</button>
     </div>
 
     <div id="final-screen">
         <div id="final-text">Our Love is Eternal<br><br><span id="finalNames" class="final-names"></span></div>
-        <div class="finale-stats">
-            <div class="stat-box"><h4>P1 SCORE</h4><p id="fs-p1">0</p></div>
-            <div class="stat-box"><h4>P2 SCORE</h4><p id="fs-p2">0</p></div>
-        </div>
-        <button class="btn-secondary" id="btnFinalRestart" style="margin-top: 50px; z-index: 220; width: 250px; border-radius: 25px; opacity: 0; animation: fadeInText 2s 3s forwards;">Play Again</button>
     </div>
 
     <script type="module">
@@ -237,87 +231,83 @@
         };
         const app = initializeApp(firebaseConfig); const db = getFirestore(app);
 
-        // --- GLOBAL AUDIO ENGINE ---
+        // AUDIO
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(type) {
             if(audioCtx.state === 'suspended') audioCtx.resume();
             let osc = audioCtx.createOscillator(); let g = audioCtx.createGain();
             osc.connect(g); g.connect(audioCtx.destination);
             
-            if(type === 'click') {
-                osc.type = 'sine'; osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.1);
-                g.gain.setValueAtTime(0.3, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.1);
-            } else if(type === 'match') {
-                osc.type = 'triangle'; osc.frequency.setValueAtTime(500, audioCtx.currentTime);
-                osc.frequency.linearRampToValueAtTime(1000, audioCtx.currentTime + 0.3);
-                g.gain.setValueAtTime(0.3, audioCtx.currentTime); g.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
-            } else if(type === 'levelUp') {
-                osc.type = 'square'; osc.frequency.setValueAtTime(400, audioCtx.currentTime);
-                osc.frequency.setValueAtTime(600, audioCtx.currentTime + 0.1);
-                osc.frequency.setValueAtTime(800, audioCtx.currentTime + 0.2);
-                g.gain.setValueAtTime(0.2, audioCtx.currentTime); g.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.6);
-            } else if(type === 'bad') {
-                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-                g.gain.setValueAtTime(0.4, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
-            }
+            if(type === 'click') { osc.type = 'sine'; osc.frequency.setValueAtTime(800, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.1); g.gain.setValueAtTime(0.3, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1); osc.start(); osc.stop(audioCtx.currentTime + 0.1); } 
+            else if(type === 'match') { osc.type = 'triangle'; osc.frequency.setValueAtTime(500, audioCtx.currentTime); osc.frequency.linearRampToValueAtTime(1000, audioCtx.currentTime + 0.3); g.gain.setValueAtTime(0.3, audioCtx.currentTime); g.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.3); osc.start(); osc.stop(audioCtx.currentTime + 0.3); } 
+            else if(type === 'levelUp') { osc.type = 'square'; osc.frequency.setValueAtTime(400, audioCtx.currentTime); osc.frequency.setValueAtTime(600, audioCtx.currentTime + 0.1); osc.frequency.setValueAtTime(800, audioCtx.currentTime + 0.2); g.gain.setValueAtTime(0.2, audioCtx.currentTime); g.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.6); osc.start(); osc.stop(audioCtx.currentTime + 0.6); } 
+            else if(type === 'bad') { osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, audioCtx.currentTime); g.gain.setValueAtTime(0.4, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4); osc.start(); osc.stop(audioCtx.currentTime + 0.4); }
         }
 
+        // BG Hearts
         const bgContainer = document.getElementById('bgHearts');
-        for(let i=0; i<15; i++) {
-            let h = document.createElement('div'); h.className = 'bg-heart'; h.innerText = '❤';
-            h.style.left = Math.random() * 100 + 'vw'; h.style.animationDuration = (10 + Math.random() * 10) + 's';
-            h.style.animationDelay = Math.random() * 5 + 's'; h.style.fontSize = (15 + Math.random() * 30) + 'px';
-            bgContainer.appendChild(h);
-        }
+        for(let i=0; i<15; i++) { let h = document.createElement('div'); h.className = 'bg-heart'; h.innerText = '❤'; h.style.left = Math.random() * 100 + 'vw'; h.style.animationDuration = (10 + Math.random() * 10) + 's'; h.style.animationDelay = Math.random() * 5 + 's'; h.style.fontSize = (15 + Math.random() * 30) + 'px'; bgContainer.appendChild(h); }
 
         let gameId = "", playerNum = 0, myName = "", docRef = null, messagesRef = null;
-        let gState = { level: 1, p1Score: 0, p2Score: 0, status: 'waiting' };
-        
-        const quotes = [
-            "“Love is a spark that ignites the soul.”",
-            "“Communication is the bridge between two hearts.”",
-            "“Every battle brings us closer.”",
-            "“Protect your heart from the broken pieces.”",
-            "“Navigate the cosmos of love together.”"
-        ];
+        let gState = { level: 1 };
+        const quotes = ["“Love is a spark that ignites the soul.”", "“Communication is the bridge between two hearts.”", "“Every battle brings us closer.”", "“Protect your heart from the broken pieces.”", "“Navigate the cosmos of love together.”", "“Catch every moment, hold every memory.”"];
+        const failQuotes = ["“Every setback is a setup for a stronger bond. Try again!”", "“True love never gives up.”", "“Don't worry, we got this together!”"];
         const scrambleWords = ["FOREVER", "SOULMATE", "ETERNAL"];
 
+        // UI UTILS
         function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); if(document.getElementById(id)) document.getElementById(id).classList.add('active'); }
-        function showOverlay(title, quote, showBtn=false, btnAction=null) {
-            playSound('levelUp');
+        function showOverlay(title, quote, showBtn=false, btnAction=null, delay=4000) {
             document.getElementById('ov-title').innerText = title; document.getElementById('ov-quote').innerText = quote;
             let btn = document.getElementById('ov-btn');
             if(showBtn) { btn.style.display='block'; btn.onclick=()=>{ document.getElementById('overlay').style.display='none'; if(btnAction) btnAction(); }; }
-            else { btn.style.display='none'; setTimeout(()=>document.getElementById('overlay').style.display='none', 4500); }
+            else { btn.style.display='none'; setTimeout(()=>document.getElementById('overlay').style.display='none', delay); }
             document.getElementById('overlay').style.display = 'flex';
+        }
+        function showToast(msg) {
+            let tc = document.getElementById('toast-container'); let t = document.createElement('div');
+            t.className = 'live-toast'; t.innerText = msg; tc.appendChild(t); setTimeout(()=>t.remove(), 3000);
         }
 
         document.getElementById('btnHome').onclick = () => { window.location.reload(); };
 
-        // HOST RESTART - Flushes all states reliably
+        // HOST RESTART
         async function performRestart() {
             document.getElementById('final-screen').style.display = 'none';
             await updateDoc(docRef, { 
-                level: 1, p1Score: 0, p2Score: 0, 
-                sparkClicks: 0,
-                scramble: { wordIdx: 0, jumbled: scrambleWords[0].split('').sort(()=>Math.random()-0.5).join(' '), solved: false },
-                tttBoard: ['','','','','','','','',''], tttTurn: 'X',
-                popHeart: null, sdTarget: null,
-                canvasProg: 0, cP1X: 50, cP2X: 50, canvasObj: null
+                level: 1, p1Score: 0, p2Score: 0, p1Lives: 4, p2Lives: 4,
+                sparkClicks: 0, scramble: { wordIdx: 0, jumbled: scrambleWords[0].split('').sort(()=>Math.random()-0.5).join(' '), solved: false },
+                tttBoard: ['','','','','','','','',''], tttTurn: 'X', popHeart: null, sdTarget: null, canvasProg: 0, canvasObj: null, catchObj: null
             });
         }
-        document.getElementById('btnRestart').onclick = async () => { if(confirm("Restart the journey?")) performRestart(); };
-        document.getElementById('btnFinalRestart').onclick = () => { if(playerNum===1) performRestart(); else alert("Only Host can restart."); };
+        document.getElementById('btnRestart').onclick = async () => { if(confirm("Restart entire journey?")) performRestart(); };
 
-        window.sendEmoji = async function(emoji) { 
-            if(audioCtx.state === 'suspended') audioCtx.resume();
-            if(gState && gState.status === 'playing') await updateDoc(docRef, { latestEmoji: { e: emoji, p: playerNum, id: Date.now() } }); 
+        // LEVEL FAIL LOGIC (Subtracts Life, Restarts ONLY Current Level)
+        async function handleLevelFail() {
+            playSound('bad');
+            let lk = playerNum===1 ? 'p1Lives' : 'p2Lives';
+            let nl = gState[lk] - 1;
+            
+            if(nl <= 0) {
+                showOverlay("OUT OF LIVES!", "Ask your partner to share a life with you!", false, null, 6000);
+                await updateDoc(docRef, { [lk]: 0 });
+            } else {
+                showOverlay("LEVEL FAILED", failQuotes[Math.floor(Math.random()*failQuotes.length)], true, async () => {
+                    if(playerNum===1) { // Host resets level state
+                        let u = { [lk]: nl };
+                        if(gState.level===1) u.sparkClicks=0; if(gState.level===2) u.scramble = { wordIdx: 0, jumbled: scrambleWords[0].split('').sort(()=>Math.random()-0.5).join(' '), solved: false };
+                        if(gState.level===3) { u.tttBoard=['','','','','','','','','']; u.tttTurn='X'; }
+                        if(gState.level===4) u.popHeart=null; if(gState.level===5) { u.canvasProg=0; u.canvasObj=null; }
+                        await updateDoc(docRef, u);
+                    } else { await updateDoc(docRef, { [lk]: nl }); }
+                });
+            }
         }
+
+        // SHARE LIVES
+        document.getElementById('btnShare1').onclick = () => { if(playerNum===1) updateDoc(docRef, { p1Lives: gState.p1Lives-1, p2Lives: gState.p2Lives+1 }); };
+        document.getElementById('btnShare2').onclick = () => { if(playerNum===2) updateDoc(docRef, { p2Lives: gState.p2Lives-1, p1Lives: gState.p1Lives+1 }); };
+
+        window.sendEmoji = async function(emoji) { if(audioCtx.state === 'suspended') audioCtx.resume(); if(gState && gState.status === 'playing') await updateDoc(docRef, { latestEmoji: { e: emoji, p: playerNum, id: Date.now() } }); }
 
         document.getElementById('btnCreate').addEventListener('click', async () => {
             myName = document.getElementById('playerName').value.trim(); if(!myName) return;
@@ -326,17 +316,12 @@
             docRef = doc(db, "games", gameId); messagesRef = collection(db, "games", gameId, "messages");
             
             await setDoc(docRef, { 
-                status: 'waiting', level: 1, p1Name: myName, p2Name: "", p1Score: 0, p2Score: 0, 
-                sparkClicks: 0,
-                scramble: { wordIdx: 0, jumbled: scrambleWords[0].split('').sort(()=>Math.random()-0.5).join(' '), solved: false },
-                tttBoard: ['','','','','','','','',''], tttTurn: 'X',
-                popHeart: null, sdTarget: null,
-                canvasProg: 0, cP1X: 50, cP2X: 50, canvasObj: null
+                status: 'waiting', level: 1, p1Name: myName, p2Name: "", p1Score: 0, p2Score: 0, p1Lives: 4, p2Lives: 4,
+                sparkClicks: 0, scramble: { wordIdx: 0, jumbled: scrambleWords[0].split('').sort(()=>Math.random()-0.5).join(' '), solved: false },
+                tttBoard: ['','','','','','','','',''], tttTurn: 'X', popHeart: null, sdTarget: null, canvasProg: 0, cP1X: 50, cP2X: 50, canvasObj: null, catchObj: null
             });
-            
-            document.getElementById('displayCode').innerText = gameId;
-            document.getElementById('btnRestart').style.display = 'flex'; 
-            showScreen('lobby-screen'); setupSync(); setupChat(); setupWebRTC();
+            document.getElementById('displayCode').innerText = gameId; document.getElementById('btnRestart').style.display = 'flex'; 
+            showScreen('lobby-screen'); setupSync(); setupChat();
         });
 
         document.getElementById('btnJoin').addEventListener('click', async () => {
@@ -345,13 +330,13 @@
             if(audioCtx.state === 'suspended') audioCtx.resume();
             docRef = doc(db, "games", gameId); messagesRef = collection(db, "games", gameId, "messages");
             let snap = await getDoc(docRef);
-            if(snap.exists()) { await updateDoc(docRef, { p2Name: myName, status: 'playing' }); setupSync(); setupChat(); setupWebRTC(); } 
-            else alert("Room closed or invalid.");
+            if(snap.exists()) { await updateDoc(docRef, { p2Name: myName, status: 'playing' }); setupSync(); setupChat(); } 
+            else alert("Room closed.");
         });
 
         const getShareURL = () => `${window.location.origin}${window.location.pathname}?game=${gameId}`;
         document.getElementById('btnShare').onclick = () => window.location.href = `whatsapp://send?text=${encodeURIComponent('Join my Love Journey! ' + getShareURL())}`;
-        document.getElementById('btnCopy').onclick = () => { navigator.clipboard.writeText(getShareURL()); alert("Link Copied!"); };
+        document.getElementById('btnCopy').onclick = () => { navigator.clipboard.writeText(getShareURL()); showToast("Link Copied!"); };
         window.onload = () => { if(new URLSearchParams(window.location.search).get('game')) { document.getElementById('joinCode').value = new URLSearchParams(window.location.search).get('game').toUpperCase(); }};
 
         // --- MAIN SYNC ENGINE ---
@@ -364,19 +349,25 @@
                 if(gState.status === 'playing') {
                     if(document.getElementById('game-area').style.display !== 'flex') {
                         showScreen('none'); document.getElementById('game-area').style.display = 'flex';
-                        document.getElementById('top-nav').style.display = 'flex';
-                        document.getElementById('emoji-bar').style.display = 'flex';
+                        document.getElementById('top-nav').style.display = 'flex'; document.getElementById('emoji-bar').style.display = 'flex';
                         document.getElementById('name1').innerText = gState.p1Name; document.getElementById('name2').innerText = gState.p2Name;
                     }
                     
                     document.getElementById('score1').innerText = gState.p1Score; document.getElementById('score2').innerText = gState.p2Score;
-                    document.getElementById('level-title-hud').innerText = gState.level === 3.5 ? "TIE BREAKER!" : `LEVEL ${Math.floor(gState.level)}`;
+                    document.getElementById('lives1').innerText = '❤️'.repeat(gState.p1Lives); document.getElementById('lives2').innerText = '❤️'.repeat(gState.p2Lives);
+                    
+                    // Show Share buttons if needed
+                    document.getElementById('btnShare1').style.display = (playerNum===1 && gState.p1Lives > gState.p2Lives + 1) ? 'block' : 'none';
+                    document.getElementById('btnShare2').style.display = (playerNum===2 && gState.p2Lives > gState.p1Lives + 1) ? 'block' : 'none';
 
-                    // Handle restarts and progressions safely
+                    document.getElementById('level-title-hud').innerText = gState.level === 3.5 ? "TIE BREAKER!" : `LEVEL ${Math.floor(gState.level)}`;
+                    document.body.className = `theme-${Math.floor(gState.level)}`; // Dynamic Backgrounds
+
                     if(gState.level !== oldLvl) {
-                        if(gState.level >= 6) triggerFinale();
+                        if(gState.level > 6) triggerFinale();
                         else {
-                            if(gState.level === 3.5) showOverlay("TIE BREAKER", "React faster than your partner to win!");
+                            playSound('levelUp');
+                            if(gState.level === 3.5) showOverlay("TIE BREAKER", "React faster than your partner!");
                             else showOverlay(`LEVEL ${Math.floor(gState.level)}`, quotes[Math.floor(gState.level)-1]);
                         }
                     }
@@ -389,12 +380,16 @@
                     }
 
                     hideAllLevels();
-                    if(gState.level === 1) { document.getElementById('spark-area').style.display='flex'; renderSpark(); if(playerNum===1) hostSpark(); }
-                    else if(gState.level === 2) { document.getElementById('scramble-area').style.display='flex'; renderScramble(); }
-                    else if(gState.level === 3) { document.getElementById('ttt-board').style.display='grid'; renderTTT(); }
-                    else if(gState.level === 3.5) { document.getElementById('sudden-death-area').style.display='block'; renderSuddenDeath(); if(playerNum===1) hostSuddenDeath(); }
-                    else if(gState.level === 4) { document.getElementById('popper-area').style.display='block'; renderPopper(); if(playerNum===1) hostPopper(); }
-                    else if(gState.level === 5) { document.getElementById('game-canvas').style.display='block'; startCanvasEngine(); if(playerNum===1) hostCanvas(); }
+                    let myL = playerNum===1?gState.p1Lives:gState.p2Lives;
+                    if(myL > 0) {
+                        if(gState.level === 1) { document.getElementById('spark-area').style.display='flex'; renderSpark(); if(playerNum===1) hostSpark(); }
+                        else if(gState.level === 2) { document.getElementById('scramble-area').style.display='flex'; renderScramble(); }
+                        else if(gState.level === 3) { document.getElementById('ttt-board').style.display='grid'; renderTTT(); }
+                        else if(gState.level === 3.5) { document.getElementById('sudden-death-area').style.display='block'; renderSuddenDeath(); if(playerNum===1) hostSuddenDeath(); }
+                        else if(gState.level === 4) { document.getElementById('popper-area').style.display='block'; renderPopper(); if(playerNum===1) hostPopper(); }
+                        else if(gState.level === 5) { document.getElementById('game-canvas').style.display='block'; startCanvasEngine(); if(playerNum===1) hostCanvas(); }
+                        else if(gState.level === 6) { document.getElementById('catcher-area').style.display='block'; renderCatcher(); if(playerNum===1) hostCatcher(); }
+                    }
                 }
             });
         }
@@ -402,46 +397,46 @@
         function hideAllLevels() {
             document.getElementById('spark-area').style.display = 'none'; document.getElementById('scramble-area').style.display = 'none'; 
             document.getElementById('ttt-board').style.display = 'none'; document.getElementById('sudden-death-area').style.display = 'none'; 
-            document.getElementById('popper-area').style.display = 'none'; document.getElementById('game-canvas').style.display = 'none';
+            document.getElementById('popper-area').style.display = 'none'; document.getElementById('game-canvas').style.display = 'none'; document.getElementById('catcher-area').style.display = 'none';
         }
 
-        // --- LEVEL 1: THE SPARK (HARD DECAY) ---
+        // --- LEVEL 1: THE SPARK ---
         let sparkInt = null;
         function hostSpark() {
             if(sparkInt) return;
             sparkInt = setInterval(async () => {
                 if(gState.level !== 1) { clearInterval(sparkInt); sparkInt = null; return; }
-                if(gState.sparkClicks > 0) updateDoc(docRef, { sparkClicks: Math.max(0, gState.sparkClicks - 5) });
-            }, 1000); // Decays 5 points every second!
+                if(gState.sparkClicks > 0) updateDoc(docRef, { sparkClicks: Math.max(0, gState.sparkClicks - 8) });
+            }, 1000); 
         }
         function renderSpark() { document.getElementById('spark-meter-fill').style.width = gState.sparkClicks + '%'; }
         document.getElementById('sparkBtn').onclick = async () => {
-            if(gState.level !== 1) return; playSound('click');
-            let n = gState.sparkClicks + 5; 
+            if(gState.level !== 1 || (playerNum===1?gState.p1Lives:gState.p2Lives)<=0) return; playSound('click');
+            let n = gState.sparkClicks + 6; 
             if(n >= 100) { playSound('match'); let sc = playerNum===1?'p1Score':'p2Score'; await updateDoc(docRef, { sparkClicks: 100, level: 2, [sc]: gState[sc]+50 }); } 
             else await updateDoc(docRef, { sparkClicks: n });
         };
 
-        // --- LEVEL 2: SOULMATE SCRAMBLE (MULTI-WORD) ---
+        // --- LEVEL 2: SOULMATE SCRAMBLE ---
+        let scrTimeout = null;
         function renderScramble() {
             document.getElementById('scramble-progress').innerText = `Word ${gState.scramble.wordIdx + 1} of 3`;
             document.getElementById('scramble-word').innerText = gState.scramble.jumbled;
+            if(!scrTimeout && gState.scramble.wordIdx === 0 && !gState.scramble.solved) {
+                // 30 seconds to solve or fail
+                scrTimeout = setTimeout(() => {
+                    if(gState.level === 2 && !gState.scramble.solved) { handleLevelFail(); scrTimeout = null; }
+                }, 30000);
+            }
         }
         document.getElementById('btnScramble').onclick = async () => {
-            playSound('click');
-            let val = document.getElementById('scramble-input').value.trim().toUpperCase();
+            playSound('click'); let val = document.getElementById('scramble-input').value.trim().toUpperCase();
             if(val === scrambleWords[gState.scramble.wordIdx]) {
                 playSound('match'); document.getElementById('scramble-input').value = '';
-                let sc = playerNum===1?'p1Score':'p2Score';
-                let nextIdx = gState.scramble.wordIdx + 1;
-                
-                if(nextIdx >= 3) {
-                    await updateDoc(docRef, { scramble: { ...gState.scramble, solved: true, jumbled: "PERFECT!" }, [sc]: gState[sc]+50, level: 3 });
-                } else {
-                    let nextJumbled = scrambleWords[nextIdx].split('').sort(()=>Math.random()-0.5).join(' ');
-                    await updateDoc(docRef, { scramble: { wordIdx: nextIdx, jumbled: nextJumbled, solved: false }, [sc]: gState[sc]+30 });
-                }
-            } else { document.getElementById('scramble-input').value = ''; playSound('bad'); alert("Wrong! Try again."); }
+                let sc = playerNum===1?'p1Score':'p2Score'; let nextIdx = gState.scramble.wordIdx + 1;
+                if(nextIdx >= 3) { clearTimeout(scrTimeout); scrTimeout = null; await updateDoc(docRef, { scramble: { ...gState.scramble, solved: true, jumbled: "PERFECT!" }, [sc]: gState[sc]+50, level: 3 }); } 
+                else { let nextJumbled = scrambleWords[nextIdx].split('').sort(()=>Math.random()-0.5).join(' '); await updateDoc(docRef, { scramble: { wordIdx: nextIdx, jumbled: nextJumbled, solved: false }, [sc]: gState[sc]+30 }); }
+            } else { document.getElementById('scramble-input').value = ''; playSound('bad'); showToast("Wrong Word!"); }
         };
 
         // --- LEVEL 3: TIC TAC TOE ---
@@ -453,19 +448,12 @@
                 el.onclick = () => handleTTTClick(i); board.appendChild(el);
             });
         }
-
         async function handleTTTClick(i) {
-            let mySym = playerNum === 1 ? 'X' : 'O';
-            if(gState.tttTurn !== mySym || gState.tttBoard[i] !== '') return;
+            let mySym = playerNum === 1 ? 'X' : 'O'; if(gState.tttTurn !== mySym || gState.tttBoard[i] !== '') return;
             playSound('click'); let nb = [...gState.tttBoard]; nb[i] = mySym;
-            let lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-            let win = lines.find(l => nb[l[0]] && nb[l[0]]===nb[l[1]] && nb[l[0]]===nb[l[2]]);
-            
-            if(win) {
-                playSound('match'); let sc = playerNum===1?'p1Score':'p2Score'; 
-                await updateDoc(docRef, { tttBoard: nb, [sc]: gState[sc]+50, level: 4 });
-            } else if(!nb.includes('')) { await updateDoc(docRef, { tttBoard: nb, level: 3.5 }); } 
-            else { await updateDoc(docRef, { tttBoard: nb, tttTurn: mySym==='X'?'O':'X' }); }
+            let lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; let win = lines.find(l => nb[l[0]] && nb[l[0]]===nb[l[1]] && nb[l[0]]===nb[l[2]]);
+            if(win) { playSound('match'); let sc = playerNum===1?'p1Score':'p2Score'; await updateDoc(docRef, { tttBoard: nb, [sc]: gState[sc]+50, level: 4 }); } 
+            else if(!nb.includes('')) { await updateDoc(docRef, { tttBoard: nb, level: 3.5 }); } else { await updateDoc(docRef, { tttBoard: nb, tttTurn: mySym==='X'?'O':'X' }); }
         }
 
         // --- LEVEL 3.5: SUDDEN DEATH ---
@@ -475,28 +463,26 @@
             sdInt = setInterval(() => {
                 if(gState.level !== 3.5) { clearInterval(sdInt); sdInt = null; return; }
                 updateDoc(docRef, { sdTarget: { x: Math.random()*80, y: Math.random()*80, id: Date.now() } });
-            }, 700);
+            }, 600);
         }
         function renderSuddenDeath() {
             let area = document.getElementById('sudden-death-area'); area.innerHTML = '';
             if(gState.sdTarget) {
-                let h = document.createElement('div'); h.className = 'golden-heart'; h.innerText = '💛';
-                h.style.left = gState.sdTarget.x + '%'; h.style.top = gState.sdTarget.y + '%';
-                h.onclick = () => { playSound('match'); let sc = playerNum===1?'p1Score':'p2Score'; updateDoc(docRef, { sdTarget: null, [sc]: gState[sc]+50, level: 4 }); };
-                area.appendChild(h);
+                let h = document.createElement('div'); h.className = 'golden-heart'; h.innerText = '💛'; h.style.left = gState.sdTarget.x + '%'; h.style.top = gState.sdTarget.y + '%';
+                h.onclick = () => { playSound('match'); let sc = playerNum===1?'p1Score':'p2Score'; updateDoc(docRef, { sdTarget: null, [sc]: gState[sc]+50, level: 4 }); }; area.appendChild(h);
             }
         }
 
-        // --- LEVEL 4: HEART POPPER (HARDER) ---
+        // --- LEVEL 4: HEART POPPER ---
         let popInt = null;
         function hostPopper() {
             if(popInt) return;
             popInt = setInterval(() => {
                 if(gState.level !== 4) { clearInterval(popInt); popInt = null; return; }
-                if(gState.p1Score + gState.p2Score >= 400) { clearInterval(popInt); popInt = null; updateDoc(docRef, {level: 5}); return; }
+                if(gState.p1Score + gState.p2Score >= 350) { clearInterval(popInt); popInt = null; updateDoc(docRef, {level: 5}); return; }
                 let t = Math.random() > 0.6 ? 'bad' : 'good'; 
                 updateDoc(docRef, { popHeart: { x: Math.random()*80, y: Math.random()*80, id: Date.now(), t: t } });
-            }, 800);
+            }, 900);
         }
         function renderPopper() {
             let area = document.getElementById('popper-area'); area.innerHTML = '';
@@ -505,24 +491,22 @@
                 h.style.left = gState.popHeart.x + '%'; h.style.top = gState.popHeart.y + '%';
                 h.onclick = () => { 
                     let sc = playerNum===1?'p1Score':'p2Score'; 
-                    if(gState.popHeart.t === 'bad') { playSound('bad'); updateDoc(docRef, { popHeart: null, [sc]: Math.max(0, gState[sc]-20) }); }
+                    if(gState.popHeart.t === 'bad') { handleLevelFail(); }
                     else { playSound('click'); updateDoc(docRef, { popHeart: null, [sc]: gState[sc]+20 }); }
-                };
-                area.appendChild(h);
+                }; area.appendChild(h);
             }
         }
 
-        // --- LEVEL 5: COSMIC DODGE (2D Canvas Vertical Scroller) ---
+        // --- LEVEL 5: COSMIC DODGE (Fixed Speed) ---
         let c = document.getElementById('game-canvas'); let ctx = c.getContext('2d');
         function res() { c.width = window.innerWidth; c.height = window.innerHeight; } window.addEventListener('resize', res); res();
         
         let tX = 0; 
         c.addEventListener('touchstart', e => tX = e.changedTouches[0].screenX);
         c.addEventListener('touchmove', async e => {
-            if(gState.level !== 5 || playerNum === 0) return;
+            if(gState.level !== 5 || playerNum === 0 || (playerNum===1?gState.p1Lives:gState.p2Lives)<=0) return;
             let nx = e.changedTouches[0].screenX; let pct = (nx / c.width) * 100;
-            let lk = playerNum===1 ? 'cP1X' : 'cP2X';
-            await updateDoc(docRef, { [lk]: Math.max(10, Math.min(90, pct)) });
+            let lk = playerNum===1 ? 'cP1X' : 'cP2X'; await updateDoc(docRef, { [lk]: Math.max(10, Math.min(90, pct)) });
         });
 
         let canInt = null;
@@ -531,49 +515,41 @@
             canInt = setInterval(async () => {
                 if(gState.level !== 5) return;
                 let p = gState.canvasProg + 2;
-                if(p >= 100) { clearInterval(canInt); updateDoc(docRef, { level: 6 }); } // Finale
+                if(p >= 100) { clearInterval(canInt); updateDoc(docRef, { level: 6 }); } 
                 else {
                     let u = { canvasProg: p };
                     if(!gState.canvasObj && Math.random()>0.3) u.canvasObj = { x: Math.random()*80+10, y: -10, type: Math.random()>0.6?'heart':'rock', id: Date.now() };
                     await updateDoc(docRef, u);
                 }
-            }, 600);
+            }, 800);
         }
 
         let p1X_smooth = 50, p2X_smooth = 50, objY = -10;
         function startCanvasEngine() {
-            let stars = []; for(let i=0; i<50; i++) stars.push({x:Math.random()*c.width, y:Math.random()*c.height, s:Math.random()*3+1});
+            let stars = []; for(let i=0; i<30; i++) stars.push({x:Math.random()*c.width, y:Math.random()*c.height, s:Math.random()*3+1});
             
             function render() {
-                if(gState.level !== 5) return;
+                if(gState.level !== 5 || (playerNum===1?gState.p1Lives:gState.p2Lives)<=0) return;
                 
-                ctx.fillStyle = "rgba(5,0,15,0.4)"; ctx.fillRect(0,0,c.width,c.height);
-                ctx.fillStyle = "#fff";
-                stars.forEach(st => { 
-                    st.y += st.s * 2; if(st.y > c.height) st.y = -10;
-                    ctx.beginPath(); ctx.arc(st.x, st.y, st.s, 0, Math.PI*2); ctx.fill(); 
-                });
+                ctx.fillStyle = "rgba(0,10,30,0.5)"; ctx.fillRect(0,0,c.width,c.height);
+                ctx.fillStyle = "#fff"; stars.forEach(st => { st.y += st.s * 1.5; if(st.y > c.height) st.y = -10; ctx.beginPath(); ctx.arc(st.x, st.y, st.s, 0, Math.PI*2); ctx.fill(); });
 
                 p1X_smooth += (gState.cP1X - p1X_smooth) * 0.2; p2X_smooth += (gState.cP2X - p2X_smooth) * 0.2;
-                let px1 = (p1X_smooth/100) * c.width; let px2 = (p2X_smooth/100) * c.width; let py = c.height - 100;
+                let px1 = (p1X_smooth/100) * c.width; let px2 = (p2X_smooth/100) * c.width; let py = c.height - 120;
 
-                ctx.shadowBlur = 20; ctx.shadowColor = "#00f2fe"; ctx.fillStyle = "#00f2fe";
-                ctx.beginPath(); ctx.arc(px1, py, 25, 0, Math.PI*2); ctx.fill();
-                ctx.shadowColor = "#ff007f"; ctx.fillStyle = "#ff007f";
-                ctx.beginPath(); ctx.arc(px2, py, 25, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
-
-                ctx.fillStyle = "#fff"; ctx.font = "12px Orbitron"; ctx.textAlign = "center";
-                ctx.fillText(gState.p1Name, px1, py+45); ctx.fillText(gState.p2Name, px2, py+45);
+                ctx.shadowBlur = 20; ctx.shadowColor = "#00f2fe"; ctx.fillStyle = "#00f2fe"; ctx.beginPath(); ctx.arc(px1, py, 25, 0, Math.PI*2); ctx.fill();
+                ctx.shadowColor = "#ff007f"; ctx.fillStyle = "#ff007f"; ctx.beginPath(); ctx.arc(px2, py, 25, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
 
                 if(gState.canvasObj) {
-                    objY += 8; let ox = (gState.canvasObj.x/100) * c.width;
-                    ctx.font = "40px Arial"; ctx.fillText(gState.canvasObj.type==='heart'?'💛':'🪨', ox, objY);
+                    objY += 4; // REDUCED SPEED
+                    let ox = (gState.canvasObj.x/100) * c.width;
+                    ctx.font = "50px Arial"; ctx.fillText(gState.canvasObj.type==='heart'?'💛':'🪨', ox-25, objY);
 
-                    if(playerNum === 1 && objY > py - 30 && objY < py + 30) {
-                        let hitP1 = Math.abs(ox - px1) < 40; let hitP2 = Math.abs(ox - px2) < 40;
+                    if(playerNum === 1 && objY > py - 35 && objY < py + 35) {
+                        let hitP1 = Math.abs(ox - px1) < 45; let hitP2 = Math.abs(ox - px2) < 45;
                         if(hitP1 || hitP2) {
                             if(gState.canvasObj.type === 'heart') { playSound('match'); updateDoc(docRef, { p1Score: gState.p1Score+20, p2Score: gState.p2Score+20, canvasObj: null }); }
-                            else { playSound('bad'); updateDoc(docRef, { p1Score: hitP1 ? Math.max(0, gState.p1Score-20) : gState.p1Score, p2Score: hitP2 ? Math.max(0, gState.p2Score-20) : gState.p2Score, canvasObj: null }); }
+                            else { handleLevelFail(); updateDoc(docRef, {canvasObj: null}); }
                         }
                     }
                     if(objY > c.height) { if(playerNum===1) updateDoc(docRef, { canvasObj: null }); objY = -10; }
@@ -584,88 +560,83 @@
             render();
         }
 
+        // --- LEVEL 6: STAR CATCHER (NEW) ---
+        let catchInt = null;
+        function hostCatcher() {
+            if(catchInt) return;
+            catchInt = setInterval(() => {
+                if(gState.level !== 6) { clearInterval(catchInt); catchInt = null; return; }
+                if(gState.p1Score + gState.p2Score >= 600) { clearInterval(catchInt); updateDoc(docRef, {level: 7}); return; } // Finale
+                if(!gState.catchObj) updateDoc(docRef, { catchObj: { x: Math.random()*80, id: Date.now() } });
+            }, 1000);
+        }
+        function renderCatcher() {
+            let area = document.getElementById('catcher-area'); area.innerHTML = '';
+            if(gState.catchObj) {
+                let s = document.createElement('div'); s.className = 'falling-item'; s.innerText = '💋'; s.style.left = gState.catchObj.x + '%';
+                s.onclick = () => { playSound('match'); let sc = playerNum===1?'p1Score':'p2Score'; updateDoc(docRef, { catchObj: null, [sc]: gState[sc]+20 }); }; area.appendChild(s);
+                setTimeout(() => { if(gState.catchObj && gState.catchObj.id === s.id && playerNum===1) handleLevelFail(); }, 3000);
+            }
+        }
+
         // --- CHAT SYSTEM ---
         let chatOpen = false;
-        document.getElementById('btnChat').onclick = () => { 
-            chatOpen = !chatOpen; document.getElementById('chat-panel').style.display = chatOpen ? 'flex' : 'none'; 
-            document.getElementById('chat-badge').style.display = 'none';
-        };
+        document.getElementById('btnChat').onclick = () => { chatOpen = !chatOpen; document.getElementById('chat-panel').style.display = chatOpen ? 'flex' : 'none'; document.getElementById('chat-badge').style.display = 'none'; };
         
         function setupChat() {
             onSnapshot(query(messagesRef, orderBy("ts")), (snap) => {
                 let box = document.getElementById('chat-msgs'); box.innerHTML = '';
                 snap.forEach(d => { 
-                    let m = d.data(); let el = document.createElement('div'); 
-                    el.className = `msg ${m.sender === playerNum ? 'me' : 'them'}`; el.innerText = m.text; box.appendChild(el); 
-                    if(!chatOpen && m.sender !== playerNum) document.getElementById('chat-badge').style.display = 'block';
+                    let m = d.data(); let el = document.createElement('div'); el.className = `msg ${m.sender === playerNum ? 'me' : 'them'}`; el.innerText = m.text; box.appendChild(el); 
+                    if(!chatOpen && m.sender !== playerNum) { document.getElementById('chat-badge').style.display = 'block'; showToast(`${m.sender===1?gState.p1Name:gState.p2Name}: ${m.text}`); }
                 });
                 box.scrollTop = box.scrollHeight;
             });
         }
-        
-        document.getElementById('btnSendChat').onclick = async () => {
-            let t = document.getElementById('chatInput').value.trim();
-            if(t) { await addDoc(messagesRef, { text: t, sender: playerNum, ts: Date.now() }); document.getElementById('chatInput').value = ''; }
-        };
+        document.getElementById('btnSendChat').onclick = async () => { let t = document.getElementById('chatInput').value.trim(); if(t) { await addDoc(messagesRef, { text: t, sender: playerNum, ts: Date.now() }); document.getElementById('chatInput').value = ''; } };
 
         // --- WEBRTC VOICE ---
         let localStream, peerConn, isMuted = false;
-        async function setupWebRTC() {
-            try {
-                localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                peerConn = new RTCPeerConnection({ iceServers: [{ urls: ['stun:stun1.l.google.com:19302'] }] });
-                localStream.getTracks().forEach(t => peerConn.addTrack(t, localStream));
-                peerConn.ontrack = (e) => { let audio = new Audio(); audio.srcObject = e.streams[0]; audio.play(); };
-                
-                const callDoc = doc(db, "calls", gameId); const offerC = collection(callDoc, "offerC"); const answerC = collection(callDoc, "answerC");
-                peerConn.onicecandidate = e => { e.candidate && addDoc(playerNum===1 ? offerC : answerC, e.candidate.toJSON()); };
+        document.getElementById('btnMic').onclick = async () => {
+            if(!localStream) {
+                try {
+                    localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    peerConn = new RTCPeerConnection({ iceServers: [{ urls: ['stun:stun1.l.google.com:19302'] }] });
+                    localStream.getTracks().forEach(t => peerConn.addTrack(t, localStream));
+                    peerConn.ontrack = (e) => { let audio = new Audio(); audio.srcObject = e.streams[0]; audio.play(); };
+                    
+                    const callDoc = doc(db, "calls", gameId); const offerC = collection(callDoc, "offerC"); const answerC = collection(callDoc, "answerC");
+                    peerConn.onicecandidate = e => { e.candidate && addDoc(playerNum===1 ? offerC : answerC, e.candidate.toJSON()); };
 
-                if(playerNum === 1) {
-                    let offer = await peerConn.createOffer(); await peerConn.setLocalDescription(offer); await setDoc(callDoc, { offer: { type: offer.type, sdp: offer.sdp }});
-                    onSnapshot(callDoc, (snap) => { let data = snap.data(); if(data?.answer && !peerConn.currentRemoteDescription) peerConn.setRemoteDescription(new RTCSessionDescription(data.answer)); });
-                    onSnapshot(answerC, snap => snap.docChanges().forEach(c => { if(c.type === 'added') peerConn.addIceCandidate(new RTCIceCandidate(c.doc.data())); }));
-                } else {
-                    onSnapshot(callDoc, async (snap) => {
-                        let data = snap.data();
-                        if(data?.offer && !peerConn.currentRemoteDescription) {
-                            await peerConn.setRemoteDescription(new RTCSessionDescription(data.offer));
-                            let ans = await peerConn.createAnswer(); await peerConn.setLocalDescription(ans); await updateDoc(callDoc, { answer: { type: ans.type, sdp: ans.sdp }});
-                        }
-                    });
-                    onSnapshot(offerC, snap => snap.docChanges().forEach(c => { if(c.type === 'added') peerConn.addIceCandidate(new RTCIceCandidate(c.doc.data())); }));
-                }
+                    if(playerNum === 1) {
+                        let offer = await peerConn.createOffer(); await peerConn.setLocalDescription(offer); await setDoc(callDoc, { offer: { type: offer.type, sdp: offer.sdp }});
+                        onSnapshot(callDoc, (snap) => { let data = snap.data(); if(data?.answer && !peerConn.currentRemoteDescription) peerConn.setRemoteDescription(new RTCSessionDescription(data.answer)); });
+                        onSnapshot(answerC, snap => snap.docChanges().forEach(c => { if(c.type === 'added') peerConn.addIceCandidate(new RTCIceCandidate(c.doc.data())); }));
+                    } else {
+                        onSnapshot(callDoc, async (snap) => { let data = snap.data(); if(data?.offer && !peerConn.currentRemoteDescription) { await peerConn.setRemoteDescription(new RTCSessionDescription(data.offer)); let ans = await peerConn.createAnswer(); await peerConn.setLocalDescription(ans); await updateDoc(callDoc, { answer: { type: ans.type, sdp: ans.sdp }}); } });
+                        onSnapshot(offerC, snap => snap.docChanges().forEach(c => { if(c.type === 'added') peerConn.addIceCandidate(new RTCIceCandidate(c.doc.data())); }));
+                    }
+                    showToast("Mic Connected!");
+                } catch(e) { alert("Mic permission denied!"); return; }
+            }
+            isMuted = !isMuted; localStream.getAudioTracks()[0].enabled = !isMuted;
+            document.getElementById('btnMic').classList.toggle('muted'); document.getElementById('btnMic').innerText = isMuted ? '🔇' : '🎤';
+        };
 
-                document.getElementById('btnMic').onclick = () => {
-                    isMuted = !isMuted; localStream.getAudioTracks()[0].enabled = !isMuted;
-                    document.getElementById('btnMic').classList.toggle('muted'); document.getElementById('btnMic').innerText = isMuted ? '🔇' : '🎤';
-                };
-            } catch(e) { console.log("Mic error"); }
-        }
-
-        // --- INTERACTIVE FINALE ---
+        // --- EPIC FINALE (CONCENTRIC HEARTS) ---
         async function triggerFinale() {
             playSound('levelUp');
             document.getElementById('game-area').style.display = 'none'; document.getElementById('top-nav').style.display = 'none'; document.getElementById('emoji-bar').style.display = 'none';
             let fScreen = document.getElementById('final-screen'); fScreen.style.display = 'flex';
             document.getElementById('finalNames').innerText = `${gState.p1Name} & ${gState.p2Name}`;
-            document.getElementById('fs-p1').innerText = gState.p1Score; document.getElementById('fs-p2').innerText = gState.p2Score;
             
-            const colors = ['#ff007f', '#00f2fe', '#ff758c', '#ffeb3b', '#00ffcc'];
-            for(let i=0; i<100; i++) {
-                let h = document.createElement('div'); h.innerHTML = '❤️'; h.className = 'heart-particle';
-                h.style.color = colors[Math.floor(Math.random() * colors.length)]; h.style.left = '50%'; h.style.top = '50%';
-                let a = Math.random() * Math.PI * 2; let d = 100 + Math.random() * 500;
-                h.style.setProperty('--tx', (Math.cos(a)*d)+'px'); h.style.setProperty('--ty', (Math.sin(a)*d)+'px');
-                h.style.animationDelay = (Math.random() * 2) + 's'; fScreen.appendChild(h);
+            // Concentric Hearts Logic
+            for(let i=0; i<12; i++) {
+                let h = document.createElement('div'); h.className = 'concentric-heart';
+                h.innerHTML = `<svg viewBox="0 0 32 29.6"><path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,16,21.2,16,21.2s16-11.8,16-21.2C32,3.8,28.2,0,23.6,0z" fill="none" stroke="#ff007f" stroke-width="1"/></svg>`;
+                h.style.animationDelay = (i * 0.3) + 's'; fScreen.appendChild(h);
             }
-
-            fScreen.addEventListener('touchstart', e => {
-                let r = document.createElement('div'); r.className = 'touch-ripple';
-                r.style.left = e.touches[0].clientX + 'px'; r.style.top = e.touches[0].clientY + 'px';
-                fScreen.appendChild(r); setTimeout(()=>r.remove(), 1000);
-            });
-
-            if(playerNum === 1) { let msgs = await getDocs(messagesRef); msgs.forEach(m => deleteDoc(m.ref)); }
+            if(playerNum === 1) { let msgs = await getDocs(messagesRef); msgs.forEach(m => deleteDoc(m.ref)); } // Cleanup
         }
     </script>
 </body>
