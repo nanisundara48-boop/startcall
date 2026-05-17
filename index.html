@@ -60,6 +60,11 @@
         /* Level 2: Tic Tac Toe */
         .ttt-cell { width: 95px; height: 95px; background: rgba(0,242,254,0.05); border: 2px solid #00f2fe; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 55px; font-family: 'Orbitron'; cursor: pointer; box-shadow: inset 0 0 20px rgba(0,242,254,0.2); transition: 0.2s;}
         
+        /* Level 2.5: Sudden Death */
+        #sudden-death-area { display: none; position: absolute; top: 150px; left: 10px; right: 10px; bottom: 10px; z-index: 10; border: 2px solid #ffeb3b; box-shadow: inset 0 0 30px rgba(255,235,59,0.3); border-radius: 20px; background: rgba(0,0,0,0.5); }
+        .golden-heart { position: absolute; font-size: 60px; cursor: pointer; filter: drop-shadow(0 0 15px #ffeb3b); animation: vibrate 0.3s infinite; }
+        @keyframes vibrate { 0% { transform: translate(0,0); } 25% { transform: translate(-5px,-5px); } 50% { transform: translate(5px,5px); } 75% { transform: translate(-5px,5px); } 100% { transform: translate(0,0); } }
+
         /* Level 3: Heart Popper */
         #popper-area { display: none; position: absolute; top: 150px; left: 10px; right: 10px; bottom: 10px; z-index: 10; border: 2px dashed rgba(255,0,127,0.3); border-radius: 20px; }
         .pop-target { position: absolute; font-size: 50px; cursor: pointer; animation: pulse 1s infinite; filter: drop-shadow(0 0 10px #ff007f); }
@@ -132,17 +137,14 @@
         </div>
         
         <div id="memory-board" class="grid-game" style="grid-template-columns: repeat(4, 1fr);"></div>
-        
         <div id="ttt-board" class="grid-game" style="grid-template-columns: repeat(3, 1fr); display:none;"></div>
-        
+        <div id="sudden-death-area"></div>
         <div id="popper-area"></div>
-
         <div id="scramble-area">
             <div id="scramble-word"></div>
             <input type="text" id="scramble-input" placeholder="Type the real word..." style="text-transform:uppercase;">
             <button id="btnScramble" class="btn-primary">Guess</button>
         </div>
-
         <canvas id="game-canvas"></canvas>
     </div>
 
@@ -178,25 +180,23 @@
         const quotes = [
             "“Distance means so little when someone means so much.”",
             "“Two souls but a single thought, two hearts that beat as one.”",
+            "“TIE BREAKER: React faster than your partner to win!”",
             "“In a sea of people, my eyes will always search for you.”",
             "“We are tied together with an invisible thread of love.”",
             "“Love is a journey starting at forever and ending at never.”"
         ];
 
-        // UI UTILS
         function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); if(document.getElementById(id)) document.getElementById(id).classList.add('active'); }
         function showOverlay(title, quote, showBtn=false, btnAction=null) {
             document.getElementById('ov-title').innerText = title; document.getElementById('ov-quote').innerText = quote;
             let btn = document.getElementById('ov-btn');
             if(showBtn) { btn.style.display='block'; btn.onclick=()=>{ document.getElementById('overlay').style.display='none'; if(btnAction) btnAction(); }; }
-            else { btn.style.display='none'; setTimeout(()=>document.getElementById('overlay').style.display='none', 4500); }
+            else { btn.style.display='none'; setTimeout(()=>document.getElementById('overlay').style.display='none', 4000); }
             document.getElementById('overlay').style.display = 'flex';
         }
 
-        // HOME BUTTON / RESTART
         document.getElementById('btnHome').onclick = () => { window.location.reload(); };
 
-        // INITIALIZATION
         document.getElementById('btnCreate').addEventListener('click', async () => {
             myName = document.getElementById('playerName').value.trim(); if(!myName) return;
             playerNum = 1; gameId = Math.random().toString(36).substring(2, 7).toUpperCase();
@@ -206,7 +206,7 @@
                 status: 'waiting', level: 1, p1Name: myName, p2Name: "", p1Score: 0, p2Score: 0, 
                 memBoard: generateMemoryBoard(), memTurn: 1, 
                 tttBoard: ['','','','','','','','',''], tttTurn: 'X',
-                popHeart: null,
+                sdTarget: null, popHeart: null,
                 scramble: { word: "ROMANCE", jumbled: "M C A O E R N", solved: false },
                 surfProg: 0, surfP1Lane: 1, surfP2Lane: 1, surfObs: null
             });
@@ -226,12 +226,9 @@
             } else alert("Room closed or invalid.");
         });
 
-        // SHARE LINKS
         const getShareURL = () => `${window.location.origin}${window.location.pathname}?game=${gameId}`;
         document.getElementById('btnShare').onclick = () => window.location.href = `whatsapp://send?text=${encodeURIComponent('Join my Love Journey! ' + getShareURL())}`;
         document.getElementById('btnCopy').onclick = () => { navigator.clipboard.writeText(getShareURL()); alert("Link Copied!"); };
-
-        // AUTO JOIN IF LINK CLICKED
         window.onload = () => { if(new URLSearchParams(window.location.search).get('game')) { document.getElementById('joinCode').value = new URLSearchParams(window.location.search).get('game').toUpperCase(); }};
 
         // --- MAIN SYNC ENGINE ---
@@ -248,17 +245,22 @@
                     }
                     
                     document.getElementById('score1').innerText = gState.p1Score; document.getElementById('score2').innerText = gState.p2Score;
-                    document.getElementById('level-title-hud').innerText = `LEVEL ${gState.level}`;
+                    document.getElementById('level-title-hud').innerText = gState.level === 2.5 ? "SUDDEN DEATH!" : `LEVEL ${Math.floor(gState.level)}`;
 
                     if(gState.level > oldLvl) {
                         if(gState.level > 5) triggerFinale();
-                        else showOverlay(`LEVEL ${gState.level}`, quotes[gState.level-1]);
+                        else {
+                            let idx = Math.floor(gState.level) - 1;
+                            if(gState.level === 2.5) idx = 2; // Custom index for sudden death
+                            showOverlay(gState.level === 2.5 ? `TIE BREAKER` : `LEVEL ${gState.level}`, quotes[idx]);
+                        }
                     }
 
                     // Level Dispatcher
                     hideAllLevels();
                     if(gState.level === 1) renderMemory();
                     else if(gState.level === 2) renderTTT();
+                    else if(gState.level === 2.5) { document.getElementById('sudden-death-area').style.display='block'; renderSuddenDeath(); if(playerNum===1) hostSuddenDeath(); }
                     else if(gState.level === 3) { document.getElementById('popper-area').style.display='block'; renderPopper(); if(playerNum===1) hostPopper(); }
                     else if(gState.level === 4) { document.getElementById('scramble-area').style.display='flex'; renderScramble(); }
                     else if(gState.level === 5) { document.getElementById('game-canvas').style.display='block'; startSurfEngine(); if(playerNum===1) hostSurf(); }
@@ -268,7 +270,8 @@
 
         function hideAllLevels() {
             document.getElementById('memory-board').style.display = 'none'; document.getElementById('ttt-board').style.display = 'none';
-            document.getElementById('popper-area').style.display = 'none'; document.getElementById('scramble-area').style.display = 'none';
+            document.getElementById('sudden-death-area').style.display = 'none'; document.getElementById('popper-area').style.display = 'none'; 
+            document.getElementById('scramble-area').style.display = 'none';
         }
 
         // --- LEVEL 1: MEMORY MATCH ---
@@ -304,7 +307,6 @@
                         b[firstPick].solved = true; b[i].solved = true; 
                         let sc = playerNum===1?'p1Score':'p2Score';
                         await updateDoc(docRef, { memBoard: b, [sc]: gState[sc]+10 }); 
-                        // Bug Fix: Check level up safely
                         if(b.every(x=>x.solved) && playerNum === 1) setTimeout(() => updateDoc(docRef, { level: 2 }), 1500);
                     } 
                     else { b[firstPick].flipped = false; b[i].flipped = false; updateDoc(docRef, { memBoard: b }); }
@@ -334,8 +336,33 @@
             if(win) {
                 let sc = playerNum===1?'p1Score':'p2Score'; await updateDoc(docRef, { tttBoard: nb, [sc]: gState[sc]+50 });
                 if(playerNum===1) setTimeout(()=>updateDoc(docRef, {level: 3}), 2000);
-            } else if(!nb.includes('')) { await updateDoc(docRef, { tttBoard: ['','','','','','','','',''] }); } 
-            else { await updateDoc(docRef, { tttBoard: nb, tttTurn: mySym==='X'?'O':'X' }); }
+            } else if(!nb.includes('')) { 
+                // TIE BREAKER TRIGGER!
+                await updateDoc(docRef, { tttBoard: nb }); 
+                if(playerNum===1) setTimeout(()=>updateDoc(docRef, {level: 2.5}), 1000);
+            } else { await updateDoc(docRef, { tttBoard: nb, tttTurn: mySym==='X'?'O':'X' }); }
+        }
+
+        // --- LEVEL 2.5: SUDDEN DEATH (TIE BREAKER) ---
+        let sdInt = null;
+        function hostSuddenDeath() {
+            if(sdInt) return;
+            sdInt = setInterval(() => {
+                if(gState.level !== 2.5) { clearInterval(sdInt); sdInt = null; return; }
+                updateDoc(docRef, { sdTarget: { x: Math.random()*80, y: Math.random()*80, id: Date.now() } });
+            }, 600); // Super fast blinking
+        }
+        function renderSuddenDeath() {
+            let area = document.getElementById('sudden-death-area'); area.innerHTML = '';
+            if(gState.sdTarget) {
+                let h = document.createElement('div'); h.className = 'golden-heart'; h.innerText = '💛';
+                h.style.left = gState.sdTarget.x + '%'; h.style.top = gState.sdTarget.y + '%';
+                h.onclick = () => {
+                    let sc = playerNum===1?'p1Score':'p2Score';
+                    updateDoc(docRef, { sdTarget: null, [sc]: gState[sc]+100, level: 3 });
+                };
+                area.appendChild(h);
+            }
         }
 
         // --- LEVEL 3: HEART POPPER ---
@@ -343,19 +370,17 @@
         function hostPopper() {
             if(popInt) return;
             popInt = setInterval(() => {
-                if(gState.level !== 3 || gState.p1Score + gState.p2Score >= 300) { clearInterval(popInt); if(gState.p1Score + gState.p2Score >= 300) updateDoc(docRef, {level: 4}); return; }
+                if(gState.level !== 3) { clearInterval(popInt); popInt = null; return; }
+                if(gState.p1Score + gState.p2Score >= 400) { clearInterval(popInt); popInt = null; updateDoc(docRef, {level: 4}); return; }
                 updateDoc(docRef, { popHeart: { x: Math.random()*80, y: Math.random()*80, id: Date.now() } });
-            }, 1200);
+            }, 1000);
         }
         function renderPopper() {
             let area = document.getElementById('popper-area'); area.innerHTML = '';
             if(gState.popHeart) {
                 let h = document.createElement('div'); h.className = 'pop-target'; h.innerText = '❤️';
                 h.style.left = gState.popHeart.x + '%'; h.style.top = gState.popHeart.y + '%';
-                h.onclick = () => {
-                    let sc = playerNum===1?'p1Score':'p2Score';
-                    updateDoc(docRef, { popHeart: null, [sc]: gState[sc]+10 });
-                };
+                h.onclick = () => { let sc = playerNum===1?'p1Score':'p2Score'; updateDoc(docRef, { popHeart: null, [sc]: gState[sc]+15 }); };
                 area.appendChild(h);
             }
         }
@@ -389,16 +414,17 @@
             surfInt = setInterval(async () => {
                 if(gState.level !== 5) return;
                 let p = gState.surfProg + 3;
-                if(p >= 100) { clearInterval(surfInt); updateDoc(docRef, { level: 6 }); } // Finale
+                if(p >= 100) { clearInterval(surfInt); updateDoc(docRef, { level: 6 }); } 
                 else {
                     let u = { surfProg: p };
-                    if(!gState.surfObs && Math.random()>0.4) u.surfObs = { lane: Math.floor(Math.random()*3), z: 2000 };
+                    if(!gState.surfObs && Math.random()>0.4) u.surfObs = { lane: Math.floor(Math.random()*3), z: 2000, t: Math.random()>0.5?'heart':'rock' };
                     await updateDoc(docRef, u);
                 }
             }, 500);
         }
 
         let oZ = 2000, rOff = 0;
+        let rP1X = 1, rP2X = 1; // Smooth interp variables
         function startSurfEngine() {
             function render() {
                 if(gState.level !== 5) return;
@@ -409,21 +435,29 @@
                 for(let y=c.height; y>hY; y-=5) {
                     let z = (c.height-hY)/(y-hY); let rW = 600/z; let pX = c.width/2;
                     ctx.fillRect(pX-rW, y, rW*2, 4);
-                    if((y+rOff)%40>20) { ctx.fillStyle="#ff007f"; ctx.fillRect(pX-rW/3, y, 4,4); ctx.fillRect(pX+rW/3, y, 4,4); ctx.fillStyle="#111";}
+                    if((y+rOff)%40>20) { ctx.fillStyle="#00f2fe"; ctx.fillRect(pX-rW/3, y, 4,4); ctx.fillRect(pX+rW/3, y, 4,4); ctx.fillStyle="#111";}
                 }
 
                 if(gState.surfObs) {
                     oZ -= 60; let oS = 400/(400+oZ); let oX = (c.width/2) + ((gState.surfObs.lane-1)*200*oS); let oY = hY + ((c.height-hY)*oS);
-                    if(oZ > 20) { ctx.font=`${60*oS}px Arial`; ctx.fillText('💍', oX-20*oS, oY); } 
-                    else if(oZ > -50) {
+                    if(oZ > 20) {
+                        ctx.font=`${60*oS}px Arial`; ctx.fillText(gState.surfObs.t==='heart'?'❤️':'🪨', oX-20*oS, oY);
+                    } else if(oZ > -50) {
                         let myL = playerNum===1 ? gState.surfP1Lane : gState.surfP2Lane;
-                        if(myL === gState.surfObs.lane && playerNum===1) { updateDoc(docRef, { p1Score: gState.p1Score+30, p2Score: gState.p2Score+30, surfObs: null }); oZ=2000; }
+                        if(myL === gState.surfObs.lane && playerNum===1) {
+                            if(gState.surfObs.t==='heart') updateDoc(docRef, { p1Score: gState.p1Score+20, p2Score: gState.p2Score+20, surfObs: null });
+                            else updateDoc(docRef, { p1Score: Math.max(0, gState.p1Score-10), surfObs: null });
+                            oZ=2000;
+                        }
                     } else { oZ=2000; if(playerNum===1) updateDoc(docRef, { surfObs:null }); }
                 }
 
-                let p1X = (c.width/2) + ((gState.surfP1Lane-1)*200 * (400/550)); let p2X = (c.width/2) + ((gState.surfP2Lane-1)*200 * (400/550));
-                ctx.beginPath(); ctx.arc(p1X, c.height-120, 30, 0, Math.PI*2); ctx.fillStyle="#00f2fe"; ctx.fill();
-                ctx.beginPath(); ctx.arc(p2X, c.height-120, 30, 0, Math.PI*2); ctx.fillStyle="#ff007f"; ctx.fill();
+                rP1X += (((gState.surfP1Lane-1)*200) - rP1X)*0.2; rP2X += (((gState.surfP2Lane-1)*200) - rP2X)*0.2;
+                let p1X = (c.width/2) + (rP1X * (400/550)); let p2X = (c.width/2) + (rP2X * (400/550));
+                
+                ctx.beginPath(); ctx.arc(p1X, c.height-100, 30, 0, Math.PI*2); ctx.fillStyle="#00f2fe"; ctx.fill();
+                ctx.beginPath(); ctx.arc(p2X, c.height-100, 30, 0, Math.PI*2); ctx.fillStyle="#ff007f"; ctx.fill();
+
                 requestAnimationFrame(render);
             }
             render();
@@ -494,7 +528,7 @@
                 h.style.setProperty('--tx', (Math.cos(a)*d)+'px'); h.style.setProperty('--ty', (Math.sin(a)*d)+'px');
                 h.style.animationDelay = (Math.random() * 3) + 's'; fScreen.appendChild(h);
             }
-            if(playerNum === 1) { let msgs = await getDocs(messagesRef); msgs.forEach(m => deleteDoc(m.ref)); } // Cleanup Chat
+            if(playerNum === 1) { let msgs = await getDocs(messagesRef); msgs.forEach(m => deleteDoc(m.ref)); }
         }
     </script>
 </body>
