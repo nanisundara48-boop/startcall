@@ -11,7 +11,6 @@
         
         body { font-family: 'Poppins', sans-serif; color: white; height: 100vh; width: 100vw; overflow: hidden; touch-action: none; transition: background 1s ease;}
         
-        /* DYNAMIC THEMES */
         body.theme-0 { background: linear-gradient(135deg, #1a0011, #0a0a2a); }
         body.theme-1 { background: linear-gradient(135deg, #2b0018, #4a0024); }
         body.theme-2 { background: linear-gradient(135deg, #001133, #003366); }
@@ -31,7 +30,7 @@
 
         input, button { width: 100%; padding: 15px; margin: 10px 0; border-radius: 15px; border: none; font-size: 16px; font-family: 'Poppins', sans-serif; text-align: center; font-weight: bold; transition: 0.3s;}
         input { background: rgba(255,255,255,0.9); color: #111; }
-        input:focus { border: 2px solid #ff007f; outline: none; }
+        input:focus { border: 2px solid #ff007f; outline: none; transform: scale(1.02); }
         
         .btn-primary { background: linear-gradient(90deg, #ff007f, #ff758c); color: #fff; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 0, 127, 0.4);}
         .btn-primary:active { transform: scale(0.95); }
@@ -44,9 +43,9 @@
         .glass-btn:active { transform: scale(0.9); }
         .muted { background: rgba(255, 0, 0, 0.3); border-color: #ff0000; color: #ff5555;}
         
-        /* Video Container */
-        #video-container { display: none; position: absolute; top: 75px; left: 15px; flex-direction: column; gap: 10px; z-index: 900; }
-        video { width: 90px; height: 130px; object-fit: cover; border-radius: 15px; background: #000; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        /* Video Container - FIXED POSITION TO BOTTOM LEFT */
+        #video-container { display: none; position: absolute; bottom: 20px; left: 15px; flex-direction: row; gap: 10px; z-index: 900; }
+        video { width: 70px; height: 100px; object-fit: cover; border-radius: 12px; background: #000; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
         #localVideo { border: 2px solid #00f2fe; }
         #remoteVideo { border: 2px solid #ff007f; display: none;}
 
@@ -62,7 +61,8 @@
         .msg.me { background: linear-gradient(135deg, #00f2fe, #4facfe); color: black; align-self: flex-end; border-bottom-right-radius: 4px; font-weight: 600;}
         .msg.them { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; align-self: flex-start; border-bottom-left-radius: 4px; }
         #chat-input-area { display: flex; padding: 10px; gap: 10px; border-top: 1px solid rgba(0,242,254,0.3); background: rgba(0,0,0,0.4); border-radius: 0 0 20px 20px;}
-        #chat-input-area input { margin: 0; padding: 12px 15px; border-radius: 20px; font-size: 14px; background: rgba(255,255,255,0.1); color: white; border: none;}
+        #chat-input-area input { margin: 0; padding: 12px 15px; border-radius: 20px; background: rgba(255,255,255,0.1); color: white; border: none;}
+        #chat-input-area button { width: 50px; margin: 0; border-radius: 50%; }
 
         #emoji-bar { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 15px; z-index: 1500; }
         .emoji-btn { background: rgba(255,255,255,0.1); border: 1px solid #ff007f; border-radius: 50%; width: 45px; height: 45px; font-size: 22px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s;}
@@ -83,11 +83,13 @@
 
         #level-title-hud { font-family: 'Orbitron'; font-size: 22px; color: #fff; text-shadow: 0 0 10px #ff007f; margin-top: 15px; z-index: 20; letter-spacing: 2px;}
 
-        /* PAUSE OVERLAY */
-        #pause-overlay { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.9); z-index: 4000; flex-direction: column; align-items: center; justify-content: center; text-align: center; backdrop-filter: blur(10px);}
+        /* PERMANENT SCREENS FOR GAME FLOW */
+        #pause-overlay { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 4000; flex-direction: column; align-items: center; justify-content: center; text-align: center; backdrop-filter: blur(10px);}
         #pause-overlay h1 { font-family: 'Orbitron'; font-size: 35px; color: #ffeb3b; text-shadow: 0 0 20px #ffeb3b; animation: pulseBeat 1s infinite alternate;}
 
-        /* Level Specifics */
+        #out-of-lives-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(10,0,0,0.98); z-index: 3500; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px;}
+        
+        /* Mini Games Layouts */
         #spark-area { display: none; flex-direction: column; align-items: center; z-index: 10; }
         #spark-meter-bg { width: 250px; height: 25px; background: rgba(255,255,255,0.1); border: 2px solid #00f2fe; border-radius: 12px; margin-bottom: 40px; overflow: hidden;}
         #spark-meter-fill { width: 0%; height: 100%; background: #00f2fe; transition: width 0.1s;}
@@ -95,7 +97,7 @@
         .giant-heart:active { transform: scale(0.8); }
 
         #scramble-area { display: none; z-index: 10; flex-direction: column; align-items: center; gap: 20px; width: 90%; max-width: 400px;}
-        #scramble-word { font-family: 'Orbitron'; font-size: 40px; color: #fff; text-shadow: 0 0 15px #00f2fe; letter-spacing: 10px;}
+        #scramble-word { font-family: 'Orbitron'; font-size: 35px; color: #fff; text-shadow: 0 0 15px #00f2fe; letter-spacing: 10px;}
 
         .grid-game { display: grid; gap: 12px; z-index: 10; margin-top: 30px; }
         .ttt-cell { width: 90px; height: 90px; background: rgba(255,0,127,0.05); border: 2px solid rgba(255,0,127,0.6); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 50px; font-family: 'Orbitron'; cursor: pointer;}
@@ -115,12 +117,10 @@
         #align-center { position: absolute; width: 60px; height: 100%; left: 50%; transform: translateX(-50%); background: rgba(0, 242, 254, 0.3); border-left: 2px dashed #00f2fe; border-right: 2px dashed #00f2fe; }
         #align-heart { position: absolute; font-size: 35px; top: 2px; left: 0%; transform: translateX(-50%); filter: drop-shadow(0 0 10px #ff007f); }
 
-        /* Overlays */
         #overlay { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5,0,10,0.95); z-index: 3000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 25px;}
         #ov-title { font-family: 'Orbitron'; font-size: 40px; color: #ff4d85; margin-bottom: 20px; text-shadow: 0 0 20px #ff4d85;}
         #ov-quote { font-size: 24px; color: #00f2fe; font-family: 'Dancing Script', cursive; margin-bottom: 30px; line-height: 1.5;}
 
-        /* FINALE SCREEN */
         #final-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 4000; overflow: hidden; flex-direction: column; align-items: center; justify-content: center; }
         .concentric-heart { position: absolute; width: 50px; height: 50px; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); animation: pulseOut 4s infinite cubic-bezier(0.2, 0.8, 0.4, 1); opacity: 0; }
         .concentric-heart svg { width: 100%; height: 100%; overflow: visible; }
@@ -136,6 +136,13 @@
 
     <div id="toast-container"></div>
     <div id="pause-overlay"><h1>GAME PAUSED</h1><p style="color:#ccc; margin-top:20px;">Waiting for partner to return...</p></div>
+    
+    <div id="out-of-lives-screen" class="screen">
+        <h1 style="font-family:'Orbitron'; font-size: 35px; color:#ff0055; text-shadow: 0 0 20px #ff0055;">OUT OF LIVES 💔</h1>
+        <p style="color:#ccc; margin: 20px 0; text-align:center; padding: 0 20px;">The journey is halted. You need more love to continue.</p>
+        <button id="btnShareLifeScreen" class="btn-success" style="display:none; width: 80%; border-radius: 25px;">Share Your Life to Save Partner 🎁</button>
+        <p style="color:#555; font-size: 12px; margin-top:20px;">Host can restart the game from the top menu.</p>
+    </div>
 
     <div id="top-nav">
         <div style="display: flex; gap: 15px;">
@@ -242,11 +249,9 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, doc, setDoc, onSnapshot, updateDoc, getDoc, collection, addDoc, query, orderBy, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // FIREBASE SETUP
         const firebaseConfig = { apiKey: "AIzaSyCZmqyLmyWesuoj6djTbyfrOJ1v7_FCWcQ", authDomain: "game-bf78a.firebaseapp.com", projectId: "game-bf78a", storageBucket: "game-bf78a.firebasestorage.app", messagingSenderId: "860717231489", appId: "1:860717231489:web:f53331a96570be04cacc80" };
         const app = initializeApp(firebaseConfig); const db = getFirestore(app);
 
-        // AUDIO
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(type) {
             if(audioCtx.state === 'suspended') audioCtx.resume();
@@ -261,10 +266,10 @@
         let gameId = "", playerNum = 0, myName = "", docRef = null, messagesRef = null;
         let gState = { level: 1 };
         let isPaused = false;
+        let scrTimeout = null;
 
         const quotes = ["“Love is a spark that ignites the soul.”", "“Communication is the bridge between two hearts.”", "“Every battle brings us closer.”", "“Protect your heart from the broken pieces.”", "“Navigate the cosmos of love together.”", "“Catch every moment, hold every memory.”", "“Perfect alignment makes love eternal.”"];
         const failQuotes = ["“Every setback is a setup for a stronger bond. Try again!”", "“True love never gives up.”", "“Don't worry, we got this together!”"];
-        // Daily Life Words
         const allWords = ["SMILE", "HEART", "KISS", "TRUST", "DREAM", "CARE", "HAPPY", "SWEET", "BABY", "CUTE", "HONEY", "LOVER", "WIFE", "HUBBY", "BLISS"];
 
         function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); if(document.getElementById(id)) document.getElementById(id).classList.add('active'); }
@@ -276,11 +281,10 @@
             document.getElementById('overlay').style.display = 'flex';
         }
         
-        // SMART TOAST (Scales with text length)
         window.showToast = function(msg) {
             let tc = document.getElementById('toast-container'); let t = document.createElement('div');
             t.className = 'live-toast'; t.innerText = msg; tc.appendChild(t); 
-            let duration = Math.max(3000, msg.length * 100); // Smart duration
+            let duration = Math.max(3000, msg.length * 100); 
             t.style.animationDuration = (duration/1000) + 's';
             setTimeout(()=>t.remove(), duration);
         }
@@ -290,6 +294,7 @@
         // HOST RESTART
         async function performRestart() {
             document.getElementById('final-screen').style.display = 'none';
+            if(scrTimeout) { clearTimeout(scrTimeout); scrTimeout = null; }
             let wl = [...allWords].sort(()=>Math.random()-0.5).slice(0,5);
             await updateDoc(docRef, { 
                 level: 1, p1Score: 0, p2Score: 0, p1Lives: 4, p2Lives: 4, failTrigger: null,
@@ -306,7 +311,7 @@
             await updateDoc(docRef, { [lk]: Math.max(0, n), failTrigger: { p: fPlayerNum, ts: Date.now() } });
         }
 
-        // DOUBLE TAP TO SHARE LIVES
+        // DOUBLE TAP TO SHARE LIVES (Also handles logic on "Out of Lives" screen)
         let tapTimes = {1:0, 2:0};
         window.handleLifeTap = function(p) {
             let now = Date.now();
@@ -317,6 +322,15 @@
                     else { showToast("You need more lives to share!"); }
                 }
             } tapTimes[p] = now;
+        };
+
+        // Out of Lives Screen "Share Life" Button
+        document.getElementById('btnShareLifeScreen').onclick = () => {
+            let myL = playerNum===1 ? gState.p1Lives : gState.p2Lives; let ptL = playerNum===1 ? gState.p2Lives : gState.p1Lives;
+            if(myL > ptL) {
+                playSound('levelUp');
+                if(playerNum===1) updateDoc(docRef, {p1Lives: myL-1, p2Lives: ptL+1}); else updateDoc(docRef, {p2Lives: myL-1, p1Lives: ptL+1});
+            }
         };
 
         window.sendEmoji = async function(emoji) { if(audioCtx.state === 'suspended') audioCtx.resume(); if(gState && gState.status === 'playing') await updateDoc(docRef, { latestEmoji: { e: emoji, p: playerNum, id: Date.now() } }); }
@@ -330,12 +344,12 @@
             
             await setDoc(docRef, { 
                 status: 'waiting', level: 1, p1Name: myName, p2Name: "", p1Score: 0, p2Score: 0, p1Lives: 4, p2Lives: 4, failTrigger: null,
-                p1Active: true, p2Active: false, // PAUSE LOGIC FLAGS
+                p1Active: true, p2Active: false,
                 sparkClicks: 0, scramble: { wordList: wl, wordIdx: 0, jumbled: wl[0].split('').sort(()=>Math.random()-0.5).join(' '), solved: false },
                 tttBoard: ['','','','','','','','',''], tttTurn: 'X', popHeart: null, sdTarget: null, canvasProg: 0, cP1X: 50, cP2X: 50, canvasObj: null, catchObj: null, align: {x:0, dir:1}
             });
             document.getElementById('displayCode').innerText = gameId; document.getElementById('btnRestart').style.display = 'flex'; 
-            showScreen('lobby-screen'); setupSync(); setupChat(); setupWebRTC();
+            showScreen('lobby-screen'); setupSync(); setupChat();
         });
 
         document.getElementById('btnJoin').addEventListener('click', async () => {
@@ -344,7 +358,7 @@
             if(audioCtx.state === 'suspended') audioCtx.resume();
             docRef = doc(db, "games", gameId); messagesRef = collection(db, "games", gameId, "messages");
             let snap = await getDoc(docRef);
-            if(snap.exists()) { await updateDoc(docRef, { p2Name: myName, status: 'playing', p2Active: true }); setupSync(); setupChat(); setupWebRTC(); } 
+            if(snap.exists()) { await updateDoc(docRef, { p2Name: myName, status: 'playing', p2Active: true }); setupSync(); setupChat(); } 
             else alert("Room closed.");
         });
 
@@ -353,7 +367,6 @@
         document.getElementById('btnCopy').onclick = () => { navigator.clipboard.writeText(getShareURL()); showToast("Link Copied!"); };
         window.onload = () => { if(new URLSearchParams(window.location.search).get('game')) { document.getElementById('joinCode').value = new URLSearchParams(window.location.search).get('game').toUpperCase(); }};
 
-        // --- PAUSE / RESUME LOGIC (Visibility Hook) ---
         document.addEventListener("visibilitychange", async () => {
             if(docRef && gState && gState.status === 'playing') {
                 if (document.visibilityState === "hidden") await updateDoc(docRef, { [`p${playerNum}Active`]: false });
@@ -369,7 +382,24 @@
                 let oldLvl = gState.level; gState = snap.data();
                 
                 if(gState.status === 'playing') {
-                    // PAUSE LOGIC CHECK
+                    
+                    // --- STATE 1: OUT OF LIVES ---
+                    if(gState.p1Lives <= 0 || gState.p2Lives <= 0) {
+                        showScreen('out-of-lives-screen');
+                        document.getElementById('top-nav').style.display = 'flex';
+                        document.getElementById('game-area').style.display = 'none'; // Crucial fix for overlapping
+                        document.getElementById('overlay').style.display = 'none';
+                        
+                        let myL = playerNum===1?gState.p1Lives:gState.p2Lives;
+                        let ptL = playerNum===1?gState.p2Lives:gState.p1Lives;
+                        if(myL > ptL) document.getElementById('btnShareLifeScreen').style.display = 'block';
+                        else document.getElementById('btnShareLifeScreen').style.display = 'none';
+                        return; // Halt further rendering
+                    } else {
+                        document.getElementById('out-of-lives-screen').style.display = 'none';
+                    }
+
+                    // --- STATE 2: PAUSED ---
                     if(!gState.p1Active || !gState.p2Active) {
                         document.getElementById('pause-overlay').style.display = 'flex';
                         isPaused = true;
@@ -378,6 +408,7 @@
                         isPaused = false;
                     }
 
+                    // --- STATE 3: PLAYING ---
                     if(document.getElementById('game-area').style.display !== 'flex') {
                         showScreen('none'); document.getElementById('game-area').style.display = 'flex';
                         document.getElementById('top-nav').style.display = 'flex'; document.getElementById('emoji-bar').style.display = 'flex';
@@ -388,10 +419,11 @@
                     document.getElementById('lives1').innerText = '❤️'.repeat(gState.p1Lives) || '💔'; document.getElementById('lives2').innerText = '❤️'.repeat(gState.p2Lives) || '💔';
                     
                     document.getElementById('level-title-hud').innerText = gState.level === 3.5 ? "TIE BREAKER!" : `LEVEL ${Math.floor(gState.level)}`;
-                    document.body.className = `theme-${Math.floor(gState.level)}`;
+                    document.body.className = `theme-${Math.floor(gState.level)}`; 
 
                     // LEVEL CHANGE
                     if(gState.level !== oldLvl && gState.level) {
+                        if(scrTimeout) { clearTimeout(scrTimeout); scrTimeout = null; } // Clear timers safely
                         if(gState.level > 7) triggerFinale();
                         else {
                             playSound('levelUp');
@@ -404,24 +436,22 @@
                     if(gState.failTrigger && gState.failTrigger.ts !== lastFailId) {
                         lastFailId = gState.failTrigger.ts;
                         playSound('bad');
-                        let fName = gState.failTrigger.p === 1 ? gState.p1Name : gState.p2Name;
-                        if(gState.p1Lives <= 0 || gState.p2Lives <= 0) {
-                            showOverlay("OUT OF LIVES!", "Double tap your Hearts ❤️ to share life with your partner!", false, null, 6000);
-                        } else {
-                            showOverlay("OOPS!", `Lost a life! ${failQuotes[Math.floor(Math.random()*failQuotes.length)]}`, true, async () => {
-                                if(playerNum===1) {
-                                    let u = { failTrigger: null };
-                                    if(gState.level===1) u.sparkClicks=0; 
-                                    if(gState.level===2) { let wl = [...allWords].sort(()=>Math.random()-0.5).slice(0,5); u.scramble = { wordList: wl, wordIdx: 0, jumbled: wl[0].split('').sort(()=>Math.random()-0.5).join(' '), solved: false }; }
-                                    if(gState.level===3) { u.tttBoard=['','','','','','','','','']; u.tttTurn='X'; }
-                                    if(gState.level===4) u.popHeart=null; if(gState.level===5) { u.canvasProg=0; u.canvasObj=null; }
-                                    if(gState.level===6) u.catchObj=null; if(gState.level===7) u.align = {x: 0, dir: 1};
-                                    await updateDoc(docRef, u);
-                                }
-                            });
-                        }
+                        if(scrTimeout) { clearTimeout(scrTimeout); scrTimeout = null; } // Stop scramble loop
+                        
+                        showOverlay("OOPS!", `Lost a life! ${failQuotes[Math.floor(Math.random()*failQuotes.length)]}`, true, async () => {
+                            if(playerNum===1) {
+                                let u = { failTrigger: null };
+                                if(gState.level===1) u.sparkClicks=0; 
+                                if(gState.level===2) { let wl = [...allWords].sort(()=>Math.random()-0.5).slice(0,5); u.scramble = { wordList: wl, wordIdx: 0, jumbled: wl[0].split('').sort(()=>Math.random()-0.5).join(' '), solved: false }; }
+                                if(gState.level===3) { u.tttBoard=['','','','','','','','','']; u.tttTurn='X'; }
+                                if(gState.level===4) u.popHeart=null; if(gState.level===5) { u.canvasProg=0; u.canvasObj=null; }
+                                if(gState.level===6) u.catchObj=null; if(gState.level===7) u.align = {x: 0, dir: 1};
+                                await updateDoc(docRef, u);
+                            }
+                        });
                     }
 
+                    // EMOJIS
                     if(gState.latestEmoji && gState.latestEmoji.id !== lastEmojiId) {
                         lastEmojiId = gState.latestEmoji.id;
                         let div = document.createElement('div'); div.className = 'floating-emoji'; div.innerText = gState.latestEmoji.e;
@@ -430,8 +460,7 @@
                     }
 
                     hideAllLevels();
-                    let myL = playerNum===1?gState.p1Lives:gState.p2Lives;
-                    if(myL > 0 && !gState.failTrigger) {
+                    if(!gState.failTrigger) {
                         if(gState.level === 1) { document.getElementById('spark-area').style.display='flex'; renderSpark(); if(playerNum===1) hostSpark(); }
                         else if(gState.level === 2) { document.getElementById('scramble-area').style.display='flex'; renderScramble(); }
                         else if(gState.level === 3) { document.getElementById('ttt-board').style.display='grid'; renderTTT(); }
@@ -463,14 +492,13 @@
         }
         function renderSpark() { document.getElementById('spark-meter-fill').style.width = gState.sparkClicks + '%'; }
         document.getElementById('sparkBtn').onclick = async () => {
-            if(gState.level !== 1 || (playerNum===1?gState.p1Lives:gState.p2Lives)<=0 || gState.failTrigger || isPaused) return; playSound('click');
+            if(gState.level !== 1 || gState.failTrigger || isPaused) return; playSound('click');
             let n = gState.sparkClicks + 6; 
             if(n >= 100) { playSound('match'); let sc = playerNum===1?'p1Score':'p2Score'; await updateDoc(docRef, { sparkClicks: 100, level: 2, [sc]: gState[sc]+50 }); } 
             else await updateDoc(docRef, { sparkClicks: n });
         };
 
-        // --- LEVEL 2: SOULMATE SCRAMBLE (INCREASED 60s TIMER) ---
-        let scrTimeout = null;
+        // --- LEVEL 2: SOULMATE SCRAMBLE (60s TIMER) ---
         function renderScramble() {
             if(!gState.scramble || !gState.scramble.wordList) return;
             document.getElementById('scramble-progress').innerText = `Word ${gState.scramble.wordIdx + 1} of 5`;
@@ -485,7 +513,7 @@
             if(val === gState.scramble.wordList[gState.scramble.wordIdx]) {
                 playSound('match'); document.getElementById('scramble-input').value = '';
                 let sc = playerNum===1?'p1Score':'p2Score'; let nextIdx = gState.scramble.wordIdx + 1;
-                if(nextIdx >= 5) { clearTimeout(scrTimeout); scrTimeout = null; await updateDoc(docRef, { scramble: { ...gState.scramble, solved: true, jumbled: "PERFECT!" }, [sc]: gState[sc]+100, level: 3 }); } 
+                if(nextIdx >= 5) { if(scrTimeout){clearTimeout(scrTimeout); scrTimeout=null;} await updateDoc(docRef, { scramble: { ...gState.scramble, solved: true, jumbled: "PERFECT!" }, [sc]: gState[sc]+100, level: 3 }); } 
                 else { let nextJumbled = gState.scramble.wordList[nextIdx].split('').sort(()=>Math.random()-0.5).join(' '); await updateDoc(docRef, { scramble: { wordList: gState.scramble.wordList, wordIdx: nextIdx, jumbled: nextJumbled, solved: false }, [sc]: gState[sc]+20 }); }
             } else { document.getElementById('scramble-input').value = ''; triggerFail(playerNum); }
         };
@@ -541,7 +569,7 @@
                 let h = document.createElement('div'); h.className = 'pop-target'; h.innerText = gState.popHeart.t === 'bad' ? '💔' : '❤️';
                 h.style.left = gState.popHeart.x + '%'; h.style.top = gState.popHeart.y + '%';
                 h.onclick = () => { 
-                    if(isPaused) return;
+                    if(isPaused || gState.failTrigger) return;
                     let sc = playerNum===1?'p1Score':'p2Score'; 
                     if(gState.popHeart.t === 'bad') { triggerFail(playerNum); }
                     else { playSound('click'); updateDoc(docRef, { popHeart: null, [sc]: gState[sc]+20 }); }
@@ -626,8 +654,8 @@
             let area = document.getElementById('catcher-area'); area.innerHTML = '';
             if(gState.catchObj) {
                 let s = document.createElement('div'); s.className = 'falling-item'; s.innerText = '💋'; s.style.left = gState.catchObj.x + '%';
-                s.onclick = () => { if(isPaused) return; playSound('match'); let sc = playerNum===1?'p1Score':'p2Score'; updateDoc(docRef, { catchObj: null, [sc]: gState[sc]+20 }); }; area.appendChild(s);
-                setTimeout(() => { if(gState.catchObj && gState.catchObj.id === s.id && playerNum===1 && !isPaused) triggerFail(1); }, 3500); 
+                s.onclick = () => { if(isPaused || gState.failTrigger) return; playSound('match'); let sc = playerNum===1?'p1Score':'p2Score'; updateDoc(docRef, { catchObj: null, [sc]: gState[sc]+20 }); }; area.appendChild(s);
+                setTimeout(() => { if(gState.catchObj && gState.catchObj.id === s.id && playerNum===1 && !isPaused && !gState.failTrigger) triggerFail(1); }, 3500); 
             }
         }
 
@@ -668,18 +696,14 @@
                 let box = document.getElementById('chat-msgs'); box.innerHTML = '';
                 snap.forEach(d => { 
                     let m = d.data(); let el = document.createElement('div'); el.className = `msg ${m.sender === playerNum ? 'me' : 'them'}`; el.innerText = m.text; box.appendChild(el); 
-                    
-                    // SMART TOAST POPUP if chat is closed
-                    if(!chatOpen && m.sender !== playerNum && (Date.now() - m.ts < 5000)) { 
-                        showToast(`${m.sender===1?gState.p1Name:gState.p2Name}: ${m.text}`); 
-                    }
+                    if(!chatOpen && m.sender !== playerNum && (Date.now() - m.ts < 5000)) { showToast(`${m.sender===1?gState.p1Name:gState.p2Name}: ${m.text}`); }
                 });
                 box.scrollTop = box.scrollHeight;
             });
         }
         document.getElementById('btnSendChat').onclick = async () => { let t = document.getElementById('chatInput').value.trim(); if(t) { await addDoc(messagesRef, { text: t, sender: playerNum, ts: Date.now() }); document.getElementById('chatInput').value = ''; } };
 
-        // --- WEBRTC VIDEO/VOICE (MUTE SPEAKER & MIC) ---
+        // --- WEBRTC VIDEO/VOICE ---
         let localStream, peerConn, isMediaOn = false, isMuted = false;
         const localVid = document.getElementById('localVideo');
         const remoteVid = document.getElementById('remoteVideo');
@@ -708,26 +732,23 @@
                     isMediaOn = true; showToast("Video Connected! 📹");
                 } catch(e) { alert("Camera/Mic permission denied!"); return; }
             } else {
-                // Toggle Video
-                let vTrack = localStream.getVideoTracks()[0];
-                vTrack.enabled = !vTrack.enabled;
+                let vTrack = localStream.getVideoTracks()[0]; vTrack.enabled = !vTrack.enabled;
                 document.getElementById('btnVideo').style.opacity = vTrack.enabled ? '1' : '0.5';
             }
         };
 
-        // DEAFEN & MUTE BUTTON
         document.getElementById('btnMic').onclick = () => {
             if(!localStream) { showToast("Click 📹 icon first to connect media!"); return; }
             isMuted = !isMuted; 
-            localStream.getAudioTracks()[0].enabled = !isMuted; // Mute Mic
-            remoteVid.muted = isMuted; // Mute Speaker (Partner's voice)
+            localStream.getAudioTracks()[0].enabled = !isMuted; 
+            remoteVid.muted = isMuted; 
             
             document.getElementById('btnMic').classList.toggle('muted'); 
             document.getElementById('btnMic').innerText = isMuted ? '🔇' : '🎤';
             showToast(isMuted ? "Mic & Speaker Muted" : "Audio Active");
         };
 
-        // --- EPIC FINALE (CONCENTRIC HEARTS) ---
+        // --- EPIC FINALE ---
         async function triggerFinale() {
             playSound('levelUp');
             document.getElementById('game-area').style.display = 'none'; document.getElementById('top-nav').style.display = 'none'; document.getElementById('emoji-bar').style.display = 'none'; document.getElementById('video-container').style.display = 'none';
@@ -738,7 +759,7 @@
                 h.innerHTML = `<svg viewBox="0 0 32 29.6"><path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,16,21.2,16,21.2s16-11.8,16-21.2C32,3.8,28.2,0,23.6,0z" fill="none" stroke="#ff007f" stroke-width="2"/></svg>`;
                 h.style.animationDelay = (i * 0.3) + 's'; fScreen.appendChild(h);
             }
-            if(playerNum === 1) { let msgs = await getDocs(messagesRef); msgs.forEach(m => deleteDoc(m.ref)); } // Cleanup Chat
+            if(playerNum === 1) { let msgs = await getDocs(messagesRef); msgs.forEach(m => deleteDoc(m.ref)); } 
         }
     </script>
 </body>
