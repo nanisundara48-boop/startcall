@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Neon Ludo Pro | VIP Edition</title>
+    <title>Neon Ludo Pro | Perfect UI</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -13,170 +13,154 @@
 
         :root {
             --bg-color: #0b0914;
-            --glass-bg: rgba(20, 15, 35, 0.7);
+            --glass-bg: rgba(20, 15, 35, 0.85);
             --neon-blue: #00f2fe;
             --neon-pink: #fe0979;
             --gold: #ffd700;
-            --red: #ff3333; --green: #33ff33; --blue: #3333ff; --yellow: #ffff33;
+            --ludo-red: #E53935; --ludo-green: #43A047; 
+            --ludo-blue: #1E88E5; --ludo-yellow: #FDD835;
         }
 
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; user-select: none; }
+        body { background: radial-gradient(circle at center, #2a1b4d 0%, #0b0914 100%); color: white; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
 
-        body { 
-            background: radial-gradient(circle at center, #2a1b4d 0%, #0b0914 100%); 
-            color: white; overflow: hidden; display: flex; flex-direction: column; min-height: 100vh; 
-        }
+        .screen { display: none; padding: 15px; flex-direction: column; align-items: center; justify-content: center; width: 100vw; min-height: 100vh; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
-        /* Animations */
-        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
-        @keyframes pulse { 0% { box-shadow: 0 0 10px var(--neon-blue); } 50% { box-shadow: 0 0 20px var(--neon-blue), 0 0 30px var(--neon-pink); } 100% { box-shadow: 0 0 10px var(--neon-blue); } }
-        @keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-        .screen { display: none; padding: 15px; flex-direction: column; align-items: center; justify-content: center; width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; }
-        .screen.active { display: flex; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-
-        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; width: 100%; max-width: 380px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-
-        /* Fancy Buttons */
-        button { background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink)); border: none; color: white; padding: 12px 20px; border-radius: 25px; font-weight: bold; font-size: 16px; cursor: pointer; margin: 10px 0; width: 100%; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
-        button:hover { transform: scale(1.05); }
-        button:active { transform: scale(0.95); }
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; width: 100%; max-width: 380px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
-        .header-nav { width: 100%; max-width: 380px; display: flex; justify-content: space-between; align-items: center; padding: 10px 0; z-index: 10;}
-        .back-btn { background: transparent; border: 1px solid white; width: auto; padding: 5px 15px; border-radius: 20px; margin:0; }
+        input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--neon-blue); background: #222; color: white; text-align: center; font-weight: bold; margin-bottom: 15px; font-size: 16px; }
+        button { background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink)); border: none; color: white; padding: 12px; border-radius: 25px; font-weight: bold; font-size: 16px; cursor: pointer; width: 100%; margin-bottom: 10px; text-transform: uppercase; }
+        button:active { transform: scale(0.95); }
 
-        /* Logo Area */
-        .logo-container { font-size: 40px; font-weight: 800; text-align: center; margin-bottom: 20px; animation: float 3s ease-in-out infinite; }
-        .logo-container span { color: var(--neon-pink); }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 380px; padding: 10px 0; }
+        .back-btn { background: transparent; border: 1px solid white; width: auto; padding: 5px 15px; border-radius: 20px; margin: 0; font-size: 12px; }
 
-        /* Ludo Board - Official Look */
-        .ludo-wrapper { padding: 10px; background: white; border-radius: 10px; box-shadow: 0 0 20px rgba(0, 242, 254, 0.4); margin: 10px 0; }
+        /* Video Chat Layout */
+        .video-container { display: flex; justify-content: space-between; width: 100%; max-width: 360px; margin-bottom: 10px; }
+        .video-wrapper { position: relative; width: 48%; aspect-ratio: 4/3; }
+        video { width: 100%; height: 100%; border-radius: 8px; border: 2px solid var(--neon-blue); background: #000; object-fit: cover; }
+        .player-name-tag { position: absolute; bottom: 5px; left: 5px; background: rgba(0,0,0,0.6); font-size: 10px; padding: 2px 5px; border-radius: 4px; }
+
+        /* ---------------- PERFECT LUDO BOARD ---------------- */
+        .board-container { background: white; padding: 5px; border-radius: 8px; box-shadow: 0 0 15px rgba(0, 242, 254, 0.3); margin-bottom: 10px; }
         .ludo-board {
             width: 90vw; height: 90vw; max-width: 350px; max-height: 350px;
             display: grid; grid-template-columns: repeat(15, 1fr); grid-template-rows: repeat(15, 1fr);
-            border: 2px solid #222; background: #fff; position: relative;
+            border: 2px solid #111; position: relative; background: white;
         }
 
-        .cell { border: 1px solid rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; position: relative; }
+        .cell { border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; position: relative; }
         
-        /* Colored Homes */
-        .h-red { background: var(--red); grid-area: 1/1/7/7; border: 2px solid #222; display: flex; align-items: center; justify-content: center;}
-        .h-green { background: var(--green); grid-area: 1/10/7/16; border: 2px solid #222; display: flex; align-items: center; justify-content: center;}
-        .h-blue { background: var(--blue); grid-area: 10/1/16/7; border: 2px solid #222; display: flex; align-items: center; justify-content: center;}
-        .h-yellow { background: var(--yellow); grid-area: 10/10/16/16; border: 2px solid #222; display: flex; align-items: center; justify-content: center;}
-        
-        /* White Inner Boxes */
-        .inner-box { width: 60%; height: 60%; background: white; border-radius: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 10%; padding: 10%; }
-        .puck-spot { width: 100%; height: 100%; border-radius: 50%; border: 2px solid #222; }
+        /* Colored Safe Paths */
+        .path-red { background-color: rgba(229, 57, 53, 0.2); }
+        .path-green { background-color: rgba(67, 160, 71, 0.2); }
+        .path-blue { background-color: rgba(30, 136, 229, 0.2); }
+        .path-yellow { background-color: rgba(253, 216, 53, 0.2); }
+        .safe-star { font-size: 12px; opacity: 0.5; }
 
-        /* Pucks - Highly visible */
-        .puck { width: 80%; height: 80%; border-radius: 50%; border: 2px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.6), inset 0 -3px 5px rgba(0,0,0,0.3); position: absolute; z-index: 10; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .puck.red { background: radial-gradient(circle at 30% 30%, #ff9999, var(--red)); }
-        .puck.blue { background: radial-gradient(circle at 30% 30%, #9999ff, var(--blue)); }
-        
-        /* Animations for Pucks & Dice */
-        .active-puck { animation: float 1s infinite; box-shadow: 0 0 15px var(--gold); border: 2px solid var(--gold); z-index: 20;}
-        .dice { font-size: 50px; cursor: pointer; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        .rolling { animation: shake 0.5s infinite; pointer-events: none; }
-        @keyframes shake { 0% { transform: rotate(0deg) scale(1); } 25% { transform: rotate(-20deg) scale(1.2); } 50% { transform: rotate(0deg) scale(1); } 75% { transform: rotate(20deg) scale(1.2); } 100% { transform: rotate(0deg) scale(1); } }
+        /* Player Homes */
+        .home { border: 2px solid #111; display: flex; align-items: center; justify-content: center; }
+        .home.red { background: var(--ludo-red); grid-area: 1/1/7/7; }
+        .home.green { background: var(--ludo-green); grid-area: 1/10/7/16; }
+        .home.blue { background: var(--ludo-blue); grid-area: 10/1/16/7; }
+        .home.yellow { background: var(--ludo-yellow); grid-area: 10/10/16/16; }
 
-        /* Media Controls (Video) */
-        .video-container { display: flex; justify-content: space-between; width: 100%; max-width: 380px; gap: 5px; margin-bottom: 5px; }
-        video { width: 48%; border-radius: 10px; border: 2px solid var(--neon-blue); background: #000; aspect-ratio: 4/3; object-fit: cover; }
+        /* Inner White Box for Pucks */
+        .inner-box { width: 65%; height: 65%; background: white; border-radius: 15px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; padding: 10px; box-shadow: inset 0 0 10px rgba(0,0,0,0.2); }
         
-        /* Win/Loss Screen */
-        .winner-cup { font-size: 80px; text-shadow: 0 0 30px var(--gold); animation: float 2s infinite; margin-bottom: 10px; }
-        .win-title { color: var(--gold); font-size: 30px; font-weight: 800; text-transform: uppercase; }
-        .player-stats { background: rgba(0,0,0,0.5); padding: 15px; border-radius: 10px; margin-top: 20px; text-align: left; }
+        /* Fixed Size Pucks (NO MORE GIANTS) */
+        .puck-spot { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+        .puck { 
+            width: 22px; height: 22px; border-radius: 50%; border: 2px solid white; 
+            box-shadow: 0 3px 5px rgba(0,0,0,0.6), inset 0 -2px 4px rgba(0,0,0,0.3);
+            z-index: 10; cursor: pointer; transition: transform 0.2s; 
+        }
+        .puck.red { background: radial-gradient(circle at 30% 30%, #ff8a80, var(--ludo-red)); }
+        .puck.green { background: radial-gradient(circle at 30% 30%, #b9f6ca, var(--ludo-green)); }
+        .puck.blue { background: radial-gradient(circle at 30% 30%, #82b1ff, var(--ludo-blue)); }
+        .puck.yellow { background: radial-gradient(circle at 30% 30%, #ffff8d, var(--ludo-yellow)); }
+        .puck.active { box-shadow: 0 0 15px var(--gold); border: 2px solid var(--gold); transform: scale(1.2); animation: pulse 1s infinite; }
+
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+
+        /* Center Grid */
+        .center-home { grid-area: 7/7/10/10; background: #333; border: 2px solid #111; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 10px; clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%); background: conic-gradient(var(--ludo-red) 45deg, var(--ludo-green) 45deg 135deg, var(--ludo-yellow) 135deg 225deg, var(--ludo-blue) 225deg 315deg, var(--ludo-red) 315deg); }
+
+        .dice-area { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 10px; }
+        .dice { font-size: 45px; cursor: pointer; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .rolling { animation: roll 0.4s infinite linear; }
+        @keyframes roll { 0% { transform: rotate(0); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
     <div id="login-page" class="screen active">
-        <div class="logo-container">🎲 Neon <span>Ludo</span></div>
+        <h1 style="color: var(--neon-blue); margin-bottom: 5px; font-size: 40px;">LUDO</h1>
+        <p style="margin-bottom: 30px; color: #aaa;">Enter your details to play</p>
+        
         <div class="glass-panel">
-            <p style="margin-bottom: 20px; color: #ccc;">Enter the VIP Lounge</p>
-            <button onclick="login()" style="animation: pulse 2s infinite;">Play Now 🚀</button>
+            <input type="text" id="player-name" placeholder="Enter Your Name" maxlength="12">
+            <button onclick="handleLogin()">Join Game Studio</button>
         </div>
     </div>
 
     <div id="lobby-page" class="screen">
-        <div class="header-nav">
-            <h3 style="color: var(--neon-blue);">Lobby</h3>
-            <button class="back-btn" onclick="goBack()">🔙 Back</button>
+        <div class="top-bar">
+            <button class="back-btn" onclick="navigateTo('login-page')">🔙 Logout</button>
+            <h3 id="lobby-greeting" style="color: var(--gold);">Hello, Player</h3>
         </div>
-        <div class="glass-panel" style="margin-bottom: 20px;">
-            <div style="display: flex; justify-content: space-around; font-size: 18px;">
-                <div>🔥 Streak<br><b id="ui-streak" style="color: var(--gold);">0</b></div>
-                <div>🪙 Coins<br><b id="ui-coins" style="color: var(--gold);">5000</b></div>
-            </div>
+        
+        <div class="glass-panel" style="margin-bottom: 20px; display: flex; justify-content: space-around;">
+            <div>🔥 Streak<br><b id="ui-streak">0</b></div>
+            <div>🪙 Coins<br><b id="ui-coins">5000</b></div>
         </div>
+
         <div class="glass-panel">
-            <button onclick="createRoom()">👑 Create VIP Room</button>
-            <p style="margin: 15px 0;">-- OR --</p>
-            <input type="text" id="join-code" placeholder="Enter Room Code" style="width:100%; padding: 12px; border-radius: 8px; border: 1px solid var(--neon-blue); background: #222; color: white; text-align: center; font-weight: bold; margin-bottom: 10px;">
-            <button onclick="joinRoom()" style="background: var(--neon-blue); color: black;">🎯 Join Match</button>
+            <button onclick="createRoom()">Create Room (-500)</button>
+            <p style="margin: 10px 0; color: #aaa;">-- OR --</p>
+            <input type="text" id="join-code" placeholder="Enter Room Code" style="margin-bottom: 10px;">
+            <button onclick="joinRoom()" style="background: transparent; border: 2px solid var(--neon-blue);">Join Room</button>
         </div>
     </div>
 
     <div id="game-page" class="screen">
-        <div class="header-nav">
-            <button class="back-btn" onclick="goBack()">🔙 Quit</button>
+        <div class="top-bar">
+            <button class="back-btn" onclick="navigateTo('lobby-page')">🔙 Quit</button>
             <span id="room-id-display" style="font-weight: bold; color: var(--neon-pink);">Room: ---</span>
         </div>
 
         <div class="video-container">
-            <video id="local-video" autoplay muted playsinline></video>
-            <video id="remote-video" autoplay playsinline></video>
+            <div class="video-wrapper">
+                <video id="local-video" autoplay muted playsinline></video>
+                <div class="player-name-tag" id="local-name-tag">You</div>
+            </div>
+            <div class="video-wrapper">
+                <video id="remote-video" autoplay playsinline></video>
+                <div class="player-name-tag" id="remote-name-tag">Opponent</div>
+            </div>
         </div>
 
-        <div class="ludo-wrapper">
+        <div class="board-container">
             <div class="ludo-board" id="board">
                 </div>
         </div>
 
-        <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px;">
-            <div id="turn-indicator" style="text-align: left; font-weight: bold; flex: 1;">Waiting...</div>
+        <div class="glass-panel dice-area">
+            <div id="turn-indicator" style="font-weight: bold; font-size: 14px; text-align: left;">Waiting...</div>
             <div id="dice-result" class="dice" onclick="rollDice()">🎲</div>
         </div>
     </div>
 
-    <div id="result-page" class="screen">
-        <div class="glass-panel" style="background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,0,0,0.2)); border-color: var(--gold);">
-            <div class="winner-cup">🏆</div>
-            <div class="win-title" id="result-title">YOU WIN!</div>
-            <div class="player-stats">
-                <p>🥇 <b>Winner:</b> <span id="res-winner" style="color: var(--green);">Player 1</span></p>
-                <p>💔 <b>Loser:</b> <span id="res-loser" style="color: var(--red);">Player 2</span></p>
-                <p style="margin-top: 10px; color: var(--gold);">💰 Reward: +1000 Coins</p>
-            </div>
-            <button onclick="returnToLobby()" style="margin-top: 20px;">Return to Lobby 🏠</button>
-        </div>
-    </div>
-
     <script>
-        // --- BACK BUTTON INTERCEPTOR (Android/Browser Back fix) ---
-        let currentScreen = 'login-page';
+        // --- Navigation ---
         function navigateTo(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            currentScreen = id;
-            history.pushState({ screen: id }, '', '#' + id);
         }
-        function goBack() { window.history.back(); }
-        
-        window.addEventListener('popstate', (e) => {
-            if (e.state && e.state.screen) {
-                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-                document.getElementById(e.state.screen).classList.add('active');
-                currentScreen = e.state.screen;
-            } else { navigateTo('login-page'); }
-        });
 
-        // Push initial state
-        history.replaceState({ screen: 'login-page' }, '', '#login-page');
-
-        // --- FIREBASE SETUP ---
+        // --- Firebase Config ---
         const firebaseConfig = {
           apiKey: "AIzaSyCZmqyLmyWesuoj6djTbyfrOJ1v7_FCWcQ",
           authDomain: "game-bf78a.firebaseapp.com",
@@ -184,48 +168,123 @@
           projectId: "game-bf78a",
         };
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-        const db = firebase.database();
-        const auth = firebase.auth();
+        const db = firebase.database(); const auth = firebase.auth();
 
         let currentUser = null, currentRoom = null, isPlayer1 = false;
-        let myColor = 'red'; // P1 = Red, P2 = Blue
-        
-        // --- GAME LOGIC VARS ---
-        let puckPosition = 0; // Simplified single puck tracking per player for demo
+        let myName = "Player"; let opponentName = "Opponent";
         const diceFaces = ['🎲', '⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
 
-        function login() {
+        // --- 1. Authentic Login with Name ---
+        function handleLogin() {
+            const nameInput = document.getElementById('player-name').value.trim();
+            if(!nameInput) return alert("Please enter your name!");
+            myName = nameInput;
+
             auth.signInAnonymously().then((cred) => {
                 currentUser = cred.user;
-                db.ref(`users/${currentUser.uid}`).once('value', snap => {
-                    if (!snap.exists()) db.ref(`users/${currentUser.uid}`).set({ coins: 5000, streak: 0 });
-                    db.ref(`users/${currentUser.uid}`).on('value', data => {
+                const userRef = db.ref(`users/${currentUser.uid}`);
+                userRef.once('value', snap => {
+                    if (!snap.exists()) {
+                        userRef.set({ name: myName, coins: 5000, streak: 0 });
+                    } else {
+                        userRef.update({ name: myName });
+                    }
+                    userRef.on('value', data => {
                         if(data.val()){
                             document.getElementById('ui-coins').innerText = data.val().coins;
                             document.getElementById('ui-streak').innerText = data.val().streak;
+                            document.getElementById('lobby-greeting').innerText = `Hello, ${data.val().name}`;
                         }
                     });
+                    document.getElementById('local-name-tag').innerText = myName;
                     navigateTo('lobby-page');
                 });
             });
         }
 
+        // --- 2. Board Generation (Exact 4 Pucks Setup) ---
+        function generatePerfectBoard() {
+            const board = document.getElementById('board');
+            board.innerHTML = '';
+            
+            // 15x15 Grid setup
+            for(let r=1; r<=15; r++) {
+                for(let c=1; c<=15; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.id = `cell-${r}-${c}`;
+                    
+                    // Add safe stars on specific coordinates
+                    if((r==7 && c==3) || (r==3 && c==9) || (r==9 && c==13) || (r==13 && c==7) || (r==2 && c==8) || (r==8 && c==14) || (r==14 && c==8) || (r==8 && c==2)){
+                        cell.innerHTML = '<span class="safe-star">⭐</span>';
+                    }
+                    board.appendChild(cell);
+                }
+            }
+
+            // 4 Homes configuration with 4 Puck Spots each
+            const homes = [
+                { color: 'red', class: 'home red' },
+                { color: 'green', class: 'home green' },
+                { color: 'blue', class: 'home blue' },
+                { color: 'yellow', class: 'home yellow' }
+            ];
+
+            homes.forEach(h => {
+                const homeDiv = document.createElement('div');
+                homeDiv.className = h.class;
+                
+                // Create Inner Box & 4 Spots
+                const inner = document.createElement('div');
+                inner.className = 'inner-box';
+                for(let i=1; i<=4; i++) {
+                    const spot = document.createElement('div');
+                    spot.className = 'puck-spot';
+                    spot.id = `spot-${h.color}-${i}`;
+                    
+                    // Only add physical pucks for Red (Player 1) and Blue (Player 2) for this setup
+                    if(h.color === 'red' || h.color === 'blue') {
+                        const puck = document.createElement('div');
+                        puck.className = `puck ${h.color}`;
+                        puck.id = `puck-${h.color}-${i}`;
+                        spot.appendChild(puck);
+                    }
+                    inner.appendChild(spot);
+                }
+                homeDiv.appendChild(inner);
+                board.appendChild(homeDiv);
+            });
+
+            // Center finishing square
+            const center = document.createElement('div');
+            center.className = 'center-home';
+            board.appendChild(center);
+        }
+
+        // --- 3. Multiplayer Matchmaking ---
         function createRoom() {
             currentRoom = Math.random().toString(36).substring(2, 8).toUpperCase(); 
-            isPlayer1 = true; myColor = 'red';
+            isPlayer1 = true;
             db.ref(`rooms/${currentRoom}`).set({ 
-                player1: currentUser.uid, state: 'waiting', 
-                board: { turn: currentUser.uid, dice: 0, p1Pos: 0, p2Pos: 0 }
+                p1Id: currentUser.uid, p1Name: myName, state: 'waiting', 
+                board: { turn: currentUser.uid, dice: 0 }
             });
             setupGameUI();
         }
 
         function joinRoom() {
             const code = document.getElementById('join-code').value.toUpperCase();
+            if(!code) return alert("Enter Code!");
+            
             db.ref(`rooms/${code}`).once('value', snap => {
                 if (!snap.exists()) return alert("Invalid Code!");
-                currentRoom = code; isPlayer1 = false; myColor = 'blue';
-                db.ref(`rooms/${code}`).update({ player2: currentUser.uid, state: 'playing' });
+                currentRoom = code; isPlayer1 = false;
+                
+                // Fetch P1 name
+                opponentName = snap.val().p1Name;
+                document.getElementById('remote-name-tag').innerText = opponentName;
+
+                db.ref(`rooms/${code}`).update({ p2Id: currentUser.uid, p2Name: myName, state: 'playing' });
                 setupGameUI();
             });
         }
@@ -233,117 +292,42 @@
         function setupGameUI() {
             document.getElementById('room-id-display').innerText = `Room: ${currentRoom}`;
             navigateTo('game-page');
-            buildBoard();
+            generatePerfectBoard();
+            
+            // Listen for opponent name if I created the room
+            if(isPlayer1) {
+                db.ref(`rooms/${currentRoom}`).on('value', snap => {
+                    const d = snap.val();
+                    if(d && d.p2Name) {
+                        opponentName = d.p2Name;
+                        document.getElementById('remote-name-tag').innerText = opponentName;
+                    }
+                });
+            }
+            
             listenToGame();
             startVideo();
         }
 
-        // --- OFFICIAL LOOKING BOARD BUILDER ---
-        function buildBoard() {
-            const board = document.getElementById('board');
-            board.innerHTML = '';
-            
-            // Generate 15x15 Grid Cells
-            for(let r=1; r<=15; r++) {
-                for(let c=1; c<=15; c++) {
-                    const cell = document.createElement('div');
-                    cell.className = 'cell';
-                    cell.id = `cell-${r}-${c}`;
-                    
-                    // Path coloring (Basic visual)
-                    if(c===8 || r===8) cell.style.backgroundColor = "#f0f0f0";
-                    if(r===8 && c>1 && c<7) cell.style.backgroundColor = "var(--red)";
-                    if(r===8 && c>9 && c<15) cell.style.backgroundColor = "var(--yellow)";
-                    if(c===8 && r>1 && r<7) cell.style.backgroundColor = "var(--green)";
-                    if(c===8 && r>9 && r<15) cell.style.backgroundColor = "var(--blue)";
-                    
-                    board.appendChild(cell);
-                }
-            }
-
-            // Add 4 Homes
-            const homes = [
-                { class: 'h-red', html: '<div class="inner-box"><div class="puck-spot" id="r-home"></div><div class="puck-spot"></div><div class="puck-spot"></div><div class="puck-spot"></div></div>' },
-                { class: 'h-green', html: '<div class="inner-box"><div class="puck-spot"></div><div class="puck-spot"></div><div class="puck-spot"></div><div class="puck-spot"></div></div>' },
-                { class: 'h-blue', html: '<div class="inner-box"><div class="puck-spot" id="b-home"></div><div class="puck-spot"></div><div class="puck-spot"></div><div class="puck-spot"></div></div>' },
-                { class: 'h-yellow', html: '<div class="inner-box"><div class="puck-spot"></div><div class="puck-spot"></div><div class="puck-spot"></div><div class="puck-spot"></div></div>' }
-            ];
-            
-            homes.forEach(h => {
-                const div = document.createElement('div');
-                div.className = h.class; div.innerHTML = h.html;
-                board.appendChild(div);
-            });
-
-            // Center Home
-            const center = document.createElement('div');
-            center.style.gridArea = '7/7/10/10';
-            center.style.background = 'url("https://upload.wikimedia.org/wikipedia/commons/d/d4/Ludo_board.svg") center/cover';
-            board.appendChild(center);
-
-            // Add 1 Puck per player for demo
-            addPuck('red-puck', 'red', 'r-home');
-            addPuck('blue-puck', 'blue', 'b-home');
-        }
-
-        function addPuck(id, color, parentId) {
-            const parent = document.getElementById(parentId);
-            if(parent) {
-                const p = document.createElement('div');
-                p.className = `puck ${color}`; p.id = id;
-                p.onclick = () => moveMyPuck();
-                parent.appendChild(p);
-            }
-        }
-
-        // --- MOVEMENT LOGIC (Visual mapping) ---
-        // A simplified path mapping for Red and Blue to actually move visually on the board.
-        const redPath = ['cell-7-2','cell-7-3','cell-7-4','cell-7-5','cell-7-6','cell-6-7','cell-5-7','cell-4-7','cell-3-7','cell-2-7','cell-1-7','cell-1-8'];
-        const bluePath = ['cell-14-7','cell-13-7','cell-12-7','cell-11-7','cell-10-7','cell-9-6','cell-9-5','cell-9-4','cell-9-3','cell-9-2','cell-9-1','cell-8-1'];
-
-        let currentDice = 0;
-        let isMyTurn = false;
-
+        // --- 4. Basic Turn Logic ---
         function rollDice() {
-            if(!isMyTurn) return;
-            const diceEl = document.getElementById('dice-result');
-            diceEl.classList.add('rolling');
-            
-            setTimeout(() => {
-                diceEl.classList.remove('rolling');
-                currentDice = Math.floor(Math.random() * 6) + 1;
-                
-                db.ref(`rooms/${currentRoom}/board`).update({ dice: currentDice });
-                
-                // Highlight puck to show it can be moved
-                document.getElementById(`${myColor}-puck`).classList.add('active-puck');
-            }, 500);
-        }
+            db.ref(`rooms/${currentRoom}/board`).once('value', snap => {
+                const data = snap.val();
+                if(data.turn !== currentUser.uid) return alert("Not your turn!");
 
-        function moveMyPuck() {
-            if(!isMyTurn || currentDice === 0) return;
-            
-            puckPosition += currentDice;
-            
-            // Check Win Condition (simplified to reaching end of small path array)
-            if(puckPosition >= 11) {
-                endGame(true); // I won
-                return;
-            }
-
-            db.ref(`rooms/${currentRoom}`).once('value', snap => {
-                const rData = snap.val();
-                const nextTurn = (isPlayer1) ? rData.player2 : rData.player1;
+                const diceEl = document.getElementById('dice-result');
+                diceEl.classList.add('rolling');
                 
-                // Update DB with new position and next turn
-                const updates = { turn: nextTurn, dice: 0 };
-                if(isPlayer1) updates.p1Pos = puckPosition;
-                else updates.p2Pos = puckPosition;
-                
-                db.ref(`rooms/${currentRoom}/board`).update(updates);
-                
-                document.getElementById(`${myColor}-puck`).classList.remove('active-puck');
-                currentDice = 0;
+                setTimeout(() => {
+                    diceEl.classList.remove('rolling');
+                    const res = Math.floor(Math.random() * 6) + 1;
+                    
+                    db.ref(`rooms/${currentRoom}`).once('value', roomSnap => {
+                        const rData = roomSnap.val();
+                        const nextTurn = (rData.p1Id === currentUser.uid) ? rData.p2Id : rData.p1Id;
+                        db.ref(`rooms/${currentRoom}/board`).update({ dice: res, turn: nextTurn });
+                    });
+                }, 400);
             });
         }
 
@@ -351,52 +335,19 @@
             db.ref(`rooms/${currentRoom}/board`).on('value', snap => {
                 const data = snap.val(); if(!data) return;
                 
-                isMyTurn = (data.turn === currentUser.uid);
-                
-                // Update Dice UI
                 if(data.dice > 0) document.getElementById('dice-result').innerText = diceFaces[data.dice];
                 else document.getElementById('dice-result').innerText = '🎲';
                 
-                // Update Turn Indicator
-                const indicator = document.getElementById('turn-indicator');
-                if(isMyTurn) { indicator.innerText = "YOUR TURN! 🎲"; indicator.style.color = "var(--green)"; }
-                else { indicator.innerText = "Opponent's Turn..."; indicator.style.color = "var(--red)"; }
-
-                // Visually Move Pucks
-                if(data.p1Pos > 0 && redPath[data.p1Pos]) {
-                    document.getElementById(redPath[data.p1Pos]).appendChild(document.getElementById('red-puck'));
+                const ind = document.getElementById('turn-indicator');
+                if(data.turn === currentUser.uid) { 
+                    ind.innerText = "YOUR TURN! 🎲"; ind.style.color = "var(--ludo-green)"; 
+                } else { 
+                    ind.innerText = `${opponentName}'s Turn`; ind.style.color = "var(--ludo-red)"; 
                 }
-                if(data.p2Pos > 0 && bluePath[data.p2Pos]) {
-                    document.getElementById(bluePath[data.p2Pos]).appendChild(document.getElementById('blue-puck'));
-                }
-
-                // Check remote win
-                if(data.winner) endGame(data.winner === currentUser.uid);
             });
         }
 
-        function endGame(didIWin) {
-            if(didIWin) db.ref(`rooms/${currentRoom}/board`).update({ winner: currentUser.uid });
-            
-            const title = document.getElementById('result-title');
-            const wName = document.getElementById('res-winner');
-            const lName = document.getElementById('res-loser');
-
-            if(didIWin) {
-                title.innerText = "YOU WIN! 🎉"; title.style.color = "var(--green)";
-                wName.innerText = "You"; lName.innerText = "Opponent";
-                // Add coins logic here if needed
-            } else {
-                title.innerText = "YOU LOSE! 💔"; title.style.color = "var(--red)";
-                wName.innerText = "Opponent"; lName.innerText = "You";
-            }
-            
-            setTimeout(() => navigateTo('result-page'), 1000);
-        }
-
-        function returnToLobby() { navigateTo('lobby-page'); }
-
-        // --- WEBRTC (Basic Audio/Video auto-start) ---
+        // --- WebRTC Video ---
         async function startVideo() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
