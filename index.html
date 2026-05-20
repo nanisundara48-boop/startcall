@@ -2,859 +2,376 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Journey of Love 💖</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Neon Ludo Pro | Nani Creations</title>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600;800&family=Orbitron:wght@700;900&display=swap');
-        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
-        body { font-family: 'Poppins', sans-serif; color: white; height: 100vh; width: 100vw; overflow: hidden; touch-action: none; transition: background 1s ease;}
-        
-        body.theme-0 { background: linear-gradient(135deg, #1a0011, #0a0a2a); }
-        body.theme-1 { background: linear-gradient(135deg, #2b0018, #4a0024); }
-        body.theme-2 { background: linear-gradient(135deg, #001133, #003366); }
-        body.theme-3 { background: linear-gradient(135deg, #330000, #4d0000); }
-        body.theme-4 { background: linear-gradient(135deg, #002211, #004422); }
-        body.theme-5 { background: linear-gradient(135deg, #110022, #220044); }
-        body.theme-6 { background: linear-gradient(135deg, #441100, #661100); }
-        body.theme-7 { background: linear-gradient(135deg, #001a1a, #003333); }
-        body.theme-8 { background: linear-gradient(135deg, #2a0845, #6441A5); } /* Quiz Theme */
+        :root {
+            --bg-color: #0f0c29;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --neon-blue: #00f2fe;
+            --neon-pink: #fe0979;
+            --gold: #ffd700;
+        }
 
-        .screen { display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; flex-direction: column; align-items: center; justify-content: center; z-index: 10; }
-        .active { display: flex; }
-        
-        h1 { font-family: 'Dancing Script', cursive; font-size: 65px; color: #ff007f; text-shadow: 0 0 25px rgba(255, 0, 127, 0.8); text-align: center; margin-bottom: 5px;}
-        .subtitle { font-family: 'Orbitron', sans-serif; font-size: 14px; color: #00f2fe; margin-bottom: 30px; letter-spacing: 4px;}
-        
-        .card { background: rgba(10, 5, 20, 0.8); padding: 30px; border-radius: 25px; border: 1px solid rgba(0, 242, 254, 0.4); width: 90%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); text-align: center; backdrop-filter: blur(15px);}
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 0; }
 
-        input, button { width: 100%; padding: 15px; margin: 10px 0; border-radius: 15px; border: none; font-size: 16px; font-family: 'Poppins', sans-serif; text-align: center; font-weight: bold; transition: 0.3s;}
-        input { background: rgba(255,255,255,0.9); color: #111; }
-        input:focus { border: 2px solid #ff007f; outline: none; transform: scale(1.02); }
-        
-        .btn-primary { background: linear-gradient(90deg, #ff007f, #ff758c); color: #fff; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 0, 127, 0.4);}
-        .btn-primary:active { transform: scale(0.95); }
-        .btn-secondary { background: transparent; border: 1px solid #00f2fe; color: #00f2fe; }
-        .btn-success { background: linear-gradient(90deg, #1D976C, #25D366); color: white; }
-        .btn-warning { background: linear-gradient(90deg, #ffeb3b, #fbc02d); color: #000; }
+        body {
+            background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+            color: white;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-        #top-nav { display: none; position: absolute; top: 15px; left: 15px; right: 15px; justify-content: space-between; z-index: 1000; pointer-events: none;}
-        .glass-btn { pointer-events: auto; width: 45px; height: 45px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3); color: #fff; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 20px; backdrop-filter: blur(10px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: 0.3s; }
-        .glass-btn:active { transform: scale(0.9); }
-        .muted { background: rgba(255, 0, 0, 0.3); border-color: #ff0000; color: #ff5555;}
-        
-        #video-container { display: none; position: absolute; bottom: 20px; left: 15px; flex-direction: row; gap: 10px; z-index: 900; }
-        video { width: 70px; height: 100px; object-fit: cover; border-radius: 12px; background: #000; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        #localVideo { border: 2px solid #00f2fe; }
-        #remoteVideo { border: 2px solid #ff007f; display: none;}
+        .screen { display: none; padding: 20px; flex-direction: column; align-items: center; justify-content: center; flex: 1; }
+        .screen.active { display: flex; }
 
-        #toast-container { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 5000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; width: 90%; max-width: 350px;}
-        .live-toast { background: linear-gradient(90deg, #00f2fe, #4facfe); color: #000; padding: 15px 20px; border-radius: 20px; font-weight: bold; font-family: 'Poppins'; font-size: 14px; box-shadow: 0 5px 20px rgba(0,242,254,0.6); animation: toastAnim 4s forwards; text-align: center; border: 2px solid #fff; word-wrap: break-word;}
-        @keyframes toastAnim { 0% { opacity: 0; transform: translateY(-30px); } 10% { opacity: 1; transform: translateY(0); } 90% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-30px); } }
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
 
-        #chat-panel { display: none; position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; height: 350px; background: rgba(10, 5, 20, 0.95); border: 1px solid #00f2fe; border-radius: 20px; z-index: 2000; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.8); backdrop-filter: blur(15px);}
-        #chat-msgs { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; font-size: 14px; }
-        .msg { padding: 12px 18px; border-radius: 20px; max-width: 80%; word-wrap: break-word; }
-        .msg.me { background: linear-gradient(135deg, #00f2fe, #4facfe); color: black; align-self: flex-end; border-bottom-right-radius: 4px; font-weight: 600;}
-        .msg.them { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; align-self: flex-start; border-bottom-left-radius: 4px; }
-        #chat-input-area { display: flex; padding: 10px; gap: 10px; border-top: 1px solid rgba(0,242,254,0.3); background: rgba(0,0,0,0.4); border-radius: 0 0 20px 20px;}
-        #chat-input-area input { margin: 0; padding: 12px 15px; border-radius: 20px; background: rgba(255,255,255,0.1); color: white; border: none;}
-        #chat-input-area button { width: 50px; margin: 0; border-radius: 50%; }
+        button {
+            background: transparent;
+            border: 2px solid var(--neon-blue);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px 0;
+            width: 100%;
+            transition: 0.3s;
+        }
 
-        #emoji-bar { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 15px; z-index: 1500; }
-        .emoji-btn { background: rgba(255,255,255,0.1); border: 1px solid #ff007f; border-radius: 50%; width: 45px; height: 45px; font-size: 22px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s;}
-        .emoji-btn:active { transform: scale(0.8); }
-        .floating-emoji { position: absolute; font-size: 45px; animation: floatUpEmoji 2s forwards ease-out; z-index: 2500; pointer-events: none; }
-        @keyframes floatUpEmoji { 0% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -200px) scale(1.5); } }
+        button.btn-primary { background: var(--neon-blue); color: black; }
+        button.btn-whatsapp { background: #25D366; border-color: #25D366; color: black; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        #game-area { display: none; position: absolute; top:0; left:0; width: 100vw; height: 100vh; z-index: 5; flex-direction: column; align-items: center; justify-content: center;}
-        canvas { display: none; position: absolute; top:0; left:0; width: 100vw; height: 100vh; z-index: 1; }
-        
-        #score-hud { position: absolute; top: 80px; width: 100%; padding: 0 20px; display: flex; justify-content: space-between; z-index: 20; pointer-events: none; }
-        .score-box { background: rgba(0,0,0,0.6); border: 1px solid #00f2fe; border-radius: 15px; padding: 8px 20px; text-align: center; pointer-events: auto;}
-        .score-box h3 { font-family: 'Orbitron'; font-size: 11px; color: #00f2fe; }
-        .score-box p { font-size: 20px; font-weight: bold; color: #fff; margin:0; font-family: 'Orbitron';}
-        .lives { font-size: 14px; letter-spacing: 2px; cursor: pointer; padding: 5px; border-radius: 10px; transition: background 0.3s;}
-        .lives:active { background: rgba(255,255,255,0.2); }
+        input {
+            width: 100%; padding: 12px; margin-bottom: 10px;
+            background: rgba(255,255,255,0.1); border: 1px solid var(--neon-blue);
+            color: white; border-radius: 8px; text-align: center;
+        }
 
-        #level-title-hud { font-family: 'Orbitron'; font-size: 22px; color: #fff; text-shadow: 0 0 10px #ff007f; margin-top: 15px; z-index: 20; letter-spacing: 2px;}
+        .top-bar { display: flex; justify-content: space-between; flex-wrap: wrap; margin-bottom: 20px; gap: 10px; }
+        .highlight { color: var(--gold); font-weight: bold; }
 
-        #pause-overlay { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 4000; flex-direction: column; align-items: center; justify-content: center; text-align: center; backdrop-filter: blur(10px);}
-        #pause-overlay h1 { font-family: 'Orbitron'; font-size: 35px; color: #ffeb3b; text-shadow: 0 0 20px #ffeb3b; animation: pulseBeat 1s infinite alternate;}
+        /* Video Chat Layout */
+        .video-container { display: flex; justify-content: space-between; width: 100%; max-width: 400px; margin-bottom: 15px; }
+        video { width: 48%; border-radius: 10px; border: 2px solid var(--neon-pink); background: #000; aspect-ratio: 4/3; object-fit: cover; }
 
-        /* Out of Lives & Level Retry */
-        #out-of-lives-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(10,0,0,0.98); z-index: 3500; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px;}
-        
-        /* Game Specific CSS */
-        #spark-area { display: none; flex-direction: column; align-items: center; z-index: 10; }
-        #spark-meter-bg { width: 250px; height: 25px; background: rgba(255,255,255,0.1); border: 2px solid #00f2fe; border-radius: 12px; margin-bottom: 40px; overflow: hidden;}
-        #spark-meter-fill { width: 0%; height: 100%; background: #00f2fe; transition: width 0.1s;}
-        .giant-heart { font-size: 120px; cursor: pointer; filter: drop-shadow(0 0 20px #ff007f); transition: 0.1s;}
-        .giant-heart:active { transform: scale(0.8); }
+        /* Ludo Board Framework (15x15 Grid) */
+        .ludo-board {
+            width: 90vw; height: 90vw; max-width: 380px; max-height: 380px;
+            background: #fff;
+            border: 3px solid var(--neon-blue);
+            border-radius: 10px;
+            display: grid;
+            grid-template-columns: repeat(15, 1fr);
+            grid-template-rows: repeat(15, 1fr);
+            margin-bottom: 15px;
+            position: relative;
+        }
 
-        #scramble-area { display: none; z-index: 10; flex-direction: column; align-items: center; gap: 20px; width: 90%; max-width: 400px;}
-        #scramble-word { font-family: 'Orbitron'; font-size: 35px; color: #fff; text-shadow: 0 0 15px #00f2fe; letter-spacing: 10px;}
+        .cell { border: 1px solid rgba(0,0,0,0.1); }
+        .home-red { background: #ff4d4d; grid-area: 1 / 1 / 7 / 7; }
+        .home-green { background: #4dff4d; grid-area: 1 / 10 / 7 / 16; }
+        .home-blue { background: #4d4dff; grid-area: 10 / 1 / 16 / 7; }
+        .home-yellow { background: #ffff4d; grid-area: 10 / 10 / 16 / 16; }
+        .center-box { background: var(--gold); grid-area: 7 / 7 / 10 / 10; }
 
-        .grid-game { display: grid; gap: 12px; z-index: 10; margin-top: 30px; }
-        .ttt-cell { width: 90px; height: 90px; background: rgba(255,0,127,0.05); border: 2px solid rgba(255,0,127,0.6); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 50px; font-family: 'Orbitron'; cursor: pointer;}
-        
-        #sudden-death-area { display: none; z-index: 10; border: 2px solid #ffeb3b; width: 90%; height: 60%; position: absolute; border-radius: 25px; pointer-events: none;}
-        .golden-heart { position: absolute; font-size: 60px; cursor: pointer; filter: drop-shadow(0 0 20px #ffeb3b); pointer-events: auto;}
+        .dice-container { display: flex; align-items: center; justify-content: center; gap: 15px; width: 100%; max-width: 400px; }
+        .dice { font-size: 40px; text-shadow: 0 0 10px var(--neon-blue); cursor: pointer; }
 
-        #popper-area { display: none; position: absolute; top: 150px; left: 15px; right: 15px; bottom: 20px; z-index: 10; border: 2px dashed #00f2fe; border-radius: 25px; }
-        .pop-target { position: absolute; font-size: 50px; cursor: pointer; animation: pulseBeat 0.8s infinite alternate; }
-
-        #catcher-area { display: none; position: absolute; width: 100%; height: 100%; top:0; left:0; z-index: 10; overflow: hidden; pointer-events: none;}
-        .falling-item { position: absolute; font-size: 40px; animation: fallDown 3.5s linear forwards; pointer-events: auto; cursor: pointer;}
-        @keyframes fallDown { 0% { top: -50px; } 100% { top: 110vh; } }
-
-        #align-area { display: none; flex-direction: column; align-items: center; z-index: 10; width: 90%; max-width: 400px; margin-top: 50px;}
-        #align-track { width: 100%; height: 50px; border: 2px solid #00f2fe; border-radius: 25px; position: relative; overflow: hidden; background: rgba(255,255,255,0.1); }
-        #align-center { position: absolute; width: 60px; height: 100%; left: 50%; transform: translateX(-50%); background: rgba(0, 242, 254, 0.3); border-left: 2px dashed #00f2fe; border-right: 2px dashed #00f2fe; }
-        #align-heart { position: absolute; font-size: 35px; top: 2px; left: 0%; transform: translateX(-50%); filter: drop-shadow(0 0 10px #ff007f); }
-
-        /* Level 8: LOVE QUIZ (New) */
-        #quiz-area { display: none; flex-direction: column; align-items: center; z-index: 10; width: 90%; max-width: 400px; margin-top: 40px;}
-        .quiz-q { margin-bottom: 20px; width: 100%; }
-        .quiz-q label { display: block; margin-bottom: 8px; font-size: 14px; color: #ffb3c6; font-family: 'Orbitron';}
-        .quiz-q input { width: 100%; padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.1); color: white; border: 1px solid #00f2fe;}
-        .quiz-res-box { background: rgba(0,0,0,0.6); padding: 20px; border-radius: 15px; border: 2px solid #ff007f; text-align: center; width: 100%; margin-top: 20px;}
-        .love-percent { font-size: 50px; font-family: 'Dancing Script'; color: #ff007f; text-shadow: 0 0 15px #ff007f; }
-
-        #overlay { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5,0,10,0.95); z-index: 3000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 25px;}
-        #ov-title { font-family: 'Orbitron'; font-size: 40px; color: #ff4d85; margin-bottom: 20px; text-shadow: 0 0 20px #ff4d85;}
-        #ov-quote { font-size: 24px; color: #00f2fe; font-family: 'Dancing Script', cursive; margin-bottom: 30px; line-height: 1.5;}
-
-        #final-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 4000; overflow: hidden; flex-direction: column; align-items: center; justify-content: center; }
-        .concentric-heart { position: absolute; width: 50px; height: 50px; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); animation: pulseOut 4s infinite cubic-bezier(0.2, 0.8, 0.4, 1); opacity: 0; }
-        .concentric-heart svg { width: 100%; height: 100%; overflow: visible; }
-        @keyframes pulseOut { 0% { transform: translate(-50%, -50%) scale(0); opacity: 1; stroke-width: 3px;} 100% { transform: translate(-50%, -50%) scale(30); opacity: 0; stroke-width: 0.1px;} }
-        #final-text { font-family: 'Dancing Script', cursive; font-size: 60px; z-index: 4100; opacity: 0; animation: fadeInText 3s 1s forwards; text-align: center; color: #fff; text-shadow: 0 0 20px #ff0055;}
-        
-        @keyframes pulseBeat { 0% { transform: scale(1); } 100% { transform: scale(1.15); } }
-        @keyframes fadeInText { to { opacity: 1; transform: scale(1.05); } }
+        .footer { text-align: center; padding: 15px; font-size: 12px; opacity: 0.6; }
     </style>
 </head>
-<body class="theme-0">
+<body>
 
-    <div id="toast-container"></div>
-    <div id="pause-overlay"><h1>GAME PAUSED</h1><p style="color:#ccc; margin-top:20px;">Waiting for partner to return...</p></div>
-    
-    <div id="out-of-lives-screen" class="screen">
-        <h1 id="fail-title" style="font-family:'Orbitron'; font-size: 35px; color:#ff0055; text-shadow: 0 0 20px #ff0055;">LEVEL FAILED 💔</h1>
-        <p id="fail-desc" style="color:#ccc; margin: 20px 0; text-align:center; padding: 0 20px;">Someone ran out of lives. You can retry the current level or share a life!</p>
-        <button id="btnShareLifeScreen" class="btn-success" style="display:none; width: 80%; border-radius: 25px;">Share Your Life to Save Partner 🎁</button>
-        <button id="btnRetryLevel" class="btn-warning" style="display:none; width: 80%; border-radius: 25px; margin-top: 15px;">Retry Current Level 🔄</button>
-    </div>
-
-    <div id="top-nav">
-        <div style="display: flex; gap: 15px;">
-            <div class="glass-btn" id="btnHome">🏠</div>
-            <div class="glass-btn" id="btnRestart" style="display:none; color: #ffeb3b; border-color: #ffeb3b;">🔄</div>
-        </div>
-        <div style="display: flex; gap: 15px;">
-            <div class="glass-btn" id="btnVideo" style="border-color: #00f2fe; color: #00f2fe;">📹</div>
-            <div class="glass-btn" id="btnMic">🎤</div>
-            <div class="glass-btn" id="btnChat">💬</div>
+    <!-- 1. Login Page -->
+    <div id="login-page" class="screen active">
+        <div class="glass-panel">
+            <h1 style="color: var(--neon-blue); margin-bottom: 10px;">Neon Ludo</h1>
+            <p style="margin-bottom: 20px;">Sign in to start your streak</p>
+            <button id="btn-login" onclick="login()">Enter Game Studio</button>
         </div>
     </div>
 
-    <div id="video-container">
-        <video id="localVideo" autoplay muted playsinline></video>
-        <video id="remoteVideo" autoplay playsinline></video>
-    </div>
-
-    <div id="emoji-bar" style="display: none;">
-        <button class="emoji-btn" onclick="sendEmoji('❤️')">❤️</button>
-        <button class="emoji-btn" onclick="sendEmoji('😍')">😍</button>
-        <button class="emoji-btn" onclick="sendEmoji('😂')">😂</button>
-        <button class="emoji-btn" onclick="sendEmoji('🥺')">🥺</button>
-    </div>
-
-    <div id="chat-panel">
-        <div id="chat-msgs"></div>
-        <div id="chat-input-area">
-            <input type="text" id="chatInput" placeholder="Type a message...">
-            <button id="btnSendChat" class="btn-primary" style="padding: 12px;">➤</button>
-        </div>
-    </div>
-
-    <div id="home-screen" class="screen active">
-        <h1>Love Hub</h1>
-        <div class="subtitle">THE ETERNAL JOURNEY</div>
-        <div class="card">
-            <input type="text" id="playerName" placeholder="Your Name" required>
-            <button id="btnCreate" class="btn-primary">Start New Journey</button>
-            <div style="margin: 20px 0; color: #00f2fe; font-size: 14px;">OR</div>
-            <input type="text" id="joinCode" placeholder="Enter Partner's Code" style="text-transform: uppercase;">
-            <button id="btnJoin" class="btn-secondary">Join Journey</button>
-        </div>
-    </div>
-
-    <div id="lobby-screen" class="screen">
-        <h2 style="color: #00f2fe; margin-bottom: 15px;">Waiting for Partner...</h2>
-        <div class="card">
-            <h1 id="displayCode" style="font-size: 55px; color: #fff; margin: 15px 0;">XXXXX</h1>
-            <button id="btnShare" class="btn-success">Invite via WhatsApp</button>
-            <button id="btnCopy" class="btn-secondary" style="margin-top:10px;">Copy Link</button>
-        </div>
-    </div>
-
-    <div id="game-area">
-        <h2 id="level-title-hud">LEVEL 1</h2>
-        <div id="score-hud">
-            <div class="score-box">
-                <h3 id="name1">P1</h3><p id="score1">0</p>
-                <div class="lives" id="lives1" ontouchstart="handleLifeTap(1)" title="Double Tap to Share!">❤️❤️❤️</div>
-            </div>
-            <div class="score-box">
-                <h3 id="name2">P2</h3><p id="score2">0</p>
-                <div class="lives" id="lives2" ontouchstart="handleLifeTap(2)" title="Double Tap to Share!">❤️❤️❤️</div>
-            </div>
+    <!-- 2. Lobby Page -->
+    <div id="lobby-page" class="screen">
+        <div class="glass-panel top-bar">
+            <div>Streak: <span id="ui-streak" class="highlight">0</span> 🔥</div>
+            <div>Coins: <span id="ui-coins" class="highlight">0</span> 🪙</div>
+            <div>Matches: <span id="ui-matches">0</span></div>
+            <div>Win Rate: <span id="ui-winrate">0</span>%</div>
         </div>
         
-        <div id="spark-area">
-            <div id="spark-meter-bg"><div id="spark-meter-fill"></div></div>
-            <div class="giant-heart" id="sparkBtn">💖</div>
-            <div style="font-size: 14px; color: #ffb3c6; margin-top: 20px; font-weight: bold;">TAP CONTINUOUSLY!</div>
-        </div>
-
-        <div id="scramble-area">
-            <div id="scramble-progress" style="color:#00f2fe; font-weight:bold;">Word 1 of 5</div>
-            <div id="scramble-word"></div>
-            <input type="text" id="scramble-input" placeholder="Type the true word..." style="text-transform:uppercase;">
-            <button id="btnScramble" class="btn-primary">Guess</button>
-        </div>
-
-        <div id="ttt-board" class="grid-game" style="grid-template-columns: repeat(3, 1fr); display:none;"></div>
-        <div id="sudden-death-area"></div>
-        <div id="popper-area"></div>
-        <canvas id="game-canvas"></canvas>
-        <div id="catcher-area"></div>
-
-        <div id="align-area">
-            <div id="align-track"><div id="align-center"></div><div id="align-heart">❤️</div></div>
-            <button id="btnAlign" class="btn-primary" style="margin-top: 40px; padding: 20px; border-radius: 30px;">LOCK TARGET 🔒</button>
-            <div id="align-progress" style="color:#ffb3c6; margin-top:20px; font-weight:bold;">0 / 3 Locks</div>
-        </div>
-
-        <div id="quiz-area">
-            <h3 style="color:#ff007f; font-family:'Orbitron'; margin-bottom:20px;" id="quiz-header">PHASE 1: Your Favorites</h3>
-            
-            <div id="quiz-input-box" style="width:100%;">
-                <div class="quiz-q"><label>Your Favorite Color?</label><input type="text" id="q1" placeholder="e.g. Blue"></div>
-                <div class="quiz-q"><label>Your Favorite Food?</label><input type="text" id="q2" placeholder="e.g. Biryani"></div>
-                <div class="quiz-q"><label>Your Dream Destination?</label><input type="text" id="q3" placeholder="e.g. Paris"></div>
-                <button id="btnQuizSubmit" class="btn-primary">Save Answers</button>
-            </div>
-
-            <div id="quiz-guess-box" style="display:none; width:100%;">
-                <div class="quiz-q"><label>Partner's Fav Color?</label><input type="text" id="g1"></div>
-                <div class="quiz-q"><label>Partner's Fav Food?</label><input type="text" id="g2"></div>
-                <div class="quiz-q"><label>Partner's Dream Destination?</label><input type="text" id="g3"></div>
-                <button id="btnQuizGuess" class="btn-primary">Lock Guesses</button>
-            </div>
-
-            <div id="quiz-wait-box" style="display:none; color:#00f2fe; font-family:'Orbitron'; margin-top:50px;">Waiting for partner...</div>
-            
-            <div id="quiz-result-box" class="quiz-res-box" style="display:none;">
-                <h4 style="color:#fff; font-family:'Orbitron'; margin-bottom:10px;">LOVE MATCH</h4>
-                <div class="love-percent" id="love-pct">0%</div>
-                <button id="btnFinale" class="btn-primary" style="display:none; margin-top:20px;">Enter Eternity</button>
-            </div>
+        <div class="glass-panel">
+            <button onclick="alert('Bot logic setup pending!')" class="btn-secondary">Play with Bot</button>
+            <button onclick="createMultiplayerRoom()" class="btn-primary">Create Room (-500 Coins)</button>
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 15px 0;">
+            <input type="text" id="join-code" placeholder="Enter Room Code">
+            <button onclick="joinRoom()" class="btn-primary">Join Room (-500 Coins)</button>
         </div>
     </div>
 
-    <div id="overlay">
-        <h1 id="ov-title">LEVEL 1</h1>
-        <div id="ov-quote" class="quote"></div>
-        <button id="ov-btn" class="btn-primary" style="display:none; width: 250px; margin-top: 20px;">Continue</button>
+    <!-- 3. Game Room -->
+    <div id="game-page" class="screen">
+        <div class="glass-panel" style="padding: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+            <span id="room-id-display" style="font-weight: bold; font-size: 18px;">Room: ----</span>
+            <button onclick="shareWhatsApp()" class="btn-whatsapp" style="width: auto; margin: 0; padding: 8px 15px; font-size: 14px;">WhatsApp Share</button>
+        </div>
+
+        <!-- Video Chat P2P -->
+        <div class="video-container">
+            <video id="local-video" autoplay muted playsinline></video>
+            <video id="remote-video" autoplay playsinline></video>
+        </div>
+
+        <!-- Ludo Board UI Generation -->
+        <div class="ludo-board" id="board">
+            <div class="home-red"></div>
+            <div class="home-green"></div>
+            <div class="home-blue"></div>
+            <div class="home-yellow"></div>
+            <div class="center-box"></div>
+            <!-- Dynamic Grid cells inserted via JS -->
+        </div>
+
+        <div class="dice-container glass-panel">
+            <div id="turn-indicator" style="flex: 1; text-align: left;">Waiting...</div>
+            <div id="dice-result" class="dice" onclick="rollDice()">🎲</div>
+        </div>
     </div>
 
-    <div id="final-screen">
-        <div id="final-text">Our Love is Eternal<br><br><span id="finalNames" style="color: #00f2fe; font-family: 'Poppins';"></span></div>
+    <div class="footer">
+        Powered by Nani Creations
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, doc, setDoc, onSnapshot, updateDoc, getDoc, collection, addDoc, query, orderBy, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
-        const firebaseConfig = { apiKey: "AIzaSyCZmqyLmyWesuoj6djTbyfrOJ1v7_FCWcQ", authDomain: "game-bf78a.firebaseapp.com", projectId: "game-bf78a", storageBucket: "game-bf78a.firebasestorage.app", messagingSenderId: "860717231489", appId: "1:860717231489:web:f53331a96570be04cacc80" };
-        const app = initializeApp(firebaseConfig); const db = getFirestore(app);
-
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playSound(type) {
-            if(audioCtx.state === 'suspended') audioCtx.resume();
-            let osc = audioCtx.createOscillator(); let g = audioCtx.createGain();
-            osc.connect(g); g.connect(audioCtx.destination);
-            if(type === 'click') { osc.type = 'sine'; osc.frequency.setValueAtTime(800, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.1); g.gain.setValueAtTime(0.3, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1); osc.start(); osc.stop(audioCtx.currentTime + 0.1); } 
-            else if(type === 'match') { osc.type = 'triangle'; osc.frequency.setValueAtTime(500, audioCtx.currentTime); osc.frequency.linearRampToValueAtTime(1000, audioCtx.currentTime + 0.3); g.gain.setValueAtTime(0.3, audioCtx.currentTime); g.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.3); osc.start(); osc.stop(audioCtx.currentTime + 0.3); } 
-            else if(type === 'levelUp') { osc.type = 'square'; osc.frequency.setValueAtTime(400, audioCtx.currentTime); osc.frequency.setValueAtTime(600, audioCtx.currentTime + 0.1); osc.frequency.setValueAtTime(800, audioCtx.currentTime + 0.2); g.gain.setValueAtTime(0.2, audioCtx.currentTime); g.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.6); osc.start(); osc.stop(audioCtx.currentTime + 0.6); } 
-            else if(type === 'bad') { osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, audioCtx.currentTime); g.gain.setValueAtTime(0.4, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4); osc.start(); osc.stop(audioCtx.currentTime + 0.4); }
-        }
-
-        let gameId = "", playerNum = 0, myName = "", docRef = null, messagesRef = null;
-        let gState = { level: 1 }; let isPaused = false; let scrTimeout = null;
-
-        const quotes = ["“Love is a spark that ignites the soul.”", "“Communication is the bridge between two hearts.”", "“Every battle brings us closer.”", "“Protect your heart from the broken pieces.”", "“Navigate the cosmos of love together.”", "“Catch every moment, hold every memory.”", "“Perfect alignment makes love eternal.”", "“The ultimate test of hearts.”"];
-        const failQuotes = ["“Every setback is a setup for a stronger bond. Try again!”", "“True love never gives up.”", "“Don't worry, we got this together!”"];
-        const allWords = ["SMILE", "HEART", "KISS", "TRUST", "DREAM", "CARE", "HAPPY", "SWEET", "BABY", "CUTE", "HONEY", "LOVER", "WIFE", "HUBBY", "BLISS"];
-
-        function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); if(document.getElementById(id)) document.getElementById(id).classList.add('active'); }
-        function showOverlay(title, quote, showBtn=false, btnAction=null, delay=4000) {
-            document.getElementById('ov-title').innerText = title; document.getElementById('ov-quote').innerText = quote;
-            let btn = document.getElementById('ov-btn');
-            if(showBtn) { btn.style.display='block'; btn.onclick=()=>{ document.getElementById('overlay').style.display='none'; if(btnAction) btnAction(); }; }
-            else { btn.style.display='none'; setTimeout(()=>document.getElementById('overlay').style.display='none', delay); }
-            document.getElementById('overlay').style.display = 'flex';
-        }
+    <script>
+        // --- 1. FIREBASE CONFIGURATION ---
+        // REPLACE THESE WITH YOUR FIREBASE PROJECT DETAILS
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            databaseURL: "YOUR_DATABASE_URL",
+            projectId: "YOUR_PROJECT_ID"
+        };
         
-        window.showToast = function(msg) {
-            let tc = document.getElementById('toast-container'); let t = document.createElement('div');
-            t.className = 'live-toast'; t.innerText = msg; tc.appendChild(t); 
-            let duration = Math.max(3000, msg.length * 100); 
-            t.style.animationDuration = (duration/1000) + 's';
-            setTimeout(()=>t.remove(), duration);
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const db = firebase.database();
+        const auth = firebase.auth();
+
+        // --- GLOBAL VARIABLES ---
+        let currentUser = null;
+        let currentRoom = null;
+        let isPlayer1 = false;
+        let peerConnection;
+        let localStream;
+        const servers = { iceServers: [{ urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'] }] };
+
+        // --- UI NAVIGATION ---
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
         }
 
-        document.getElementById('btnHome').onclick = () => { window.location.reload(); };
-
-        // HOST RESTART FULL GAME
-        async function performRestart() {
-            document.getElementById('final-screen').style.display = 'none';
-            if(scrTimeout) { clearTimeout(scrTimeout); scrTimeout = null; }
-            let wl = [...allWords].sort(()=>Math.random()-0.5).slice(0,5);
-            await updateDoc(docRef, { 
-                level: 1, p1Score: 0, p2Score: 0, p1Lives: 3, p2Lives: 3, failTrigger: null,
-                sparkClicks: 0, scramble: { wordList: wl, wordIdx: 0, jumbled: wl[0].split('').sort(()=>Math.random()-0.5).join(' '), solved: false },
-                tttBoard: ['','','','','','','','',''], tttTurn: 'X', popHeart: null, sdTarget: null, canvasProg: 0, canvasObj: null, catchObj: null, align: {x: 0, dir: 1, p1:0, p2:0},
-                quiz: { p1Ans: null, p2Ans: null, p1G: null, p2G: null, state: 'input' }
+        // --- 2. AUTH & ECONOMY ---
+        function login() {
+            document.getElementById('btn-login').innerText = "Authenticating...";
+            auth.signInAnonymously().then((cred) => {
+                currentUser = cred.user;
+                checkAndInitUser(currentUser.uid);
+            }).catch(e => {
+                console.log("Firebase Auth Error: Please add Firebase config.");
+                alert("Please add your Firebase config in the code to connect!");
+                document.getElementById('btn-login').innerText = "Enter Game Studio";
             });
         }
-        document.getElementById('btnRestart').onclick = async () => { if(confirm("Restart entire journey?")) performRestart(); };
 
-        // RETRY CURRENT LEVEL ONLY (Host Option on Fail)
-        document.getElementById('btnRetryLevel').onclick = async () => {
-            let lvl = Math.floor(gState.level);
-            let u = { p1Lives: 3, p2Lives: 3, failTrigger: null };
-            if(lvl===1) u.sparkClicks=0;
-            if(lvl===2) { let wl = [...allWords].sort(()=>Math.random()-0.5).slice(0,5); u.scramble = { wordList: wl, wordIdx: 0, jumbled: wl[0].split('').sort(()=>Math.random()-0.5).join(' '), solved: false }; }
-            if(lvl===3) { u.tttBoard=['','','','','','','','','']; u.tttTurn='X'; }
-            if(lvl===4) u.popHeart=null;
-            if(lvl===5) { u.canvasProg=0; u.canvasObj=null; }
-            if(lvl===6) u.catchObj=null;
-            if(lvl===7) u.align = {x: 0, dir: 1, p1:0, p2:0};
-            if(lvl===8) u.quiz = { p1Ans: null, p2Ans: null, p1G: null, p2G: null, state: 'input' };
-            await updateDoc(docRef, u);
-            showToast("Level Reset! 🔄");
-        };
-
-        window.triggerFail = async function(fPlayerNum) {
-            let lk = fPlayerNum === 1 ? 'p1Lives' : 'p2Lives'; let n = gState[lk] - 1;
-            await updateDoc(docRef, { [lk]: Math.max(0, n), failTrigger: { p: fPlayerNum, ts: Date.now() } });
-        }
-
-        let tapTimes = {1:0, 2:0};
-        window.handleLifeTap = function(p) {
-            let now = Date.now();
-            if(now - tapTimes[p] < 400) { 
-                if(playerNum === p) {
-                    let myL = p===1 ? gState.p1Lives : gState.p2Lives; let ptL = p===1 ? gState.p2Lives : gState.p1Lives;
-                    if(myL > ptL && ptL < 3) { playSound('levelUp'); if(p===1) updateDoc(docRef, {p1Lives: myL-1, p2Lives: Math.min(3, ptL+1)}); else updateDoc(docRef, {p2Lives: myL-1, p1Lives: Math.min(3, ptL+1)}); showToast("Life Shared with Partner! 💖"); } 
-                    else { showToast("Cannot share lives right now!"); }
+        function checkAndInitUser(uid) {
+            const userRef = db.ref(`users/${uid}`);
+            userRef.once('value', snapshot => {
+                if (!snapshot.exists()) {
+                    userRef.set({ coins: 5000, wins: 0, matches: 0, streak: 0 }); // New user gets 5000
                 }
-            } tapTimes[p] = now;
-        };
-
-        document.getElementById('btnShareLifeScreen').onclick = () => {
-            let myL = playerNum===1 ? gState.p1Lives : gState.p2Lives; let ptL = playerNum===1 ? gState.p2Lives : gState.p1Lives;
-            if(myL > ptL) { playSound('levelUp'); if(playerNum===1) updateDoc(docRef, {p1Lives: myL-1, p2Lives: Math.min(3, ptL+1)}); else updateDoc(docRef, {p2Lives: myL-1, p1Lives: Math.min(3, ptL+1)}); }
-        };
-
-        window.sendEmoji = async function(emoji) { if(audioCtx.state === 'suspended') audioCtx.resume(); if(gState && gState.status === 'playing') await updateDoc(docRef, { latestEmoji: { e: emoji, p: playerNum, id: Date.now() } }); }
-
-        document.getElementById('btnCreate').addEventListener('click', async () => {
-            myName = document.getElementById('playerName').value.trim(); if(!myName) return;
-            if(audioCtx.state === 'suspended') audioCtx.resume();
-            playerNum = 1; gameId = Math.random().toString(36).substring(2, 7).toUpperCase();
-            docRef = doc(db, "games", gameId); messagesRef = collection(db, "games", gameId, "messages");
-            let wl = [...allWords].sort(()=>Math.random()-0.5).slice(0,5);
-            
-            await setDoc(docRef, { 
-                status: 'waiting', level: 1, p1Name: myName, p2Name: "", p1Score: 0, p2Score: 0, p1Lives: 3, p2Lives: 3, failTrigger: null,
-                p1Active: true, p2Active: false,
-                sparkClicks: 0, scramble: { wordList: wl, wordIdx: 0, jumbled: wl[0].split('').sort(()=>Math.random()-0.5).join(' '), solved: false },
-                tttBoard: ['','','','','','','','',''], tttTurn: 'X', popHeart: null, sdTarget: null, canvasProg: 0, cP1X: 50, cP2X: 50, canvasObj: null, catchObj: null, align: {x:0, dir:1, p1:0, p2:0},
-                quiz: { p1Ans: null, p2Ans: null, p1G: null, p2G: null, state: 'input' }
+                userRef.on('value', updateLobbyUI);
+                showScreen('lobby-page');
             });
-            document.getElementById('displayCode').innerText = gameId; document.getElementById('btnRestart').style.display = 'flex'; 
-            showScreen('lobby-screen'); setupSync(); setupChat();
-        });
+        }
 
-        document.getElementById('btnJoin').addEventListener('click', async () => {
-            myName = document.getElementById('playerName').value.trim(); gameId = document.getElementById('joinCode').value.trim().toUpperCase();
-            if(!myName || !gameId) return; playerNum = 2;
-            if(audioCtx.state === 'suspended') audioCtx.resume();
-            docRef = doc(db, "games", gameId); messagesRef = collection(db, "games", gameId, "messages");
-            let snap = await getDoc(docRef);
-            if(snap.exists()) { await updateDoc(docRef, { p2Name: myName, status: 'playing', p2Active: true }); setupSync(); setupChat(); } 
-            else alert("Room closed.");
-        });
+        function updateLobbyUI(snapshot) {
+            const data = snapshot.val();
+            if(!data) return;
+            document.getElementById('ui-coins').innerText = data.coins;
+            document.getElementById('ui-streak').innerText = data.streak;
+            document.getElementById('ui-matches').innerText = data.matches;
+            document.getElementById('ui-winrate').innerText = data.matches > 0 ? ((data.wins / data.matches) * 100).toFixed(1) : 0;
+        }
 
-        const getShareURL = () => `${window.location.origin}${window.location.pathname}?game=${gameId}`;
-        document.getElementById('btnShare').onclick = () => window.location.href = `whatsapp://send?text=${encodeURIComponent('Join my Love Journey! ' + getShareURL())}`;
-        document.getElementById('btnCopy').onclick = () => { navigator.clipboard.writeText(getShareURL()); showToast("Link Copied!"); };
-        window.onload = () => { if(new URLSearchParams(window.location.search).get('game')) { document.getElementById('joinCode').value = new URLSearchParams(window.location.search).get('game').toUpperCase(); }};
+        // --- 3. MULTIPLAYER & DATABASE SYNC ---
+        async function createMultiplayerRoom() {
+            const userRef = db.ref(`users/${currentUser.uid}`);
+            const snap = await userRef.once('value');
+            if (snap.val().coins < 500) return alert("You need 500 coins to play!");
 
-        document.addEventListener("visibilitychange", async () => {
-            if(docRef && gState && gState.status === 'playing') {
-                if (document.visibilityState === "hidden") await updateDoc(docRef, { [`p${playerNum}Active`]: false });
-                else await updateDoc(docRef, { [`p${playerNum}Active`]: true });
-            }
-        });
+            userRef.update({ coins: snap.val().coins - 500, matches: snap.val().matches + 1 });
 
-        // --- MAIN SYNC ENGINE ---
-        let lastEmojiId = 0; let lastFailId = 0;
-        function setupSync() {
-            onSnapshot(docRef, (snap) => {
-                if(!snap.exists()) return;
-                let oldLvl = gState.level; gState = snap.data();
+            currentRoom = Math.random().toString(36).substring(2, 8).toUpperCase();
+            isPlayer1 = true;
+            
+            db.ref(`rooms/${currentRoom}`).set({
+                player1: currentUser.uid,
+                state: 'waiting',
+                board: { turn: currentUser.uid, dice: 1 }
+            });
+
+            startGameRoom();
+            initWebRTC(true);
+            listenForGameSync();
+        }
+
+        async function joinRoom() {
+            const code = document.getElementById('join-code').value.toUpperCase();
+            if(!code) return alert("Enter a code!");
+
+            const roomRef = db.ref(`rooms/${code}`);
+            const roomSnap = await roomRef.once('value');
+
+            if (!roomSnap.exists()) return alert("Room not found!");
+            if (roomSnap.val().state !== 'waiting') return alert("Room is full or game started!");
+
+            const userRef = db.ref(`users/${currentUser.uid}`);
+            const snap = await userRef.once('value');
+            if (snap.val().coins < 500) return alert("You need 500 coins to play!");
+            userRef.update({ coins: snap.val().coins - 500, matches: snap.val().matches + 1 });
+
+            currentRoom = code;
+            isPlayer1 = false;
+            roomRef.update({ player2: currentUser.uid, state: 'playing' });
+
+            startGameRoom();
+            initWebRTC(false);
+            listenForGameSync();
+        }
+
+        function startGameRoom() {
+            document.getElementById('room-id-display').innerText = `Code: ${currentRoom}`;
+            showScreen('game-page');
+            document.getElementById('turn-indicator').innerText = isPlayer1 ? "Waiting for opponent..." : "Game On!";
+        }
+
+        function shareWhatsApp() {
+            const text = `Let's play Ludo! Room Code: ${currentRoom}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
+        }
+
+        // --- 4. GAME PLAY LOGIC ---
+        function rollDice() {
+            if(!currentRoom) return;
+            const diceRef = db.ref(`rooms/${currentRoom}/board`);
+            diceRef.once('value', snap => {
+                const data = snap.val();
+                if(data.turn !== currentUser.uid) return alert("Not your turn!");
+
+                const result = Math.floor(Math.random() * 6) + 1;
+                // Switch turn logic (simplified for 2 players)
+                db.ref(`rooms/${currentRoom}`).once('value', roomSnap => {
+                    const rData = roomSnap.val();
+                    const nextTurn = (rData.player1 === currentUser.uid) ? rData.player2 : rData.player1;
+                    
+                    diceRef.update({ dice: result, turn: result === 6 ? currentUser.uid : nextTurn });
+                });
+            });
+        }
+
+        function listenForGameSync() {
+            db.ref(`rooms/${currentRoom}/board`).on('value', snapshot => {
+                const data = snapshot.val();
+                if(!data) return;
                 
-                if(gState.status === 'playing') {
-                    
-                    if(gState.p1Lives <= 0 || gState.p2Lives <= 0) {
-                        showScreen('out-of-lives-screen');
-                        document.getElementById('top-nav').style.display = 'flex';
-                        document.getElementById('game-area').style.display = 'none'; 
-                        document.getElementById('overlay').style.display = 'none';
-                        
-                        let myL = playerNum===1?gState.p1Lives:gState.p2Lives; let ptL = playerNum===1?gState.p2Lives:gState.p1Lives;
-                        if(myL > ptL) document.getElementById('btnShareLifeScreen').style.display = 'block';
-                        else document.getElementById('btnShareLifeScreen').style.display = 'none';
-                        
-                        // Retry level option for Host
-                        if(playerNum === 1) document.getElementById('btnRetryLevel').style.display = 'block';
-                        else document.getElementById('btnRetryLevel').style.display = 'none';
-                        return; 
-                    } else { document.getElementById('out-of-lives-screen').style.display = 'none'; }
-
-                    if(!gState.p1Active || !gState.p2Active) { document.getElementById('pause-overlay').style.display = 'flex'; isPaused = true; } 
-                    else { document.getElementById('pause-overlay').style.display = 'none'; isPaused = false; }
-
-                    if(document.getElementById('game-area').style.display !== 'flex') {
-                        showScreen('none'); document.getElementById('game-area').style.display = 'flex';
-                        document.getElementById('top-nav').style.display = 'flex'; document.getElementById('emoji-bar').style.display = 'flex';
-                        document.getElementById('name1').innerText = gState.p1Name; document.getElementById('name2').innerText = gState.p2Name;
-                    }
-                    
-                    document.getElementById('score1').innerText = gState.p1Score; document.getElementById('score2').innerText = gState.p2Score;
-                    document.getElementById('lives1').innerText = '❤️'.repeat(gState.p1Lives) || '💔'; document.getElementById('lives2').innerText = '❤️'.repeat(gState.p2Lives) || '💔';
-                    
-                    document.getElementById('level-title-hud').innerText = gState.level === 3.5 ? "TIE BREAKER!" : `LEVEL ${Math.floor(gState.level)}`;
-                    document.body.className = `theme-${Math.floor(gState.level)}`; 
-
-                    if(gState.level !== oldLvl && gState.level) {
-                        if(scrTimeout) { clearTimeout(scrTimeout); scrTimeout = null; } 
-                        if(gState.level > 8) triggerFinale();
-                        else {
-                            playSound('levelUp');
-                            if(gState.level === 3.5) showOverlay("TIE BREAKER", "React faster than your partner!");
-                            else showOverlay(`LEVEL ${Math.floor(gState.level)}`, quotes[Math.floor(gState.level)-1]);
-                        }
-                    }
-
-                    if(gState.failTrigger && gState.failTrigger.ts !== lastFailId) {
-                        lastFailId = gState.failTrigger.ts; playSound('bad');
-                        if(scrTimeout) { clearTimeout(scrTimeout); scrTimeout = null; } 
-                        
-                        showOverlay("OOPS!", `Lost a life! ${failQuotes[Math.floor(Math.random()*failQuotes.length)]}`, true, async () => {
-                            if(playerNum===1) {
-                                let u = { failTrigger: null };
-                                if(gState.level===1) u.sparkClicks=0; 
-                                if(gState.level===2) { let wl = [...allWords].sort(()=>Math.random()-0.5).slice(0,5); u.scramble = { wordList: wl, wordIdx: 0, jumbled: wl[0].split('').sort(()=>Math.random()-0.5).join(' '), solved: false }; }
-                                if(gState.level===3) { u.tttBoard=['','','','','','','','','']; u.tttTurn='X'; }
-                                if(gState.level===4) u.popHeart=null; if(gState.level===5) { u.canvasProg=0; u.canvasObj=null; }
-                                if(gState.level===6) u.catchObj=null; if(gState.level===7) u.align = {x: 0, dir: 1, p1:0, p2:0};
-                                await updateDoc(docRef, u);
-                            }
-                        });
-                    }
-
-                    if(gState.latestEmoji && gState.latestEmoji.id !== lastEmojiId) {
-                        lastEmojiId = gState.latestEmoji.id;
-                        let div = document.createElement('div'); div.className = 'floating-emoji'; div.innerText = gState.latestEmoji.e;
-                        div.style.left = gState.latestEmoji.p === 1 ? '20%' : '80%'; div.style.top = '60%';
-                        document.body.appendChild(div); setTimeout(() => div.remove(), 2000);
-                    }
-
-                    hideAllLevels();
-                    let myL = playerNum===1?gState.p1Lives:gState.p2Lives;
-                    if(myL > 0 && !gState.failTrigger) {
-                        if(gState.level === 1) { document.getElementById('spark-area').style.display='flex'; renderSpark(); if(playerNum===1) hostSpark(); }
-                        else if(gState.level === 2) { document.getElementById('scramble-area').style.display='flex'; renderScramble(); }
-                        else if(gState.level === 3) { document.getElementById('ttt-board').style.display='grid'; renderTTT(); }
-                        else if(gState.level === 3.5) { document.getElementById('sudden-death-area').style.display='block'; renderSuddenDeath(); if(playerNum===1) hostSuddenDeath(); }
-                        else if(gState.level === 4) { document.getElementById('popper-area').style.display='block'; renderPopper(); if(playerNum===1) hostPopper(); }
-                        else if(gState.level === 5) { document.getElementById('game-canvas').style.display='block'; startCanvasEngine(); if(playerNum===1) hostCanvas(); }
-                        else if(gState.level === 6) { document.getElementById('catcher-area').style.display='block'; renderCatcher(); if(playerNum===1) hostCatcher(); }
-                        else if(gState.level === 7) { document.getElementById('align-area').style.display='flex'; renderAlign(); if(playerNum===1) hostAlign(); }
-                        else if(gState.level === 8) { document.getElementById('quiz-area').style.display='flex'; renderQuiz(); }
-                    }
+                document.getElementById('dice-result').innerText = `🎲 ${data.dice}`;
+                
+                if (data.turn === currentUser.uid) {
+                    document.getElementById('turn-indicator').innerText = "Your Turn! Tap Dice.";
+                    document.getElementById('turn-indicator').style.color = "var(--neon-green)";
+                } else {
+                    document.getElementById('turn-indicator').innerText = "Opponent's Turn...";
+                    document.getElementById('turn-indicator').style.color = "white";
                 }
             });
         }
 
-        function hideAllLevels() {
-            document.getElementById('spark-area').style.display = 'none'; document.getElementById('scramble-area').style.display = 'none'; 
-            document.getElementById('ttt-board').style.display = 'none'; document.getElementById('sudden-death-area').style.display = 'none'; 
-            document.getElementById('popper-area').style.display = 'none'; document.getElementById('game-canvas').style.display = 'none'; 
-            document.getElementById('catcher-area').style.display = 'none'; document.getElementById('align-area').style.display = 'none'; document.getElementById('quiz-area').style.display = 'none';
-        }
-
-        // --- LEVEL 1: THE SPARK ---
-        let sparkInt = null;
-        function hostSpark() {
-            if(sparkInt) return;
-            sparkInt = setInterval(async () => {
-                if(gState.level !== 1 || gState.failTrigger || isPaused) { clearInterval(sparkInt); sparkInt = null; return; }
-                if(gState.sparkClicks > 0) updateDoc(docRef, { sparkClicks: Math.max(0, gState.sparkClicks - 10) }); // HARDER DECAY
-            }, 1000); 
-        }
-        function renderSpark() { document.getElementById('spark-meter-fill').style.width = gState.sparkClicks + '%'; }
-        document.getElementById('sparkBtn').onclick = async () => {
-            if(gState.level !== 1 || gState.failTrigger || isPaused) return; playSound('click');
-            let n = gState.sparkClicks + 6; 
-            if(n >= 100) { playSound('match'); let sc = playerNum===1?'p1Score':'p2Score'; await updateDoc(docRef, { sparkClicks: 100, level: 2, [sc]: gState[sc]+50 }); } 
-            else await updateDoc(docRef, { sparkClicks: n });
-        };
-
-        // --- LEVEL 2: SOULMATE SCRAMBLE (60s TIMER) ---
-        function renderScramble() {
-            if(!gState.scramble || !gState.scramble.wordList) return;
-            document.getElementById('scramble-progress').innerText = `Word ${gState.scramble.wordIdx + 1} of 5`;
-            document.getElementById('scramble-word').innerText = gState.scramble.jumbled;
-            if(!scrTimeout && !gState.scramble.solved && !gState.failTrigger && !isPaused) {
-                scrTimeout = setTimeout(() => { if(gState.level === 2 && !gState.scramble.solved && !isPaused) { triggerFail(playerNum); scrTimeout = null; } }, 60000); 
+        // --- 5. WEBRTC P2P VIDEO CHAT ---
+        async function initWebRTC(isInitiator) {
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                document.getElementById('local-video').srcObject = localStream;
+            } catch (e) {
+                console.log("Camera/Mic access denied or unavailable.");
             }
-        }
-        document.getElementById('btnScramble').onclick = async () => {
-            if(gState.failTrigger || !gState.scramble || !gState.scramble.wordList || isPaused) return;
-            playSound('click'); let val = document.getElementById('scramble-input').value.trim().toUpperCase();
-            if(val === gState.scramble.wordList[gState.scramble.wordIdx]) {
-                playSound('match'); document.getElementById('scramble-input').value = '';
-                let sc = playerNum===1?'p1Score':'p2Score'; let nextIdx = gState.scramble.wordIdx + 1;
-                if(nextIdx >= 5) { if(scrTimeout){clearTimeout(scrTimeout); scrTimeout=null;} await updateDoc(docRef, { scramble: { ...gState.scramble, solved: true, jumbled: "PERFECT!" }, [sc]: gState[sc]+100, level: 3 }); } 
-                else { let nextJumbled = gState.scramble.wordList[nextIdx].split('').sort(()=>Math.random()-0.5).join(' '); await updateDoc(docRef, { scramble: { wordList: gState.scramble.wordList, wordIdx: nextIdx, jumbled: nextJumbled, solved: false }, [sc]: gState[sc]+20 }); }
-            } else { document.getElementById('scramble-input').value = ''; triggerFail(playerNum); }
-        };
 
-        // --- LEVEL 3: TIC TAC TOE ---
-        function renderTTT() {
-            let board = document.getElementById('ttt-board'); board.innerHTML = '';
-            gState.tttBoard.forEach((cell, i) => { let el = document.createElement('div'); el.className = 'ttt-cell'; el.innerText = cell; if(cell==='X') el.classList.add('ttt-x'); else if(cell==='O') el.classList.add('ttt-o'); el.onclick = () => handleTTTClick(i); board.appendChild(el); });
-        }
-        async function handleTTTClick(i) {
-            let mySym = playerNum === 1 ? 'X' : 'O'; if(gState.tttTurn !== mySym || gState.tttBoard[i] !== '' || gState.failTrigger || isPaused) return;
-            playSound('click'); let nb = [...gState.tttBoard]; nb[i] = mySym;
-            let lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; let win = lines.find(l => nb[l[0]] && nb[l[0]]===nb[l[1]] && nb[l[0]]===nb[l[2]]);
-            if(win) { playSound('match'); let sc = playerNum===1?'p1Score':'p2Score'; await updateDoc(docRef, { tttBoard: nb, [sc]: gState[sc]+50, level: 4 }); } 
-            else if(!nb.includes('')) { await updateDoc(docRef, { tttBoard: nb, level: 3.5 }); } else { await updateDoc(docRef, { tttBoard: nb, tttTurn: mySym==='X'?'O':'X' }); }
-        }
-
-        // --- LEVEL 3.5: SUDDEN DEATH ---
-        let sdInt = null;
-        function hostSuddenDeath() {
-            if(sdInt) return;
-            sdInt = setInterval(() => {
-                if(gState.level !== 3.5 || gState.failTrigger || isPaused) { clearInterval(sdInt); sdInt = null; return; }
-                updateDoc(docRef, { sdTarget: { x: Math.random()*80, y: Math.random()*80, id: Date.now() } });
-            }, 600);
-        }
-        function renderSuddenDeath() {
-            let area = document.getElementById('sudden-death-area'); area.innerHTML = '';
-            if(gState.sdTarget) {
-                let h = document.createElement('div'); h.className = 'golden-heart'; h.innerText = '💛'; h.style.left = gState.sdTarget.x + '%'; h.style.top = gState.sdTarget.y + '%';
-                h.onclick = () => { if(isPaused) return; playSound('match'); let sc = playerNum===1?'p1Score':'p2Score'; updateDoc(docRef, { sdTarget: null, [sc]: gState[sc]+50, level: 4 }); }; area.appendChild(h);
+            peerConnection = new RTCPeerConnection(servers);
+            if(localStream) {
+                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
             }
-        }
 
-        // --- LEVEL 4: HEART POPPER ---
-        let popInt = null;
-        function hostPopper() {
-            if(popInt) return;
-            popInt = setInterval(() => {
-                if(gState.level !== 4 || gState.failTrigger || isPaused) { clearInterval(popInt); popInt = null; return; }
-                if(gState.p1Score + gState.p2Score >= 350) { clearInterval(popInt); popInt = null; updateDoc(docRef, {level: 5}); return; }
-                let t = Math.random() > 0.6 ? 'bad' : 'good'; updateDoc(docRef, { popHeart: { x: Math.random()*80, y: Math.random()*80, id: Date.now(), t: t } });
-            }, 900);
-        }
-        function renderPopper() {
-            let area = document.getElementById('popper-area'); area.innerHTML = '';
-            if(gState.popHeart) {
-                let h = document.createElement('div'); h.className = 'pop-target'; h.innerText = gState.popHeart.t === 'bad' ? '💔' : '❤️';
-                h.style.left = gState.popHeart.x + '%'; h.style.top = gState.popHeart.y + '%';
-                h.onclick = () => { 
-                    if(isPaused || gState.failTrigger) return;
-                    let sc = playerNum===1?'p1Score':'p2Score'; 
-                    if(gState.popHeart.t === 'bad') { triggerFail(playerNum); }
-                    else { playSound('click'); updateDoc(docRef, { popHeart: null, [sc]: gState[sc]+20 }); }
-                }; area.appendChild(h);
-            }
-        }
+            peerConnection.ontrack = (event) => {
+                document.getElementById('remote-video').srcObject = event.streams[0];
+            };
 
-        // --- LEVEL 5: COSMIC DODGE (SLOWER) ---
-        let c = document.getElementById('game-canvas'); let ctx = c.getContext('2d');
-        function res() { c.width = window.innerWidth; c.height = window.innerHeight; } window.addEventListener('resize', res); res();
-        
-        let tX = 0; 
-        c.addEventListener('touchstart', e => tX = e.changedTouches[0].screenX);
-        c.addEventListener('touchmove', async e => {
-            if(gState.level !== 5 || playerNum === 0 || gState.failTrigger || isPaused) return;
-            let nx = e.changedTouches[0].screenX; let pct = (nx / c.width) * 100;
-            let lk = playerNum===1 ? 'cP1X' : 'cP2X'; await updateDoc(docRef, { [lk]: Math.max(10, Math.min(90, pct)) });
-        });
+            const roomRef = db.ref(`rooms/${currentRoom}`);
 
-        let canInt = null;
-        function hostCanvas() {
-            if(canInt) return;
-            canInt = setInterval(async () => {
-                if(gState.level !== 5 || gState.failTrigger || isPaused) return;
-                let p = gState.canvasProg + 2; 
-                if(p >= 100) { clearInterval(canInt); updateDoc(docRef, { level: 6 }); } 
-                else {
-                    let u = { canvasProg: p };
-                    if(!gState.canvasObj && Math.random()>0.3) u.canvasObj = { x: Math.random()*80+10, y: -50, type: Math.random()>0.6?'heart':'rock', id: Date.now() }; // Start from top
-                    await updateDoc(docRef, u);
+            peerConnection.onicecandidate = event => {
+                if (event.candidate) {
+                    roomRef.child(isInitiator ? 'callerCandidates' : 'calleeCandidates').push(event.candidate.toJSON());
                 }
-            }, 1200); // More time between spawns
-        }
+            };
 
-        let p1X_smooth = 50, p2X_smooth = 50, objY = -50;
-        function startCanvasEngine() {
-            let stars = []; for(let i=0; i<30; i++) stars.push({x:Math.random()*c.width, y:Math.random()*c.height, s:Math.random()*3+1});
-            
-            function render() {
-                if(gState.level !== 5 || gState.failTrigger || isPaused) return;
-                
-                ctx.fillStyle = "rgba(0,10,30,0.5)"; ctx.fillRect(0,0,c.width,c.height);
-                ctx.fillStyle = "#fff"; stars.forEach(st => { st.y += st.s * 1.5; if(st.y > c.height) st.y = -10; ctx.beginPath(); ctx.arc(st.x, st.y, st.s, 0, Math.PI*2); ctx.fill(); });
+            if (isInitiator) {
+                const offer = await peerConnection.createOffer();
+                await peerConnection.setLocalDescription(offer);
+                roomRef.update({ offer: { type: offer.type, sdp: offer.sdp } });
 
-                p1X_smooth += (gState.cP1X - p1X_smooth) * 0.2; p2X_smooth += (gState.cP2X - p2X_smooth) * 0.2;
-                let px1 = (p1X_smooth/100) * c.width; let px2 = (p2X_smooth/100) * c.width; let py = c.height - 120;
-
-                ctx.shadowBlur = 20; ctx.shadowColor = "#00f2fe"; ctx.fillStyle = "#00f2fe"; ctx.beginPath(); ctx.arc(px1, py, 25, 0, Math.PI*2); ctx.fill();
-                ctx.shadowColor = "#ff007f"; ctx.fillStyle = "#ff007f"; ctx.beginPath(); ctx.arc(px2, py, 25, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
-
-                if(gState.canvasObj) {
-                    objY += 3; // SLOWER FALL SPEED
-                    let ox = (gState.canvasObj.x/100) * c.width;
-                    ctx.font = "60px Arial"; ctx.fillText(gState.canvasObj.type==='heart'?'💛':'🪨', ox-30, objY);
-
-                    if(playerNum === 1 && objY > py - 35 && objY < py + 35) {
-                        let hitP1 = Math.abs(ox - px1) < 45; let hitP2 = Math.abs(ox - px2) < 45;
-                        if(hitP1 || hitP2) {
-                            if(gState.canvasObj.type === 'heart') { playSound('match'); updateDoc(docRef, { p1Score: gState.p1Score+20, p2Score: gState.p2Score+20, canvasObj: null }); }
-                            else { triggerFail(hitP1 ? 1 : 2); updateDoc(docRef, {canvasObj: null}); }
-                        }
+                roomRef.on('value', async snapshot => {
+                    const data = snapshot.val();
+                    if (!peerConnection.currentRemoteDescription && data && data.answer) {
+                        const answer = new RTCSessionDescription(data.answer);
+                        await peerConnection.setRemoteDescription(answer);
                     }
-                    if(objY > c.height) { if(playerNum===1) updateDoc(docRef, { canvasObj: null }); objY = -50; }
-                } else { objY = -50; }
+                });
 
-                requestAnimationFrame(render);
-            }
-            render();
-        }
-
-        // --- LEVEL 6: STAR CATCHER ---
-        let catchInt = null;
-        function hostCatcher() {
-            if(catchInt) return;
-            catchInt = setInterval(() => {
-                if(gState.level !== 6 || gState.failTrigger || isPaused) { clearInterval(catchInt); catchInt = null; return; }
-                if(gState.p1Score + gState.p2Score >= 700) { clearInterval(catchInt); updateDoc(docRef, {level: 7}); return; } 
-                if(!gState.catchObj) updateDoc(docRef, { catchObj: { x: Math.random()*80, id: Date.now() } });
-            }, 1000);
-        }
-        function renderCatcher() {
-            let area = document.getElementById('catcher-area'); area.innerHTML = '';
-            if(gState.catchObj) {
-                let s = document.createElement('div'); s.className = 'falling-item'; s.innerText = '💋'; s.style.left = gState.catchObj.x + '%';
-                s.onclick = () => { if(isPaused || gState.failTrigger) return; playSound('match'); let sc = playerNum===1?'p1Score':'p2Score'; updateDoc(docRef, { catchObj: null, [sc]: gState[sc]+20 }); }; area.appendChild(s);
-                setTimeout(() => { if(gState.catchObj && gState.catchObj.id === s.id && playerNum===1 && !isPaused && !gState.failTrigger) triggerFail(1); }, 3500); 
-            }
-        }
-
-        // --- LEVEL 7: LOVE ALIGNMENT ---
-        let alignInt = null;
-        function hostAlign() {
-            if(alignInt) return;
-            alignInt = setInterval(() => {
-                if(gState.level !== 7 || gState.failTrigger || isPaused) { clearInterval(alignInt); alignInt = null; return; }
-                if(gState.align.p1 >= 3 && gState.align.p2 >= 3) { clearInterval(alignInt); updateDoc(docRef, {level: 8}); return; } // Both need 3 alignments
-                let nx = gState.align.x + (gState.align.dir * 4); // Faster track
-                let nd = gState.align.dir;
-                if(nx >= 100) { nx = 100; nd = -1; } else if(nx <= 0) { nx = 0; nd = 1; }
-                updateDoc(docRef, { align: { x: nx, dir: nd, p1: gState.align.p1, p2: gState.align.p2 } });
-            }, 40);
-        }
-        function renderAlign() {
-            if(!gState.align) return;
-            document.getElementById('align-heart').style.left = gState.align.x + '%';
-            document.getElementById('align-progress').innerText = `P1: ${gState.align.p1}/3 | P2: ${gState.align.p2}/3`;
-        }
-        document.getElementById('btnAlign').onclick = () => {
-            if(gState.failTrigger || isPaused) return;
-            playSound('click'); let ax = gState.align.x;
-            if(ax > 40 && ax < 60) {
-                playSound('match'); let sc = playerNum===1?'p1Score':'p2Score';
-                let np1 = gState.align.p1 + (playerNum===1?1:0); let np2 = gState.align.p2 + (playerNum===2?1:0);
-                updateDoc(docRef, { [sc]: gState[sc]+30, align: { x: gState.align.x, dir: gState.align.dir, p1: np1, p2: np2 } }); showToast("PERFECT LOCK!");
-            } else { triggerFail(playerNum); }
-        };
-
-        // --- LEVEL 8: NEW FINAL LOVE QUIZ ---
-        function renderQuiz() {
-            if(!gState.quiz) return;
-            let q = gState.quiz;
-            document.getElementById('quiz-input-box').style.display = q.state === 'input' ? 'block' : 'none';
-            document.getElementById('quiz-guess-box').style.display = q.state === 'guess' ? 'block' : 'none';
-            document.getElementById('quiz-wait-box').style.display = q.state === 'wait' ? 'block' : 'none';
-            document.getElementById('quiz-result-box').style.display = q.state === 'result' ? 'block' : 'none';
-
-            if(q.state === 'input') {
-                document.getElementById('quiz-header').innerText = "PHASE 1: Your Favorites";
-            } else if (q.state === 'wait') {
-                // If I filled, but partner hasn't. Wait state.
-            } else if (q.state === 'guess') {
-                document.getElementById('quiz-header').innerText = "PHASE 2: Guess Partner's Favourites";
-            } else if (q.state === 'result') {
-                document.getElementById('quiz-header').innerText = "FINAL RESULTS";
-                
-                // Calculate match %
-                let p1Match = 0, p2Match = 0;
-                for(let i=0; i<3; i++) {
-                    if(q.p1G[i].toLowerCase() === q.p2Ans[i].toLowerCase()) p1Match++;
-                    if(q.p2G[i].toLowerCase() === q.p1Ans[i].toLowerCase()) p2Match++;
-                }
-                let totalPct = Math.floor(((p1Match + p2Match) / 6) * 100);
-                document.getElementById('love-pct').innerText = totalPct + '%';
-                
-                if(playerNum === 1) document.getElementById('btnFinale').style.display = 'block';
-            }
-        }
-
-        document.getElementById('btnQuizSubmit').onclick = async () => {
-            playSound('click');
-            let a1 = document.getElementById('q1').value.trim(); let a2 = document.getElementById('q2').value.trim(); let a3 = document.getElementById('q3').value.trim();
-            if(!a1 || !a2 || !a3) { showToast("Answer all questions!"); return; }
-            
-            let ansKey = playerNum === 1 ? 'p1Ans' : 'p2Ans';
-            let u = { [`quiz.${ansKey}`]: [a1, a2, a3] };
-            
-            // Check if partner already answered
-            if(playerNum === 1 && gState.quiz.p2Ans) u['quiz.state'] = 'guess';
-            else if(playerNum === 2 && gState.quiz.p1Ans) u['quiz.state'] = 'guess';
-            else u['quiz.state'] = 'wait'; // Needs update UI logic if just waiting
-
-            await updateDoc(docRef, u);
-            if(!u['quiz.state'] || u['quiz.state'] === 'wait') {
-                document.getElementById('quiz-input-box').style.display = 'none';
-                document.getElementById('quiz-wait-box').style.display = 'block';
-            }
-        };
-
-        document.getElementById('btnQuizGuess').onclick = async () => {
-            playSound('click');
-            let g1 = document.getElementById('g1').value.trim(); let g2 = document.getElementById('g2').value.trim(); let g3 = document.getElementById('g3').value.trim();
-            if(!g1 || !g2 || !g3) { showToast("Guess all answers!"); return; }
-            
-            let gKey = playerNum === 1 ? 'p1G' : 'p2G';
-            let u = { [`quiz.${gKey}`]: [g1, g2, g3] };
-            
-            if(playerNum === 1 && gState.quiz.p2G) u['quiz.state'] = 'result';
-            else if(playerNum === 2 && gState.quiz.p1G) u['quiz.state'] = 'result';
-            else u['quiz.state'] = 'wait';
-
-            await updateDoc(docRef, u);
-            if(u['quiz.state'] === 'wait') {
-                document.getElementById('quiz-guess-box').style.display = 'none';
-                document.getElementById('quiz-wait-box').style.display = 'block';
-            }
-        };
-
-        document.getElementById('btnFinale').onclick = () => { if(playerNum === 1) updateDoc(docRef, { level: 9 }); };
-
-        // --- CHAT SYSTEM ---
-        let chatOpen = false;
-        document.getElementById('btnChat').onclick = () => { chatOpen = !chatOpen; document.getElementById('chat-panel').style.display = chatOpen ? 'flex' : 'none'; };
-        
-        function setupChat() {
-            onSnapshot(query(messagesRef, orderBy("ts")), (snap) => {
-                let box = document.getElementById('chat-msgs'); box.innerHTML = '';
-                snap.forEach(d => { 
-                    let m = d.data(); let el = document.createElement('div'); el.className = `msg ${m.sender === playerNum ? 'me' : 'them'}`; el.innerText = m.text; box.appendChild(el); 
-                }); box.scrollTop = box.scrollHeight;
-            });
-        }
-        document.getElementById('btnSendChat').onclick = async () => { let t = document.getElementById('chatInput').value.trim(); if(t) { await addDoc(messagesRef, { text: t, sender: playerNum, ts: Date.now() }); document.getElementById('chatInput').value = ''; } };
-
-        // --- WEBRTC VIDEO/VOICE ---
-        let localStream, peerConn, isMediaOn = false, isMuted = false;
-        const localVid = document.getElementById('localVideo');
-        const remoteVid = document.getElementById('remoteVideo');
-        
-        document.getElementById('btnVideo').onclick = async () => {
-            if(!isMediaOn) {
-                try {
-                    localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-                    localVid.srcObject = localStream; document.getElementById('video-container').style.display = 'flex';
-                    
-                    peerConn = new RTCPeerConnection({ iceServers: [{ urls: ['stun:stun1.l.google.com:19302'] }] });
-                    localStream.getTracks().forEach(t => peerConn.addTrack(t, localStream));
-                    peerConn.ontrack = (e) => { remoteVid.srcObject = e.streams[0]; remoteVid.style.display = 'block'; };
-                    
-                    const callDoc = doc(db, "calls", gameId); const offerC = collection(callDoc, "offerC"); const answerC = collection(callDoc, "answerC");
-                    peerConn.onicecandidate = e => { e.candidate && addDoc(playerNum===1 ? offerC : answerC, e.candidate.toJSON()); };
-
-                    if(playerNum === 1) {
-                        let offer = await peerConn.createOffer(); await peerConn.setLocalDescription(offer); await setDoc(callDoc, { offer: { type: offer.type, sdp: offer.sdp }});
-                        onSnapshot(callDoc, (snap) => { let data = snap.data(); if(data?.answer && !peerConn.currentRemoteDescription) peerConn.setRemoteDescription(new RTCSessionDescription(data.answer)); });
-                        onSnapshot(answerC, snap => snap.docChanges().forEach(c => { if(c.type === 'added') peerConn.addIceCandidate(new RTCIceCandidate(c.doc.data())); }));
-                    } else {
-                        onSnapshot(callDoc, async (snap) => { let data = snap.data(); if(data?.offer && !peerConn.currentRemoteDescription) { await peerConn.setRemoteDescription(new RTCSessionDescription(data.offer)); let ans = await peerConn.createAnswer(); await peerConn.setLocalDescription(ans); await updateDoc(callDoc, { answer: { type: ans.type, sdp: ans.sdp }}); } });
-                        onSnapshot(offerC, snap => snap.docChanges().forEach(c => { if(c.type === 'added') peerConn.addIceCandidate(new RTCIceCandidate(c.doc.data())); }));
-                    }
-                    isMediaOn = true; showToast("Video Connected! 📹");
-                } catch(e) { alert("Camera/Mic permission denied!"); return; }
+                roomRef.child('calleeCandidates').on('child_added', snapshot => {
+                    peerConnection.addIceCandidate(new RTCIceCandidate(snapshot.val()));
+                });
             } else {
-                let vTrack = localStream.getVideoTracks()[0]; vTrack.enabled = !vTrack.enabled;
-                document.getElementById('btnVideo').style.opacity = vTrack.enabled ? '1' : '0.5';
-            }
-        };
+                roomRef.once('value', async snapshot => {
+                    const data = snapshot.val();
+                    const offer = data.offer;
+                    await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+                    const answer = await peerConnection.createAnswer();
+                    await peerConnection.setLocalDescription(answer);
+                    roomRef.update({ answer: { type: answer.type, sdp: answer.sdp } });
+                });
 
-        document.getElementById('btnMic').onclick = () => {
-            if(!localStream) { showToast("Click 📹 icon first to connect media!"); return; }
-            isMuted = !isMuted; 
-            localStream.getAudioTracks()[0].enabled = !isMuted; 
-            remoteVid.muted = isMuted; 
-            
-            document.getElementById('btnMic').classList.toggle('muted'); 
-            document.getElementById('btnMic').innerText = isMuted ? '🔇' : '🎤';
-            showToast(isMuted ? "Mic & Speaker Muted" : "Audio Active");
-        };
-
-        // --- EPIC FINALE ---
-        async function triggerFinale() {
-            playSound('levelUp');
-            document.getElementById('game-area').style.display = 'none'; document.getElementById('top-nav').style.display = 'none'; document.getElementById('emoji-bar').style.display = 'none'; document.getElementById('video-container').style.display = 'none';
-            let fScreen = document.getElementById('final-screen'); fScreen.style.display = 'flex';
-            document.getElementById('finalNames').innerText = `${gState.p1Name} & ${gState.p2Name}`;
-            
-            for(let i=0; i<15; i++) {
-                let h = document.createElement('div'); h.className = 'concentric-heart';
-                h.innerHTML = `<svg viewBox="0 0 32 29.6"><path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,16,21.2,16,21.2s16-11.8,16-21.2C32,3.8,28.2,0,23.6,0z" fill="none" stroke="#ff007f" stroke-width="2"/></svg>`;
-                h.style.animationDelay = (i * 0.3) + 's'; fScreen.appendChild(h);
+                roomRef.child('callerCandidates').on('child_added', snapshot => {
+                    peerConnection.addIceCandidate(new RTCIceCandidate(snapshot.val()));
+                });
             }
-            if(playerNum === 1) { let msgs = await getDocs(messagesRef); msgs.forEach(m => deleteDoc(m.ref)); } 
         }
     </script>
 </body>
