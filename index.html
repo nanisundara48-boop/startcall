@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Neon Ludo Pro | Nani Creations</title>
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -74,7 +73,7 @@
         .video-container { display: flex; justify-content: space-between; width: 100%; max-width: 400px; margin-bottom: 15px; }
         video { width: 48%; border-radius: 10px; border: 2px solid var(--neon-pink); background: #000; aspect-ratio: 4/3; object-fit: cover; }
 
-        /* Ludo Board Framework (15x15 Grid) */
+        /* Ludo Board Framework */
         .ludo-board {
             width: 90vw; height: 90vw; max-width: 380px; max-height: 380px;
             background: #fff;
@@ -87,7 +86,6 @@
             position: relative;
         }
 
-        .cell { border: 1px solid rgba(0,0,0,0.1); }
         .home-red { background: #ff4d4d; grid-area: 1 / 1 / 7 / 7; }
         .home-green { background: #4dff4d; grid-area: 1 / 10 / 7 / 16; }
         .home-blue { background: #4d4dff; grid-area: 10 / 1 / 16 / 7; }
@@ -102,16 +100,14 @@
 </head>
 <body>
 
-    <!-- 1. Login Page -->
     <div id="login-page" class="screen active">
         <div class="glass-panel">
-            <h1 style="color: var(--neon-blue); margin-bottom: 10px;">Neon Ludo</h1>
+            <h1 style="color: var(--neon-blue); margin-bottom: 10px;">Neon Ludo♡</h1>
             <p style="margin-bottom: 20px;">Sign in to start your streak</p>
-            <button id="btn-login" onclick="login()">Enter Game Studio</button>
+            <button id="btn-login" onclick="login()">Enter Game Studio♡</button>
         </div>
     </div>
 
-    <!-- 2. Lobby Page -->
     <div id="lobby-page" class="screen">
         <div class="glass-panel top-bar">
             <div>Streak: <span id="ui-streak" class="highlight">0</span> 🔥</div>
@@ -121,7 +117,7 @@
         </div>
         
         <div class="glass-panel">
-            <button onclick="alert('Bot logic setup pending!')" class="btn-secondary">Play with Bot</button>
+            <button onclick="alert('Bot match coming soon!')" class="btn-secondary">Play with Bot</button>
             <button onclick="createMultiplayerRoom()" class="btn-primary">Create Room (-500 Coins)</button>
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 15px 0;">
             <input type="text" id="join-code" placeholder="Enter Room Code">
@@ -129,27 +125,23 @@
         </div>
     </div>
 
-    <!-- 3. Game Room -->
     <div id="game-page" class="screen">
         <div class="glass-panel" style="padding: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
             <span id="room-id-display" style="font-weight: bold; font-size: 18px;">Room: ----</span>
             <button onclick="shareWhatsApp()" class="btn-whatsapp" style="width: auto; margin: 0; padding: 8px 15px; font-size: 14px;">WhatsApp Share</button>
         </div>
 
-        <!-- Video Chat P2P -->
         <div class="video-container">
             <video id="local-video" autoplay muted playsinline></video>
             <video id="remote-video" autoplay playsinline></video>
         </div>
 
-        <!-- Ludo Board UI Generation -->
         <div class="ludo-board" id="board">
             <div class="home-red"></div>
             <div class="home-green"></div>
             <div class="home-blue"></div>
             <div class="home-yellow"></div>
             <div class="center-box"></div>
-            <!-- Dynamic Grid cells inserted via JS -->
         </div>
 
         <div class="dice-container glass-panel">
@@ -163,26 +155,24 @@
     </div>
 
     <script>
-        // --- 1. FIREBASE CONFIGURATION ---
-        // REPLACE THESE WITH YOUR FIREBASE PROJECT DETAILS
-        // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+        // --- 1. FIREBASE CONFIGURATION (Your Exact Setup) ---
+        const firebaseConfig = {
+          apiKey: "AIzaSyCZmqyLmyWesuoj6djTbyfrOJ1v7_FCWcQ",
+          authDomain: "game-bf78a.firebaseapp.com",
+          databaseURL: "https://game-bf78a-default-rtdb.asia-southeast1.firebasedatabase.app",
+          projectId: "game-bf78a",
+          storageBucket: "game-bf78a.firebasestorage.app",
+          messagingSenderId: "860717231489",
+          appId: "1:860717231489:web:f53331a96570be04cacc80"
+        };
+        
+        // Initialize without 'import' to work seamlessly in a single HTML file
+        if (!firebase.apps.length) { 
+            firebase.initializeApp(firebaseConfig); 
+        }
+        const db = firebase.database();
+        const auth = firebase.auth();
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyCZmqyLmyWesuoj6djTbyfrOJ1v7_FCWcQ",
-  authDomain: "game-bf78a.firebaseapp.com",
-  databaseURL: "https://game-bf78a-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "game-bf78a",
-  storageBucket: "game-bf78a.firebasestorage.app",
-  messagingSenderId: "860717231489",
-  appId: "1:860717231489:web:f53331a96570be04cacc80"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
         // --- GLOBAL VARIABLES ---
         let currentUser = null;
         let currentRoom = null;
@@ -199,14 +189,16 @@ const app = initializeApp(firebaseConfig);
 
         // --- 2. AUTH & ECONOMY ---
         function login() {
-            document.getElementById('btn-login').innerText = "Authenticating...";
+            const btn = document.getElementById('btn-login');
+            btn.innerText = "Authenticating...";
+            
             auth.signInAnonymously().then((cred) => {
                 currentUser = cred.user;
                 checkAndInitUser(currentUser.uid);
             }).catch(e => {
-                console.log("Firebase Auth Error: Please add Firebase config.");
-                alert("Please add your Firebase config in the code to connect!");
-                document.getElementById('btn-login').innerText = "Enter Game Studio";
+                console.error("Login Error:", e);
+                alert("Login Failed! Error: " + e.message);
+                btn.innerText = "Enter Game Studio♡";
             });
         }
 
@@ -214,10 +206,19 @@ const app = initializeApp(firebaseConfig);
             const userRef = db.ref(`users/${uid}`);
             userRef.once('value', snapshot => {
                 if (!snapshot.exists()) {
-                    userRef.set({ coins: 5000, wins: 0, matches: 0, streak: 0 }); // New user gets 5000
+                    userRef.set({ coins: 5000, wins: 0, matches: 0, streak: 0 })
+                    .then(() => {
+                        userRef.on('value', updateLobbyUI);
+                        showScreen('lobby-page');
+                    })
+                    .catch(err => {
+                        alert("Database write error! Make sure Firebase Realtime Database rules are set to public read/write.");
+                        document.getElementById('btn-login').innerText = "Enter Game Studio♡";
+                    });
+                } else {
+                    userRef.on('value', updateLobbyUI);
+                    showScreen('lobby-page');
                 }
-                userRef.on('value', updateLobbyUI);
-                showScreen('lobby-page');
             });
         }
 
@@ -283,7 +284,7 @@ const app = initializeApp(firebaseConfig);
         }
 
         function shareWhatsApp() {
-            const text = `Let's play Ludo! Room Code: ${currentRoom}`;
+            const text = `Let's play Neon Ludo! Room Code: ${currentRoom}`;
             window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
         }
 
@@ -296,7 +297,7 @@ const app = initializeApp(firebaseConfig);
                 if(data.turn !== currentUser.uid) return alert("Not your turn!");
 
                 const result = Math.floor(Math.random() * 6) + 1;
-                // Switch turn logic (simplified for 2 players)
+                
                 db.ref(`rooms/${currentRoom}`).once('value', roomSnap => {
                     const rData = roomSnap.val();
                     const nextTurn = (rData.player1 === currentUser.uid) ? rData.player2 : rData.player1;
@@ -329,7 +330,7 @@ const app = initializeApp(firebaseConfig);
                 localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 document.getElementById('local-video').srcObject = localStream;
             } catch (e) {
-                console.log("Camera/Mic access denied or unavailable.");
+                console.log("Camera/Mic access denied or unavailable.", e);
             }
 
             peerConnection = new RTCPeerConnection(servers);
