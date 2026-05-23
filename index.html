@@ -47,6 +47,10 @@
         .muted { background: rgba(255, 0, 0, 0.3); border-color: #ff0000; color: #ff5555;}
         #chat-badge { display: none; position: absolute; top: 0; right: 0; width: 12px; height: 12px; background: #ff0055; border-radius: 50%; box-shadow: 0 0 5px #ff0055; border: 1px solid #fff; }
 
+        /* Chat Toast */
+        #chat-toast { display: none; position: absolute; top: 75px; left: 50%; transform: translateX(-50%); background: linear-gradient(90deg, #00f2fe, #4facfe); color: #000; padding: 10px 20px; border-radius: 20px; z-index: 4000; font-weight: bold; font-size: 14px; box-shadow: 0 5px 15px rgba(0,242,254,0.5); text-align: center; white-space: nowrap; animation: slideDown 0.3s ease-out; pointer-events: none;}
+        @keyframes slideDown { from { top: 50px; opacity: 0; } to { top: 75px; opacity: 1; } }
+
         /* Chat & Emojis */
         #chat-panel { display: none; position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; height: 350px; background: rgba(10, 5, 20, 0.95); border: 1px solid #00f2fe; border-radius: 20px; z-index: 2000; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.8); backdrop-filter: blur(15px);}
         #chat-msgs { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; font-size: 14px; scroll-behavior: smooth; }
@@ -56,25 +60,29 @@
         #chat-input-area { display: flex; padding: 10px; gap: 10px; border-top: 1px solid rgba(0,242,254,0.3); background: rgba(0,0,0,0.4); border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;}
         #chat-input-area input { margin: 0; padding: 12px 15px; border-radius: 20px; font-size: 14px; background: rgba(255,255,255,0.1); color: white; border: none;}
         #chat-input-area button { width: 50px; margin: 0; border-radius: 50%; display: flex; justify-content: center; align-items: center;}
+        
         #emoji-bar { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 15px; z-index: 1500; }
-        .emoji-btn { background: rgba(255,255,255,0.1); border: 1px solid #ff007f; border-radius: 50%; width: 45px; height: 45px; font-size: 22px; cursor: pointer; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); transition: 0.2s;}
+        .emoji-btn { background: rgba(255,255,255,0.1); border: 1px solid #ff007f; border-radius: 50%; width: 45px; height: 45px; font-size: 22px; cursor: pointer; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); transition: 0.2s; pointer-events: auto;}
         .emoji-btn:active { transform: scale(0.8); }
         .floating-emoji { position: absolute; font-size: 45px; animation: floatUpEmoji 2s forwards ease-out; z-index: 2500; pointer-events: none; filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));}
         @keyframes floatUpEmoji { 0% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -200px) scale(1.5); } }
 
         /* Game Area Base */
-        #game-area { display: none; position: absolute; top:0; left:0; width: 100vw; height: 100vh; z-index: 5; flex-direction: column; align-items: center; justify-content: center;}
-        #score-hud { position: absolute; top: 75px; width: 100%; padding: 0 20px; display: flex; justify-content: space-between; z-index: 20; pointer-events: none; }
+        #game-area { display: none; position: absolute; top:0; left:0; width: 100vw; height: 100vh; z-index: 5; flex-direction: column; align-items: center;}
+        
+        /* Fixed Header Section */
+        #game-header { width: 100%; position: absolute; top: 75px; display: flex; flex-direction: column; align-items: center; z-index: 20; pointer-events: none;}
+        #score-hud { width: 100%; padding: 0 20px; display: flex; justify-content: space-between; margin-bottom: 15px;}
         .score-box { background: rgba(0,0,0,0.7); border: 1px solid #00f2fe; border-radius: 15px; padding: 8px 25px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.4); backdrop-filter: blur(5px);}
         .score-box h3 { font-family: 'Orbitron'; font-size: 11px; color: #00f2fe; text-transform: uppercase; letter-spacing: 1px;}
         .score-box p { font-size: 24px; font-weight: bold; color: #fff; margin:0; font-family: 'Orbitron'; text-shadow: 0 0 10px #00f2fe;}
-        #level-title-hud { font-family: 'Orbitron'; font-size: 24px; color: #ff007f; text-shadow: 0 0 15px #ff007f; margin-top: 15px; z-index: 20; letter-spacing: 2px;}
+        #level-title-hud { font-family: 'Orbitron'; font-size: 20px; color: #ff007f; text-shadow: 0 0 10px #ff007f; letter-spacing: 2px; text-align: center;}
 
-        /* Individual Level Containers */
-        .lvl-container { display: none; position: absolute; top: 150px; left: 15px; right: 15px; bottom: 20px; z-index: 10; flex-direction: column; align-items: center; justify-content: center; }
+        /* Level Wrappers - Pushed down properly to avoid overlap */
+        .lvl-container { display: none; width: 100%; height: 100%; padding-top: 180px; padding-bottom: 20px; flex-direction: column; align-items: center; justify-content: center; z-index: 10;}
         
         /* L1 */
-        #spark-meter-bg { width: 80%; height: 25px; background: rgba(255,255,255,0.1); border: 2px solid #00f2fe; border-radius: 12px; margin-bottom: 40px; overflow: hidden; box-shadow: 0 0 15px rgba(0,242,254,0.4);}
+        #spark-meter-bg { width: 80%; max-width: 350px; height: 25px; background: rgba(255,255,255,0.1); border: 2px solid #00f2fe; border-radius: 12px; margin-bottom: 40px; overflow: hidden; box-shadow: 0 0 15px rgba(0,242,254,0.4);}
         #spark-meter-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #00f2fe, #4facfe); transition: width 0.1s;}
         .giant-heart { font-size: 130px; cursor: pointer; filter: drop-shadow(0 0 35px rgba(255,0,127,0.8)); transition: transform 0.05s;}
         .giant-heart:active { transform: scale(0.85); filter: drop-shadow(0 0 50px #00f2fe); }
@@ -83,7 +91,7 @@
         #scramble-word { font-family: 'Orbitron'; font-size: 40px; color: #fff; text-shadow: 0 0 20px #00f2fe; letter-spacing: 10px; text-align: center; margin: 20px 0;}
         
         /* L3 */
-        .grid-game { display: grid; gap: 12px; z-index: 10; margin-top: 30px; }
+        .grid-game { display: grid; gap: 12px; margin-top: 10px; }
         .ttt-cell { width: 95px; height: 95px; background: rgba(255,0,127,0.05); border: 2px solid rgba(255,0,127,0.6); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 55px; font-family: 'Orbitron'; cursor: pointer; transition: 0.2s;}
         .golden-heart { position: absolute; font-size: 65px; cursor: pointer; filter: drop-shadow(0 0 25px #ffeb3b); animation: shake 0.2s infinite; }
         @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 25% { transform: translate(-1px, -2px) rotate(-1deg); } 50% { transform: translate(-3px, 0px) rotate(1deg); } }
@@ -92,12 +100,12 @@
         .pop-target { position: absolute; font-size: 55px; cursor: pointer; animation: pulseBeat 0.6s infinite alternate; filter: drop-shadow(0 0 15px rgba(255,0,127,0.8)); transition: transform 0.1s;}
         
         /* L5 */
-        .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 400px;}
-        .match-btn { background: rgba(0,0,0,0.6); border: 2px solid #00f2fe; padding: 20px 10px; border-radius: 15px; color: white; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 10px;}
+        .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 90%; max-width: 400px; margin-top: 10px;}
+        .match-btn { background: rgba(0,0,0,0.6); border: 2px solid #00f2fe; padding: 20px 10px; border-radius: 15px; color: white; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 10px; transition: 0.2s;}
         .match-btn.selected { background: linear-gradient(135deg, #00f2fe, #4facfe); color: black; box-shadow: 0 0 15px rgba(0,242,254,0.6); }
         
         /* L6 Memory */
-        .mem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; max-width: 350px;}
+        .mem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 90%; max-width: 350px;}
         .mem-card { width: 100%; aspect-ratio: 1; background: rgba(255,0,127,0.2); border: 1px solid #ff007f; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 40px; cursor: pointer; transform-style: preserve-3d; transition: transform 0.4s;}
         .mem-card.flipped { transform: rotateY(180deg); background: rgba(255,255,255,0.9); }
         .mem-card .inner { display: none; transform: rotateY(180deg); }
@@ -107,7 +115,7 @@
         canvas { display: none; position: absolute; top:0; left:0; width: 100vw; height: 100vh; z-index: 1; }
         
         /* L8 Sync */
-        #sync-track { width: 90%; height: 40px; background: rgba(255,255,255,0.1); border-radius: 20px; border: 2px solid #fff; position: relative; margin: 40px 0; overflow: hidden;}
+        #sync-track { width: 90%; max-width: 400px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 20px; border: 2px solid #fff; position: relative; margin: 40px 0; overflow: hidden;}
         #sync-target { position: absolute; left: 40%; width: 20%; height: 100%; background: rgba(0, 242, 254, 0.4); border-left: 2px dashed #00f2fe; border-right: 2px dashed #00f2fe; }
         #sync-bar { position: absolute; top: -5px; left: 0%; width: 10px; height: 50px; background: #ff007f; border-radius: 5px; box-shadow: 0 0 15px #ff007f; transition: left 0.1s linear;}
 
@@ -146,16 +154,18 @@
             <div class="glass-btn" id="btnHome" title="Main Menu">🏠</div>
         </div>
         <div style="display: flex; gap: 15px;">
-            <div class="glass-btn" id="btnMic">🎤</div>
+            <div class="glass-btn muted" id="btnMic">🔇</div>
             <div class="glass-btn" id="btnChat">💬<span id="chat-badge"></span></div>
         </div>
     </div>
 
+    <div id="chat-toast"></div>
+
     <div id="emoji-bar" style="display: none;">
-        <button class="emoji-btn" onclick="sendEmoji('❤️')">❤️</button>
-        <button class="emoji-btn" onclick="sendEmoji('😍')">😍</button>
-        <button class="emoji-btn" onclick="sendEmoji('😂')">😂</button>
-        <button class="emoji-btn" onclick="sendEmoji('😡')">😡</button>
+        <button class="emoji-btn" id="e-heart">❤️</button>
+        <button class="emoji-btn" id="e-eyes">😍</button>
+        <button class="emoji-btn" id="e-laugh">😂</button>
+        <button class="emoji-btn" id="e-angry">😡</button>
     </div>
 
     <div id="chat-panel">
@@ -189,10 +199,12 @@
     </div>
 
     <div id="game-area">
-        <h2 id="level-title-hud">LEVEL 1</h2>
-        <div id="score-hud">
-            <div class="score-box"><h3 id="name1">P1</h3><p id="score1">0</p></div>
-            <div class="score-box"><h3 id="name2">P2</h3><p id="score2">0</p></div>
+        <div id="game-header">
+            <div id="score-hud">
+                <div class="score-box"><h3 id="name1">P1</h3><p id="score1">0</p></div>
+                <div class="score-box"><h3 id="name2">P2</h3><p id="score2">0</p></div>
+            </div>
+            <h2 id="level-title-hud">LEVEL 1</h2>
         </div>
         
         <div id="lvl-1" class="lvl-container">
@@ -210,16 +222,18 @@
         <div id="lvl-3" class="lvl-container">
             <div id="ttt-board" class="grid-game" style="grid-template-columns: repeat(3, 1fr);"></div>
         </div>
-        <div id="lvl-3-5" class="lvl-container" style="border: 2px solid #ffeb3b; border-radius: 25px; background: rgba(0,0,0,0.4);">
-            <div id="sd-area" style="width:100%; height:100%; position:relative;"></div>
+        <div id="lvl-3-5" class="lvl-container">
+            <div style="width: 90%; height: 60%; border: 2px solid #ffeb3b; border-radius: 25px; background: rgba(0,0,0,0.4); position:relative;" id="sd-area"></div>
         </div>
         
-        <div id="lvl-4" class="lvl-container" style="border: 2px dashed rgba(0,242,254,0.4); border-radius: 25px;">
-            <div style="position:absolute; top:10px; color:#fff; font-weight:bold;">Pop hearts! Avoid broken ones.</div>
-            <div id="popper-area" style="width:100%; height:100%; position:relative;"></div>
+        <div id="lvl-4" class="lvl-container">
+            <div style="width: 95%; height: 70%; border: 2px dashed rgba(0,242,254,0.4); border-radius: 25px; position:relative;" id="popper-area">
+                <div style="position:absolute; top:-25px; left:50%; transform:translateX(-50%); color:#fff; font-weight:bold; white-space:nowrap;">Pop hearts! Avoid broken ones.</div>
+            </div>
         </div>
         
         <div id="lvl-5" class="lvl-container">
+            <div style="color:#00f2fe; margin-bottom:10px; font-weight:bold;">Match 3 times to win! (<span id="vibe-score">0</span>/3)</div>
             <div class="match-grid">
                 <button class="match-btn" id="mBtn-beach" onclick="selectMatch('beach')"><i style="font-size:30px;">🏖️</i> Beach</button>
                 <button class="match-btn" id="mBtn-mountains" onclick="selectMatch('mountains')"><i style="font-size:30px;">🏔️</i> Mountains</button>
@@ -254,6 +268,7 @@
     </div>
 
     <div id="final-screen">
+        <div class="glass-btn" id="btnFinalHome" style="position:absolute; top:20px; left:20px; z-index:5000;" title="Back to Home">🏠</div>
         <div id="finale-heart-gen"></div>
         <div id="final-content">
             <div id="final-quote">"In a universe of chaos, finding you was my perfect peace."</div>
@@ -311,6 +326,7 @@
 
         let gameId = "", playerNum = 0, myName = "", docRef = null, messagesRef = null;
         let gState = { level: 1, p1Score: 0, p2Score: 0, status: 'waiting' };
+        let joinTime = Date.now();
         
         // Data Dictionaries
         const levelData = {
@@ -318,8 +334,8 @@
             2: { title: "SOULMATE SCRAMBLE", inst: "Unscramble the love words. 3 wrong guesses and you fail!", win: "“Communication is the bridge between two hearts.”", fail: "“Words fail, but love remains. Try again!”" },
             3: { title: "TIC TAC TOE", inst: "Classic game. Win to progress, tie leads to Sudden Death!", win: "“Every battle brings us closer.”", fail: "“Love is about taking turns.”" },
             3.5: { title: "SUDDEN DEATH", inst: "Tap the golden heart faster than your partner!", win: "“Quick instincts, true connection.”", fail: "“Too slow! Try again.”" },
-            4: { title: "HEART POPPER", inst: "Pop the good hearts, avoid the broken ones. Score 400 total!", win: "“Protect your heart from the broken pieces.”", fail: "“Too many broken hearts. Heal and retry.”" },
-            5: { title: "PERFECT MATCH", inst: "Pick your ideal date. You MUST pick the same option!", win: "“Great minds and connected hearts think alike.”", fail: "“Mismatched vibes! Communicate and try again.”" },
+            4: { title: "HEART POPPER", inst: "Pop the good hearts, avoid the broken ones. Score 600 total!", win: "“Protect your heart from the broken pieces.”", fail: "“Too many broken hearts. Heal and retry.”" },
+            5: { title: "PERFECT MATCH", inst: "Pick your ideal date. You MUST pick the same option 3 times!", win: "“Great minds and connected hearts think alike.”", fail: "“Mismatched vibes! Communicate and try again.”" },
             6: { title: "MEMORY MATCH", inst: "Find the matching love emojis. 3 wrong pairs = fail!", win: "“Unforgettable connection.”", fail: "“Memory faded. Rebuild the connection!”" },
             7: { title: "CATCH THE LOVE", inst: "Move your side. Catch 10 hearts together. Catch a broken heart = instant fail!", win: "“Teamwork makes the dream work.”", fail: "“You caught a broken piece. Be careful!”" },
             8: { title: "HEARTBEAT SYNC", inst: "Tap exactly when the line hits the center. Do it together 3 times!", win: "“Hearts beating in perfect sync.”", fail: "“Out of rhythm. Find your sync again!”" }
@@ -327,26 +343,48 @@
 
         function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); if(document.getElementById(id)) document.getElementById(id).classList.add('active'); }
         document.getElementById('btnHome').onclick = () => { window.location.reload(); };
+        document.getElementById('btnFinalHome').onclick = () => { window.location.reload(); };
 
-        window.sendEmoji = async function(emoji) { 
+        // Emoji Binding Fix
+        const emitEmoji = async (emoji) => {
             if(audioCtx.state === 'suspended') audioCtx.resume();
             if(gState && gState.status === 'playing') await updateDoc(docRef, { latestEmoji: { e: emoji, p: playerNum, id: Date.now() } }); 
+        };
+        document.getElementById('e-heart').onclick = () => emitEmoji('❤️');
+        document.getElementById('e-eyes').onclick = () => emitEmoji('😍');
+        document.getElementById('e-laugh').onclick = () => emitEmoji('😂');
+        document.getElementById('e-angry').onclick = () => emitEmoji('😡');
+
+        // TOAST SYSTEM FOR CHAT
+        let toastTimeout;
+        function showToast(msgText) {
+            let toast = document.getElementById('chat-toast');
+            toast.innerText = msgText;
+            toast.style.display = 'block';
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => { toast.style.display = 'none'; }, 3000);
         }
 
-        // INITIALIZE DB STATE
+        // STRICT STATE BUILDER (Prevents Auto-Skipping)
+        function getCleanLevelState(levelToSet) {
+            let base = { level: levelToSet, overlay: { show: true, state: 'inst' } };
+            // Zero out everything to prevent ghost triggers
+            base.sparkClicks = 0;
+            base.scramble = { wordIdx: 0, jumbled: "FOREVER".split('').sort(()=>Math.random()-0.5).join(' '), fails: 0 };
+            base.tttBoard = ['','','','','','','','','']; base.tttTurn = 'X';
+            base.sdTarget = null;
+            base.popScore = 0; base.popTarget = null;
+            base.matchP1 = ""; base.matchP2 = ""; base.matchWins = 0; base.matchEvaluated = false;
+            base.memBoard = generateMemoryBoard(); base.memFlipped = []; base.memMatched = []; base.memFails = 0;
+            base.catchScore = 0; base.catchObj = null; base.cP1X = 25; base.cP2X = 75;
+            base.syncPos = 0; base.syncP1Tap = false; base.syncP2Tap = false; base.syncScore = 0;
+            return base;
+        }
+
         function getInitState() {
-            return {
-                status: 'waiting', level: 1, p1Name: myName, p2Name: "", p1Score: 0, p2Score: 0, 
-                overlay: { show: true, state: 'inst' }, // state: 'inst', 'win', 'fail'
-                sparkClicks: 0,
-                scramble: { wordIdx: 0, jumbled: "ROEFREV", fails: 0 },
-                tttBoard: ['','','','','','','','',''], tttTurn: 'X',
-                popScore: 0, popTarget: null,
-                matchP1: "", matchP2: "",
-                memBoard: generateMemoryBoard(), memFlipped: [], memMatched: [], memFails: 0,
-                catchScore: 0, catchObj: null, cP1X: 25, cP2X: 75,
-                syncPos: 0, syncP1Tap: false, syncP2Tap: false, syncScore: 0
-            };
+            let st = getCleanLevelState(1);
+            st.status = 'waiting'; st.p1Name = myName; st.p2Name = ""; st.p1Score = 0; st.p2Score = 0;
+            return st;
         }
 
         function generateMemoryBoard() {
@@ -366,7 +404,7 @@
 
         document.getElementById('btnJoin').addEventListener('click', async () => {
             myName = document.getElementById('playerName').value.trim(); gameId = document.getElementById('joinCode').value.trim().toUpperCase();
-            if(!myName || !gameId) return; playerNum = 2;
+            if(!myName || !gameId) return; playerNum = 2; joinTime = Date.now();
             docRef = doc(db, "games", gameId); messagesRef = collection(db, "games", gameId, "messages");
             let snap = await getDoc(docRef);
             if(snap.exists()) { await updateDoc(docRef, { p2Name: myName, status: 'playing' }); setupSync(); setupChat(); setupWebRTC(); } 
@@ -403,29 +441,23 @@
             }
         }
 
-        document.getElementById('ov-btn').onclick = async () => { // Host advances
+        document.getElementById('ov-btn').onclick = async () => { 
             playSound('click');
             if(gState.overlay.state === 'inst') {
                 await updateDoc(docRef, { overlay: { show: false } });
             } else if(gState.overlay.state === 'win') {
                 let nextLvl = gState.level === 3 ? 3.5 : (gState.level === 3.5 ? 4 : gState.level + 1);
-                if(nextLvl > 8) { triggerFinale(); } 
-                else { await updateDoc(docRef, { level: nextLvl, overlay: { show: true, state: 'inst' } }); }
+                if(nextLvl > 8) { 
+                    await updateDoc(docRef, { level: 9 }); // Tell both clients to trigger finale
+                } else { 
+                    await updateDoc(docRef, getCleanLevelState(nextLvl)); // Strict clean reset
+                }
             }
         };
 
-        document.getElementById('ov-btn-fail').onclick = async () => { // Host restarts level
+        document.getElementById('ov-btn-fail').onclick = async () => { 
             playSound('click');
-            let resetData = { overlay: { show: true, state: 'inst' } };
-            // Level specific resets
-            if(gState.level === 2) resetData.scramble = { wordIdx: 0, jumbled: "FOREVER".split('').sort(()=>Math.random()-0.5).join(' '), fails: 0 };
-            if(gState.level === 4) { resetData.popScore = 0; resetData.popTarget = null; }
-            if(gState.level === 5) { resetData.matchP1 = ""; resetData.matchP2 = ""; }
-            if(gState.level === 6) { resetData.memBoard = generateMemoryBoard(); resetData.memFlipped = []; resetData.memMatched = []; resetData.memFails = 0; }
-            if(gState.level === 7) { resetData.catchScore = 0; resetData.catchObj = null; resetData.cP1X = 25; resetData.cP2X = 75; }
-            if(gState.level === 8) { resetData.syncScore = 0; resetData.syncP1Tap = false; resetData.syncP2Tap = false; }
-            
-            await updateDoc(docRef, resetData);
+            await updateDoc(docRef, getCleanLevelState(gState.level)); // Clean restart current level
         };
 
         function triggerWin() { playSound('win'); if(playerNum===1) updateDoc(docRef, { overlay: { show: true, state: 'win' } }); }
@@ -435,6 +467,7 @@
         let hostIntervals = {};
         function clearAllIntervals() { Object.values(hostIntervals).forEach(clearInterval); hostIntervals = {}; }
 
+        let lastEmojiId = 0;
         function setupSync() {
             onSnapshot(docRef, (snap) => {
                 if(!snap.exists()) return;
@@ -451,8 +484,19 @@
                     document.getElementById('score1').innerText = gState.p1Score; document.getElementById('score2').innerText = gState.p2Score;
                     document.getElementById('level-title-hud').innerText = gState.level === 3.5 ? "TIE BREAKER" : `LEVEL ${Math.floor(gState.level)}`;
 
+                    // Emojis Sync
+                    if(gState.latestEmoji && gState.latestEmoji.id !== lastEmojiId) {
+                        lastEmojiId = gState.latestEmoji.id;
+                        let div = document.createElement('div'); div.className = 'floating-emoji'; div.innerText = gState.latestEmoji.e;
+                        div.style.left = gState.latestEmoji.p === 1 ? '20%' : '80%'; div.style.top = '60%';
+                        document.body.appendChild(div); setTimeout(() => div.remove(), 2000);
+                    }
+
+                    // Check Finale Signal
+                    if(gState.level >= 9) { triggerFinale(); return; }
+
                     handleOverlay();
-                    if(gState.overlay.show) return; // Stop rendering game active state if overlay is up
+                    if(gState.overlay.show) return; // Halt game logic visually if overlay is up
 
                     document.querySelectorAll('.lvl-container').forEach(e => e.style.display='none');
                     document.getElementById('game-canvas').style.display = 'none';
@@ -461,12 +505,11 @@
                     else if(gState.level === 2) { document.getElementById('lvl-2').style.display='flex'; renderScramble(); }
                     else if(gState.level === 3) { document.getElementById('lvl-3').style.display='flex'; renderTTT(); }
                     else if(gState.level === 3.5) { document.getElementById('lvl-3-5').style.display='flex'; renderSD(); if(playerNum===1 && !hostIntervals.l35) hostIntervals.l35 = setInterval(()=>hostSD(), 800); }
-                    else if(gState.level === 4) { document.getElementById('lvl-4').style.display='flex'; renderPopper(); if(playerNum===1 && !hostIntervals.l4) hostIntervals.l4 = setInterval(()=>hostPopper(), 800); }
+                    else if(gState.level === 4) { document.getElementById('lvl-4').style.display='flex'; renderPopper(); if(playerNum===1 && !hostIntervals.l4) hostIntervals.l4 = setInterval(()=>hostPopper(), 600); }
                     else if(gState.level === 5) { document.getElementById('lvl-5').style.display='flex'; renderMatch(); }
                     else if(gState.level === 6) { document.getElementById('lvl-6').style.display='flex'; renderMemory(); }
                     else if(gState.level === 7) { document.getElementById('game-canvas').style.display='block'; startCatchEngine(); if(playerNum===1 && !hostIntervals.l7) hostIntervals.l7 = setInterval(()=>hostCatch(), 800); }
                     else if(gState.level === 8) { document.getElementById('lvl-8').style.display='flex'; renderSync(); if(playerNum===1 && !hostIntervals.l8) hostIntervals.l8 = setInterval(()=>hostSync(), 50); }
-                    else if(gState.level >= 9) { triggerFinale(); }
                 }
             });
         }
@@ -524,11 +567,11 @@
             }
         }
 
-        // --- L4 ---
+        // --- L4 (Harder) ---
         function hostPopper() { 
             if(gState.overlay.show) return;
-            if(gState.popScore >= 400) triggerWin();
-            else updateDoc(docRef, { popTarget: { x: Math.random()*80, y: Math.random()*80, id: Date.now(), t: Math.random()>0.7?'bad':'good' } });
+            if(gState.popScore >= 600) triggerWin(); // Higher score needed
+            else updateDoc(docRef, { popTarget: { x: Math.random()*80, y: Math.random()*80, id: Date.now(), t: Math.random()>0.6?'bad':'good' } });
         }
         function renderPopper() {
             let a = document.getElementById('popper-area'); a.innerHTML = '';
@@ -537,29 +580,42 @@
                 h.style.left = gState.popTarget.x + '%'; h.style.top = gState.popTarget.y + '%';
                 h.onclick = () => { 
                     if(gState.popTarget.t === 'bad') triggerFail();
-                    else { playSound('click'); updateDoc(docRef, { popTarget: null, popScore: gState.popScore+50 }); }
+                    else { playSound('click'); updateDoc(docRef, { popTarget: null, popScore: gState.popScore+20 }); } // +20 per pop = 30 pops needed
                 }; a.appendChild(h);
             }
         }
 
-        // --- L5 ---
+        // --- L5 (Longer) ---
         window.selectMatch = async function(c) {
-            if(gState.level !== 5 || gState.overlay.show) return; playSound('click');
+            if(gState.level !== 5 || gState.overlay.show || gState.matchEvaluated) return; playSound('click');
             let k = playerNum === 1 ? 'matchP1' : 'matchP2';
             if((playerNum === 1 && gState.matchP1) || (playerNum === 2 && gState.matchP2)) return;
             await updateDoc(docRef, { [k]: c });
         }
         function renderMatch() {
+            document.getElementById('vibe-score').innerText = gState.matchWins;
             let my = playerNum === 1 ? gState.matchP1 : gState.matchP2;
             let pr = playerNum === 1 ? gState.matchP2 : gState.matchP1;
             document.querySelectorAll('.match-btn').forEach(b => b.classList.remove('selected'));
             if(my) document.getElementById('mBtn-' + my)?.classList.add('selected');
             
             let s = document.getElementById('match-status');
-            if(!my) s.innerText = "Pick an option!"; else if(!pr) s.innerText = "Waiting for partner..."; else s.innerText = "Checking...";
+            if(!my) s.innerText = "Pick an option!"; else if(!pr) s.innerText = "Waiting for partner..."; else s.innerText = "Checking vibe... 💓";
 
-            if(playerNum===1 && gState.matchP1 && gState.matchP2) {
-                setTimeout(() => { if(gState.matchP1 === gState.matchP2) triggerWin(); else triggerFail(); }, 1000);
+            // Host evaluates round
+            if(playerNum===1 && gState.matchP1 && gState.matchP2 && !gState.matchEvaluated) {
+                updateDoc(docRef, { matchEvaluated: true });
+                setTimeout(async () => {
+                    if(gState.level !== 5) return;
+                    if(gState.matchP1 === gState.matchP2) {
+                        playSound('match'); let wins = gState.matchWins + 1;
+                        if(wins >= 3) { triggerWin(); } 
+                        else { await updateDoc(docRef, { matchWins: wins, matchP1: "", matchP2: "", matchEvaluated: false }); }
+                    } else {
+                        playSound('fail');
+                        setTimeout(async () => { await updateDoc(docRef, { matchP1: "", matchP2: "", matchEvaluated: false }); }, 1500); // clear selections
+                    }
+                }, 1000);
             }
         }
 
@@ -661,7 +717,9 @@
         };
 
         // --- FINALE ---
+        let finaleTriggered = false;
         function triggerFinale() {
+            if(finaleTriggered) return; finaleTriggered = true;
             clearAllIntervals(); document.getElementById('ui-overlay').style.display='none';
             document.getElementById('game-area').style.display = 'none'; document.getElementById('top-nav').style.display = 'none'; document.getElementById('emoji-bar').style.display = 'none';
             let fScreen = document.getElementById('final-screen'); fScreen.style.display = 'flex';
@@ -669,13 +727,13 @@
             
             let gen = document.getElementById('finale-heart-gen');
             
-            // 1. Medium heart zooms to cover screen
+            // 1. Medium heart zooms
             let centerHeart = document.createElement('div');
             centerHeart.innerHTML = '❤'; centerHeart.className = 'center-massive-heart anim-zoom-fill';
             centerHeart.style.color = '#ff0055';
             gen.appendChild(centerHeart);
 
-            // 2. Multiple colorful hearts burst from center without edges (using text-shadow/filter)
+            // 2. Multiple colorful hearts burst
             const colors = ['#ff007f', '#00f2fe', '#ff758c', '#ffeb3b', '#00ffcc', '#ff0055'];
             setTimeout(() => {
                 for(let i=0; i<100; i++) {
@@ -687,17 +745,72 @@
                 }
             }, 1000);
 
-            // 3. Show text
             document.getElementById('final-content').classList.add('anim-fade-in');
         }
 
         // WebRTC & Chat
         let chatOpen = false;
         document.getElementById('btnChat').onclick = () => { chatOpen = !chatOpen; document.getElementById('chat-panel').style.display = chatOpen ? 'flex' : 'none'; document.getElementById('chat-badge').style.display = 'none'; };
-        function setupChat() { onSnapshot(query(messagesRef, orderBy("ts")), (snap) => { let box = document.getElementById('chat-msgs'); box.innerHTML = ''; snap.forEach(d => { let m = d.data(); let el = document.createElement('div'); el.className = `msg ${m.sender === playerNum ? 'me' : 'them'}`; el.innerText = m.text; box.appendChild(el); if(!chatOpen && m.sender !== playerNum) document.getElementById('chat-badge').style.display = 'block'; }); box.scrollTop = box.scrollHeight; }); }
+        
+        function setupChat() { 
+            onSnapshot(query(messagesRef, orderBy("ts")), (snap) => { 
+                let box = document.getElementById('chat-msgs'); box.innerHTML = ''; 
+                
+                snap.docChanges().forEach(change => {
+                    let m = change.doc.data();
+                    if(change.type === 'added') {
+                        // Show toast only for new messages received after joining, from the partner, if chat box is closed
+                        if(!chatOpen && m.sender !== playerNum && m.ts > joinTime) {
+                            showToast(m.text);
+                        }
+                    }
+                });
+
+                snap.forEach(d => { 
+                    let m = d.data(); 
+                    let el = document.createElement('div'); 
+                    el.className = `msg ${m.sender === playerNum ? 'me' : 'them'}`; el.innerText = m.text; box.appendChild(el); 
+                }); 
+                box.scrollTop = box.scrollHeight; 
+            }); 
+        }
+        
         document.getElementById('btnSendChat').onclick = async () => { let t = document.getElementById('chatInput').value.trim(); if(t) { await addDoc(messagesRef, { text: t, sender: playerNum, ts: Date.now() }); document.getElementById('chatInput').value = ''; } };
-        let localStream, peerConn, isMuted = false;
-        async function setupWebRTC() { try { localStream = await navigator.mediaDevices.getUserMedia({ audio: true }); peerConn = new RTCPeerConnection({ iceServers: [{ urls: ['stun:stun1.l.google.com:19302'] }] }); localStream.getTracks().forEach(t => peerConn.addTrack(t, localStream)); peerConn.ontrack = (e) => { let audio = new Audio(); audio.srcObject = e.streams[0]; audio.play(); }; const callDoc = doc(db, "calls", gameId); const offerC = collection(callDoc, "offerC"); const answerC = collection(callDoc, "answerC"); peerConn.onicecandidate = e => { e.candidate && addDoc(playerNum===1 ? offerC : answerC, e.candidate.toJSON()); }; if(playerNum === 1) { let offer = await peerConn.createOffer(); await peerConn.setLocalDescription(offer); await setDoc(callDoc, { offer: { type: offer.type, sdp: offer.sdp }}); onSnapshot(callDoc, (snap) => { let data = snap.data(); if(data?.answer && !peerConn.currentRemoteDescription) peerConn.setRemoteDescription(new RTCSessionDescription(data.answer)); }); onSnapshot(answerC, snap => snap.docChanges().forEach(c => { if(c.type === 'added') peerConn.addIceCandidate(new RTCIceCandidate(c.doc.data())); })); } else { onSnapshot(callDoc, async (snap) => { let data = snap.data(); if(data?.offer && !peerConn.currentRemoteDescription) { await peerConn.setRemoteDescription(new RTCSessionDescription(data.offer)); let ans = await peerConn.createAnswer(); await peerConn.setLocalDescription(ans); await updateDoc(callDoc, { answer: { type: ans.type, sdp: ans.sdp }}); } }); onSnapshot(offerC, snap => snap.docChanges().forEach(c => { if(c.type === 'added') peerConn.addIceCandidate(new RTCIceCandidate(c.doc.data())); })); } document.getElementById('btnMic').onclick = () => { isMuted = !isMuted; localStream.getAudioTracks()[0].enabled = !isMuted; document.getElementById('btnMic').classList.toggle('muted'); document.getElementById('btnMic').innerText = isMuted ? '🔇' : '🎤'; }; } catch(e) { console.log("Mic error"); } }
+        
+        // Mic Setup Default Off
+        let localStream, peerConn, isMuted = true;
+        async function setupWebRTC() { 
+            try { 
+                localStream = await navigator.mediaDevices.getUserMedia({ audio: true }); 
+                // Force mute instantly
+                localStream.getAudioTracks()[0].enabled = false;
+                isMuted = true;
+
+                peerConn = new RTCPeerConnection({ iceServers: [{ urls: ['stun:stun1.l.google.com:19302'] }] }); 
+                localStream.getTracks().forEach(t => peerConn.addTrack(t, localStream)); 
+                peerConn.ontrack = (e) => { let audio = new Audio(); audio.srcObject = e.streams[0]; audio.play(); }; 
+                const callDoc = doc(db, "calls", gameId); const offerC = collection(callDoc, "offerC"); const answerC = collection(callDoc, "answerC"); 
+                peerConn.onicecandidate = e => { e.candidate && addDoc(playerNum===1 ? offerC : answerC, e.candidate.toJSON()); }; 
+                
+                if(playerNum === 1) { 
+                    let offer = await peerConn.createOffer(); await peerConn.setLocalDescription(offer); await setDoc(callDoc, { offer: { type: offer.type, sdp: offer.sdp }}); 
+                    onSnapshot(callDoc, (snap) => { let data = snap.data(); if(data?.answer && !peerConn.currentRemoteDescription) peerConn.setRemoteDescription(new RTCSessionDescription(data.answer)); }); 
+                    onSnapshot(answerC, snap => snap.docChanges().forEach(c => { if(c.type === 'added') peerConn.addIceCandidate(new RTCIceCandidate(c.doc.data())); })); 
+                } else { 
+                    onSnapshot(callDoc, async (snap) => { let data = snap.data(); if(data?.offer && !peerConn.currentRemoteDescription) { await peerConn.setRemoteDescription(new RTCSessionDescription(data.offer)); let ans = await peerConn.createAnswer(); await peerConn.setLocalDescription(ans); await updateDoc(callDoc, { answer: { type: ans.type, sdp: ans.sdp }}); } }); 
+                    onSnapshot(offerC, snap => snap.docChanges().forEach(c => { if(c.type === 'added') peerConn.addIceCandidate(new RTCIceCandidate(c.doc.data())); })); 
+                } 
+                
+                document.getElementById('btnMic').onclick = () => { 
+                    isMuted = !isMuted; localStream.getAudioTracks()[0].enabled = !isMuted; 
+                    if(isMuted) {
+                        document.getElementById('btnMic').classList.add('muted'); document.getElementById('btnMic').innerText = '🔇'; 
+                    } else {
+                        document.getElementById('btnMic').classList.remove('muted'); document.getElementById('btnMic').innerText = '🎤'; 
+                    }
+                }; 
+            } catch(e) { console.log("Mic error"); } 
+        }
     </script>
 </body>
 </html>
