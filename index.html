@@ -2,358 +2,702 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Neon Ludo Pro | Perfect UI</title>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Journey of Love 💖</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
-
-        :root {
-            --bg-color: #0b0914;
-            --glass-bg: rgba(20, 15, 35, 0.85);
-            --neon-blue: #00f2fe;
-            --neon-pink: #fe0979;
-            --gold: #ffd700;
-            --ludo-red: #E53935; --ludo-green: #43A047; 
-            --ludo-blue: #1E88E5; --ludo-yellow: #FDD835;
-        }
-
-        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; user-select: none; }
-        body { background: radial-gradient(circle at center, #2a1b4d 0%, #0b0914 100%); color: white; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
-
-        .screen { display: none; padding: 15px; flex-direction: column; align-items: center; justify-content: center; width: 100vw; min-height: 100vh; position: absolute; top: 0; left: 0; }
-        .screen.active { display: flex; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-
-        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; width: 100%; max-width: 380px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600;800&family=Orbitron:wght@700;900&family=Great+Vibes&family=Cinzel:wght@700&display=swap');
         
-        input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--neon-blue); background: #222; color: white; text-align: center; font-weight: bold; margin-bottom: 15px; font-size: 16px; }
-        button { background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink)); border: none; color: white; padding: 12px; border-radius: 25px; font-weight: bold; font-size: 16px; cursor: pointer; width: 100%; margin-bottom: 10px; text-transform: uppercase; }
-        button:active { transform: scale(0.95); }
-
-        .top-bar { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 380px; padding: 10px 0; }
-        .back-btn { background: transparent; border: 1px solid white; width: auto; padding: 5px 15px; border-radius: 20px; margin: 0; font-size: 12px; }
-
-        /* Video Chat Layout */
-        .video-container { display: flex; justify-content: space-between; width: 100%; max-width: 360px; margin-bottom: 10px; }
-        .video-wrapper { position: relative; width: 48%; aspect-ratio: 4/3; }
-        video { width: 100%; height: 100%; border-radius: 8px; border: 2px solid var(--neon-blue); background: #000; object-fit: cover; }
-        .player-name-tag { position: absolute; bottom: 5px; left: 5px; background: rgba(0,0,0,0.6); font-size: 10px; padding: 2px 5px; border-radius: 4px; }
-
-        /* ---------------- PERFECT LUDO BOARD ---------------- */
-        .board-container { background: white; padding: 5px; border-radius: 8px; box-shadow: 0 0 15px rgba(0, 242, 254, 0.3); margin-bottom: 10px; }
-        .ludo-board {
-            width: 90vw; height: 90vw; max-width: 350px; max-height: 350px;
-            display: grid; grid-template-columns: repeat(15, 1fr); grid-template-rows: repeat(15, 1fr);
-            border: 2px solid #111; position: relative; background: white;
-        }
-
-        .cell { border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; position: relative; }
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
         
-        /* Colored Safe Paths */
-        .path-red { background-color: rgba(229, 57, 53, 0.2); }
-        .path-green { background-color: rgba(67, 160, 71, 0.2); }
-        .path-blue { background-color: rgba(30, 136, 229, 0.2); }
-        .path-yellow { background-color: rgba(253, 216, 53, 0.2); }
-        .safe-star { font-size: 12px; opacity: 0.5; }
-
-        /* Player Homes */
-        .home { border: 2px solid #111; display: flex; align-items: center; justify-content: center; }
-        .home.red { background: var(--ludo-red); grid-area: 1/1/7/7; }
-        .home.green { background: var(--ludo-green); grid-area: 1/10/7/16; }
-        .home.blue { background: var(--ludo-blue); grid-area: 10/1/16/7; }
-        .home.yellow { background: var(--ludo-yellow); grid-area: 10/10/16/16; }
-
-        /* Inner White Box for Pucks */
-        .inner-box { width: 65%; height: 65%; background: white; border-radius: 15px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; padding: 10px; box-shadow: inset 0 0 10px rgba(0,0,0,0.2); }
-        
-        /* Fixed Size Pucks (NO MORE GIANTS) */
-        .puck-spot { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
-        .puck { 
-            width: 22px; height: 22px; border-radius: 50%; border: 2px solid white; 
-            box-shadow: 0 3px 5px rgba(0,0,0,0.6), inset 0 -2px 4px rgba(0,0,0,0.3);
-            z-index: 10; cursor: pointer; transition: transform 0.2s; 
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            color: white; height: 100vh; width: 100vw; overflow: hidden; touch-action: none;
+            background: linear-gradient(-45deg, #1a0011, #050011, #2b0033, #0a000a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
         }
-        .puck.red { background: radial-gradient(circle at 30% 30%, #ff8a80, var(--ludo-red)); }
-        .puck.green { background: radial-gradient(circle at 30% 30%, #b9f6ca, var(--ludo-green)); }
-        .puck.blue { background: radial-gradient(circle at 30% 30%, #82b1ff, var(--ludo-blue)); }
-        .puck.yellow { background: radial-gradient(circle at 30% 30%, #ffff8d, var(--ludo-yellow)); }
-        .puck.active { box-shadow: 0 0 15px var(--gold); border: 2px solid var(--gold); transform: scale(1.2); animation: pulse 1s infinite; }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+        .bg-hearts { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+        .bg-heart { position: absolute; color: rgba(255, 0, 127, 0.1); font-size: 20px; animation: floatUp 12s linear infinite; bottom: -50px; text-shadow: 0 0 5px rgba(255,0,127,0.2);}
+        @keyframes floatUp { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; } }
 
-        /* Center Grid */
-        .center-home { grid-area: 7/7/10/10; background: #333; border: 2px solid #111; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 10px; clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%); background: conic-gradient(var(--ludo-red) 45deg, var(--ludo-green) 45deg 135deg, var(--ludo-yellow) 135deg 225deg, var(--ludo-blue) 225deg 315deg, var(--ludo-red) 315deg); }
+        .screen { display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; flex-direction: column; align-items: center; justify-content: center; z-index: 10; }
+        .active { display: flex; }
+        
+        h1 { font-family: 'Dancing Script', cursive; font-size: 65px; color: #ff007f; text-shadow: 0 0 25px rgba(255, 0, 127, 0.8); text-align: center; margin-bottom: 5px;}
+        .subtitle { font-family: 'Orbitron', sans-serif; font-size: 14px; color: #00f2fe; margin-bottom: 30px; letter-spacing: 4px; text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);}
+        
+        .card { background: rgba(10, 5, 20, 0.7); padding: 30px; border-radius: 25px; border: 1px solid rgba(0, 242, 254, 0.4); width: 90%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 0 20px rgba(0, 242, 254, 0.1); text-align: center; backdrop-filter: blur(15px);}
 
-        .dice-area { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 10px; }
-        .dice { font-size: 45px; cursor: pointer; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        .rolling { animation: roll 0.4s infinite linear; }
-        @keyframes roll { 0% { transform: rotate(0); } 100% { transform: rotate(360deg); } }
+        input, select, button { width: 100%; padding: 15px; margin: 12px 0; border-radius: 15px; border: none; font-size: 16px; font-family: 'Poppins', sans-serif; text-align: center; font-weight: bold; transition: all 0.3s ease;}
+        input, select { background: rgba(255,255,255,0.9); color: #111; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); }
+        input:focus { border: 2px solid #ff007f; outline: none; transform: scale(1.02); }
+        
+        .btn-primary { background: linear-gradient(90deg, #ff007f, #ff758c); color: #fff; text-transform: uppercase; cursor: pointer; box-shadow: 0 8px 20px rgba(255, 0, 127, 0.4); letter-spacing: 1px;}
+        .btn-primary:active { transform: scale(0.95); box-shadow: 0 4px 10px rgba(255, 0, 127, 0.4); }
+        .btn-secondary { background: rgba(255, 255, 255, 0.05); border: 1px solid #00f2fe; color: #00f2fe; }
+        .btn-success { background: linear-gradient(90deg, #1D976C, #25D366); color: white; box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);}
+        .btn-danger { background: linear-gradient(90deg, #ff0000, #ff4d4d); color: white; box-shadow: 0 8px 20px rgba(255, 0, 0, 0.4);}
+
+        /* Nav & Comm */
+        #top-nav { display: none; position: absolute; top: 15px; left: 15px; right: 15px; justify-content: space-between; z-index: 1000; pointer-events: none;}
+        .glass-btn { position: relative; pointer-events: auto; width: 45px; height: 45px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3); color: #fff; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 20px; backdrop-filter: blur(10px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: 0.3s; }
+        .glass-btn:active { transform: scale(0.9); }
+        .muted { background: rgba(255, 0, 0, 0.3); border-color: #ff0000; color: #ff5555;}
+        #chat-badge { display: none; position: absolute; top: 0; right: 0; width: 12px; height: 12px; background: #ff0055; border-radius: 50%; box-shadow: 0 0 5px #ff0055; border: 1px solid #fff; }
+
+        /* Chat & Emojis */
+        #chat-panel { display: none; position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; height: 350px; background: rgba(10, 5, 20, 0.95); border: 1px solid #00f2fe; border-radius: 20px; z-index: 2000; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.8); backdrop-filter: blur(15px);}
+        #chat-msgs { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; font-size: 14px; scroll-behavior: smooth; }
+        .msg { padding: 12px 18px; border-radius: 20px; max-width: 80%; word-wrap: break-word; box-shadow: 0 2px 5px rgba(0,0,0,0.2);}
+        .msg.me { background: linear-gradient(135deg, #00f2fe, #4facfe); color: black; align-self: flex-end; border-bottom-right-radius: 4px; font-weight: 600;}
+        .msg.them { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; align-self: flex-start; border-bottom-left-radius: 4px; }
+        #chat-input-area { display: flex; padding: 10px; gap: 10px; border-top: 1px solid rgba(0,242,254,0.3); background: rgba(0,0,0,0.4); border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;}
+        #chat-input-area input { margin: 0; padding: 12px 15px; border-radius: 20px; font-size: 14px; background: rgba(255,255,255,0.1); color: white; border: none;}
+        #chat-input-area button { width: 50px; margin: 0; border-radius: 50%; display: flex; justify-content: center; align-items: center;}
+        #emoji-bar { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 15px; z-index: 1500; }
+        .emoji-btn { background: rgba(255,255,255,0.1); border: 1px solid #ff007f; border-radius: 50%; width: 45px; height: 45px; font-size: 22px; cursor: pointer; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); transition: 0.2s;}
+        .emoji-btn:active { transform: scale(0.8); }
+        .floating-emoji { position: absolute; font-size: 45px; animation: floatUpEmoji 2s forwards ease-out; z-index: 2500; pointer-events: none; filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));}
+        @keyframes floatUpEmoji { 0% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -200px) scale(1.5); } }
+
+        /* Game Area Base */
+        #game-area { display: none; position: absolute; top:0; left:0; width: 100vw; height: 100vh; z-index: 5; flex-direction: column; align-items: center; justify-content: center;}
+        #score-hud { position: absolute; top: 75px; width: 100%; padding: 0 20px; display: flex; justify-content: space-between; z-index: 20; pointer-events: none; }
+        .score-box { background: rgba(0,0,0,0.7); border: 1px solid #00f2fe; border-radius: 15px; padding: 8px 25px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.4); backdrop-filter: blur(5px);}
+        .score-box h3 { font-family: 'Orbitron'; font-size: 11px; color: #00f2fe; text-transform: uppercase; letter-spacing: 1px;}
+        .score-box p { font-size: 24px; font-weight: bold; color: #fff; margin:0; font-family: 'Orbitron'; text-shadow: 0 0 10px #00f2fe;}
+        #level-title-hud { font-family: 'Orbitron'; font-size: 24px; color: #ff007f; text-shadow: 0 0 15px #ff007f; margin-top: 15px; z-index: 20; letter-spacing: 2px;}
+
+        /* Individual Level Containers */
+        .lvl-container { display: none; position: absolute; top: 150px; left: 15px; right: 15px; bottom: 20px; z-index: 10; flex-direction: column; align-items: center; justify-content: center; }
+        
+        /* L1 */
+        #spark-meter-bg { width: 80%; height: 25px; background: rgba(255,255,255,0.1); border: 2px solid #00f2fe; border-radius: 12px; margin-bottom: 40px; overflow: hidden; box-shadow: 0 0 15px rgba(0,242,254,0.4);}
+        #spark-meter-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #00f2fe, #4facfe); transition: width 0.1s;}
+        .giant-heart { font-size: 130px; cursor: pointer; filter: drop-shadow(0 0 35px rgba(255,0,127,0.8)); transition: transform 0.05s;}
+        .giant-heart:active { transform: scale(0.85); filter: drop-shadow(0 0 50px #00f2fe); }
+        
+        /* L2 */
+        #scramble-word { font-family: 'Orbitron'; font-size: 40px; color: #fff; text-shadow: 0 0 20px #00f2fe; letter-spacing: 10px; text-align: center; margin: 20px 0;}
+        
+        /* L3 */
+        .grid-game { display: grid; gap: 12px; z-index: 10; margin-top: 30px; }
+        .ttt-cell { width: 95px; height: 95px; background: rgba(255,0,127,0.05); border: 2px solid rgba(255,0,127,0.6); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 55px; font-family: 'Orbitron'; cursor: pointer; transition: 0.2s;}
+        .golden-heart { position: absolute; font-size: 65px; cursor: pointer; filter: drop-shadow(0 0 25px #ffeb3b); animation: shake 0.2s infinite; }
+        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 25% { transform: translate(-1px, -2px) rotate(-1deg); } 50% { transform: translate(-3px, 0px) rotate(1deg); } }
+
+        /* L4 */
+        .pop-target { position: absolute; font-size: 55px; cursor: pointer; animation: pulseBeat 0.6s infinite alternate; filter: drop-shadow(0 0 15px rgba(255,0,127,0.8)); transition: transform 0.1s;}
+        
+        /* L5 */
+        .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 400px;}
+        .match-btn { background: rgba(0,0,0,0.6); border: 2px solid #00f2fe; padding: 20px 10px; border-radius: 15px; color: white; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 10px;}
+        .match-btn.selected { background: linear-gradient(135deg, #00f2fe, #4facfe); color: black; box-shadow: 0 0 15px rgba(0,242,254,0.6); }
+        
+        /* L6 Memory */
+        .mem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; max-width: 350px;}
+        .mem-card { width: 100%; aspect-ratio: 1; background: rgba(255,0,127,0.2); border: 1px solid #ff007f; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 40px; cursor: pointer; transform-style: preserve-3d; transition: transform 0.4s;}
+        .mem-card.flipped { transform: rotateY(180deg); background: rgba(255,255,255,0.9); }
+        .mem-card .inner { display: none; transform: rotateY(180deg); }
+        .mem-card.flipped .inner { display: block; }
+        
+        /* L7 Catch Canvas */
+        canvas { display: none; position: absolute; top:0; left:0; width: 100vw; height: 100vh; z-index: 1; }
+        
+        /* L8 Sync */
+        #sync-track { width: 90%; height: 40px; background: rgba(255,255,255,0.1); border-radius: 20px; border: 2px solid #fff; position: relative; margin: 40px 0; overflow: hidden;}
+        #sync-target { position: absolute; left: 40%; width: 20%; height: 100%; background: rgba(0, 242, 254, 0.4); border-left: 2px dashed #00f2fe; border-right: 2px dashed #00f2fe; }
+        #sync-bar { position: absolute; top: -5px; left: 0%; width: 10px; height: 50px; background: #ff007f; border-radius: 5px; box-shadow: 0 0 15px #ff007f; transition: left 0.1s linear;}
+
+        /* Universal Overlay */
+        #ui-overlay { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(10,0,5,0.95); z-index: 3000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 25px; backdrop-filter: blur(10px);}
+        #ov-type { font-family: 'Orbitron'; font-size: 20px; color: #fff; letter-spacing: 5px; margin-bottom: 10px; }
+        #ov-title { font-family: 'Orbitron'; font-size: 40px; color: #ff4d85; margin-bottom: 20px; text-shadow: 0 0 25px rgba(255,77,133,0.8);}
+        #ov-quote { font-size: 22px; color: #ffb3c6; font-family: 'Dancing Script', cursive; margin-bottom: 40px; line-height: 1.5; text-shadow: 0 2px 4px rgba(0,0,0,0.5);}
+        
+        /* FINALE SCREEN (NEW) */
+        #final-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: #050011; z-index: 4000; overflow: hidden; flex-direction: column; align-items: center; justify-content: center; }
+        .center-massive-heart { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); font-size: 60px; filter: drop-shadow(0 0 30px #ff0055); z-index: 4005; }
+        .anim-zoom-fill { animation: zoomFillHeart 4s forwards cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes zoomFillHeart { 0% { transform: translate(-50%, -50%) scale(0); opacity: 1; } 60% { transform: translate(-50%, -50%) scale(5); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(100); opacity: 0; } }
+        
+        .bursting-heart { position: absolute; top: 50%; left: 50%; font-size: 30px; transform: translate(-50%, -50%); opacity: 0; filter: drop-shadow(0 0 15px currentColor); z-index: 4002;}
+        .anim-burst { animation: burstHeart 3s forwards ease-out; }
+        @keyframes burstHeart { 0% { transform: translate(-50%, -50%) scale(0); opacity: 1; } 100% { transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.5); opacity: 0; } }
+
+        #final-content { display: flex; flex-direction: column; align-items: center; z-index: 4010; opacity: 0; text-align: center; padding: 20px; }
+        .anim-fade-in { animation: finalFadeIn 2s 3.5s forwards; }
+        @keyframes finalFadeIn { to { opacity: 1; } }
+        
+        #final-quote { font-family: 'Great Vibes', cursive; font-size: 50px; color: #ffb3c6; text-shadow: 0 0 20px #ff0055; line-height: 1.2; margin-bottom: 30px;}
+        #final-names { font-family: 'Cinzel', serif; font-weight: 800; font-size: 40px; background: linear-gradient(90deg, #00f2fe, #ff007f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 10px rgba(0,242,254,0.5));}
+
+        @keyframes pulseBeat { 0% { transform: scale(1); } 100% { transform: scale(1.15); } }
     </style>
 </head>
 <body>
 
-    <div id="login-page" class="screen active">
-        <h1 style="color: var(--neon-blue); margin-bottom: 5px; font-size: 40px;">LUDO</h1>
-        <p style="margin-bottom: 30px; color: #aaa;">Enter your details to play</p>
+    <div class="bg-hearts" id="bgHearts"></div>
+
+    <div id="top-nav">
+        <div style="display: flex; gap: 15px;">
+            <div class="glass-btn" id="btnHome" title="Main Menu">🏠</div>
+        </div>
+        <div style="display: flex; gap: 15px;">
+            <div class="glass-btn" id="btnMic">🎤</div>
+            <div class="glass-btn" id="btnChat">💬<span id="chat-badge"></span></div>
+        </div>
+    </div>
+
+    <div id="emoji-bar" style="display: none;">
+        <button class="emoji-btn" onclick="sendEmoji('❤️')">❤️</button>
+        <button class="emoji-btn" onclick="sendEmoji('😍')">😍</button>
+        <button class="emoji-btn" onclick="sendEmoji('😂')">😂</button>
+        <button class="emoji-btn" onclick="sendEmoji('😡')">😡</button>
+    </div>
+
+    <div id="chat-panel">
+        <div id="chat-msgs"></div>
+        <div id="chat-input-area">
+            <input type="text" id="chatInput" placeholder="Type a message...">
+            <button id="btnSendChat" class="btn-primary" style="padding: 12px; width: 60px;">➤</button>
+        </div>
+    </div>
+
+    <div id="home-screen" class="screen active">
+        <h1>Love Hub</h1>
+        <div class="subtitle">THE ULTIMATE JOURNEY</div>
+        <div class="card">
+            <input type="text" id="playerName" placeholder="Your Name" required>
+            <button id="btnCreate" class="btn-primary">Start New Journey</button>
+            <div style="margin: 25px 0; color: #00f2fe; font-size: 14px; letter-spacing: 2px;">OR</div>
+            <input type="text" id="joinCode" placeholder="Enter Partner's Code" style="text-transform: uppercase;">
+            <button id="btnJoin" class="btn-secondary">Join Journey</button>
+        </div>
+    </div>
+
+    <div id="lobby-screen" class="screen">
+        <h2 style="color: #00f2fe; margin-bottom: 15px; font-family:'Poppins'; font-weight: 400;">Waiting for Partner...</h2>
+        <div class="card">
+            <h1 id="displayCode" style="font-size: 55px; color: #fff; margin: 15px 0; font-family:'Orbitron'; text-shadow: 0 0 20px #ff007f;">XXXXX</h1>
+            <p style="color:rgba(255,255,255,0.6); font-size:14px; margin-bottom:25px;">Share this code to connect souls</p>
+            <button id="btnShare" class="btn-success">Invite via WhatsApp</button>
+            <button id="btnCopy" class="btn-secondary" style="margin-top:15px;">Copy Link</button>
+        </div>
+    </div>
+
+    <div id="game-area">
+        <h2 id="level-title-hud">LEVEL 1</h2>
+        <div id="score-hud">
+            <div class="score-box"><h3 id="name1">P1</h3><p id="score1">0</p></div>
+            <div class="score-box"><h3 id="name2">P2</h3><p id="score2">0</p></div>
+        </div>
         
-        <div class="glass-panel">
-            <input type="text" id="player-name" placeholder="Enter Your Name" maxlength="12">
-            <button onclick="handleLogin()">Join Game Studio</button>
+        <div id="lvl-1" class="lvl-container">
+            <div id="spark-meter-bg"><div id="spark-meter-fill"></div></div>
+            <div class="giant-heart" id="sparkBtn">💖</div>
         </div>
-    </div>
 
-    <div id="lobby-page" class="screen">
-        <div class="top-bar">
-            <button class="back-btn" onclick="navigateTo('login-page')">🔙 Logout</button>
-            <h3 id="lobby-greeting" style="color: var(--gold);">Hello, Player</h3>
+        <div id="lvl-2" class="lvl-container">
+            <div style="color: #ffb3c6;" id="scramble-prog"></div>
+            <div id="scramble-word"></div>
+            <input type="text" id="scramble-input" placeholder="Type the true word..." style="text-transform:uppercase; max-width: 300px;">
+            <button id="btnScramble" class="btn-primary" style="max-width: 300px;">Guess</button>
+        </div>
+
+        <div id="lvl-3" class="lvl-container">
+            <div id="ttt-board" class="grid-game" style="grid-template-columns: repeat(3, 1fr);"></div>
+        </div>
+        <div id="lvl-3-5" class="lvl-container" style="border: 2px solid #ffeb3b; border-radius: 25px; background: rgba(0,0,0,0.4);">
+            <div id="sd-area" style="width:100%; height:100%; position:relative;"></div>
         </div>
         
-        <div class="glass-panel" style="margin-bottom: 20px; display: flex; justify-content: space-around;">
-            <div>🔥 Streak<br><b id="ui-streak">0</b></div>
-            <div>🪙 Coins<br><b id="ui-coins">5000</b></div>
+        <div id="lvl-4" class="lvl-container" style="border: 2px dashed rgba(0,242,254,0.4); border-radius: 25px;">
+            <div style="position:absolute; top:10px; color:#fff; font-weight:bold;">Pop hearts! Avoid broken ones.</div>
+            <div id="popper-area" style="width:100%; height:100%; position:relative;"></div>
+        </div>
+        
+        <div id="lvl-5" class="lvl-container">
+            <div class="match-grid">
+                <button class="match-btn" id="mBtn-beach" onclick="selectMatch('beach')"><i style="font-size:30px;">🏖️</i> Beach</button>
+                <button class="match-btn" id="mBtn-mountains" onclick="selectMatch('mountains')"><i style="font-size:30px;">🏔️</i> Mountains</button>
+                <button class="match-btn" id="mBtn-movie" onclick="selectMatch('movie')"><i style="font-size:30px;">🍿</i> Movie</button>
+                <button class="match-btn" id="mBtn-dinner" onclick="selectMatch('dinner')"><i style="font-size:30px;">🕯️</i> Dinner</button>
+            </div>
+            <p id="match-status" style="margin-top:20px; font-weight:bold; color:#ffeb3b;"></p>
         </div>
 
-        <div class="glass-panel">
-            <button onclick="createRoom()">Create Room (-500)</button>
-            <p style="margin: 10px 0; color: #aaa;">-- OR --</p>
-            <input type="text" id="join-code" placeholder="Enter Room Code" style="margin-bottom: 10px;">
-            <button onclick="joinRoom()" style="background: transparent; border: 2px solid var(--neon-blue);">Join Room</button>
+        <div id="lvl-6" class="lvl-container">
+            <div style="margin-bottom:10px; color:#ffb3c6;">Fails allowed: <span id="mem-fails-left">3</span></div>
+            <div class="mem-grid" id="mem-board"></div>
+        </div>
+
+        <div id="lvl-8" class="lvl-container">
+            <div id="sync-track">
+                <div id="sync-target"></div>
+                <div id="sync-bar"></div>
+            </div>
+            <button id="btnSyncTap" class="btn-primary" style="max-width:200px; padding:20px; border-radius:50px; font-size:20px;">TAP NOW!</button>
+        </div>
+
+        <canvas id="game-canvas"></canvas>
+    </div>
+
+    <div id="ui-overlay">
+        <div id="ov-type">INSTRUCTION</div>
+        <h1 id="ov-title">LEVEL TITLE</h1>
+        <div id="ov-quote"></div>
+        <button id="ov-btn" class="btn-primary" style="display:none; width: 250px; margin-top: 20px;">Start</button>
+        <button id="ov-btn-fail" class="btn-danger" style="display:none; width: 250px; margin-top: 20px;">Restart Level</button>
+    </div>
+
+    <div id="final-screen">
+        <div id="finale-heart-gen"></div>
+        <div id="final-content">
+            <div id="final-quote">"In a universe of chaos, finding you was my perfect peace."</div>
+            <div id="final-names">P1 & P2</div>
+            <div style="margin-top: 30px; font-family: 'Poppins'; color: #00f2fe; letter-spacing: 2px;">JOURNEY COMPLETE</div>
         </div>
     </div>
 
-    <div id="game-page" class="screen">
-        <div class="top-bar">
-            <button class="back-btn" onclick="navigateTo('lobby-page')">🔙 Quit</button>
-            <span id="room-id-display" style="font-weight: bold; color: var(--neon-pink);">Room: ---</span>
-        </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, doc, setDoc, onSnapshot, updateDoc, getDoc, collection, addDoc, query, orderBy, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        <div class="video-container">
-            <div class="video-wrapper">
-                <video id="local-video" autoplay muted playsinline></video>
-                <div class="player-name-tag" id="local-name-tag">You</div>
-            </div>
-            <div class="video-wrapper">
-                <video id="remote-video" autoplay playsinline></video>
-                <div class="player-name-tag" id="remote-name-tag">Opponent</div>
-            </div>
-        </div>
-
-        <div class="board-container">
-            <div class="ludo-board" id="board">
-                </div>
-        </div>
-
-        <div class="glass-panel dice-area">
-            <div id="turn-indicator" style="font-weight: bold; font-size: 14px; text-align: left;">Waiting...</div>
-            <div id="dice-result" class="dice" onclick="rollDice()">🎲</div>
-        </div>
-    </div>
-
-    <script>
-        // --- Navigation ---
-        function navigateTo(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
-
-        // --- Firebase Config ---
+        // FIREBASE SETUP
         const firebaseConfig = {
-          apiKey: "AIzaSyCZmqyLmyWesuoj6djTbyfrOJ1v7_FCWcQ",
-          authDomain: "game-bf78a.firebaseapp.com",
-          databaseURL: "https://game-bf78a-default-rtdb.asia-southeast1.firebasedatabase.app",
-          projectId: "game-bf78a",
+            apiKey: "AIzaSyCZmqyLmyWesuoj6djTbyfrOJ1v7_FCWcQ",
+            authDomain: "game-bf78a.firebaseapp.com",
+            projectId: "game-bf78a",
+            storageBucket: "game-bf78a.firebasestorage.app",
+            messagingSenderId: "860717231489",
+            appId: "1:860717231489:web:f53331a96570be04cacc80"
         };
-        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-        const db = firebase.database(); const auth = firebase.auth();
+        const app = initializeApp(firebaseConfig); const db = getFirestore(app);
 
-        let currentUser = null, currentRoom = null, isPlayer1 = false;
-        let myName = "Player"; let opponentName = "Opponent";
-        const diceFaces = ['🎲', '⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+        // --- AUDIO ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+            let osc = audioCtx.createOscillator(); let g = audioCtx.createGain();
+            osc.connect(g); g.connect(audioCtx.destination);
+            if(type === 'click') {
+                osc.type = 'sine'; osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.1);
+                g.gain.setValueAtTime(0.3, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+            } else if(type === 'match' || type === 'win') {
+                osc.type = 'triangle'; osc.frequency.setValueAtTime(500, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(1000, audioCtx.currentTime + 0.3);
+                g.gain.setValueAtTime(0.3, audioCtx.currentTime); g.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            } else if(type === 'fail') {
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(50, audioCtx.currentTime + 0.5);
+                g.gain.setValueAtTime(0.4, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+            }
+        }
 
-        // --- 1. Authentic Login with Name ---
-        function handleLogin() {
-            const nameInput = document.getElementById('player-name').value.trim();
-            if(!nameInput) return alert("Please enter your name!");
-            myName = nameInput;
+        const bgContainer = document.getElementById('bgHearts');
+        for(let i=0; i<15; i++) {
+            let h = document.createElement('div'); h.className = 'bg-heart'; h.innerText = '❤';
+            h.style.left = Math.random() * 100 + 'vw'; h.style.animationDuration = (10 + Math.random() * 10) + 's';
+            h.style.animationDelay = Math.random() * 5 + 's'; h.style.fontSize = (15 + Math.random() * 30) + 'px';
+            bgContainer.appendChild(h);
+        }
 
-            auth.signInAnonymously().then((cred) => {
-                currentUser = cred.user;
-                const userRef = db.ref(`users/${currentUser.uid}`);
-                userRef.once('value', snap => {
-                    if (!snap.exists()) {
-                        userRef.set({ name: myName, coins: 5000, streak: 0 });
-                    } else {
-                        userRef.update({ name: myName });
+        let gameId = "", playerNum = 0, myName = "", docRef = null, messagesRef = null;
+        let gState = { level: 1, p1Score: 0, p2Score: 0, status: 'waiting' };
+        
+        // Data Dictionaries
+        const levelData = {
+            1: { title: "THE SPARK", inst: "Tap the giant heart together as fast as you can to fill the meter!", win: "“Love is a spark that ignites the soul.”", fail: "“Keep trying, true love takes effort!”" },
+            2: { title: "SOULMATE SCRAMBLE", inst: "Unscramble the love words. 3 wrong guesses and you fail!", win: "“Communication is the bridge between two hearts.”", fail: "“Words fail, but love remains. Try again!”" },
+            3: { title: "TIC TAC TOE", inst: "Classic game. Win to progress, tie leads to Sudden Death!", win: "“Every battle brings us closer.”", fail: "“Love is about taking turns.”" },
+            3.5: { title: "SUDDEN DEATH", inst: "Tap the golden heart faster than your partner!", win: "“Quick instincts, true connection.”", fail: "“Too slow! Try again.”" },
+            4: { title: "HEART POPPER", inst: "Pop the good hearts, avoid the broken ones. Score 400 total!", win: "“Protect your heart from the broken pieces.”", fail: "“Too many broken hearts. Heal and retry.”" },
+            5: { title: "PERFECT MATCH", inst: "Pick your ideal date. You MUST pick the same option!", win: "“Great minds and connected hearts think alike.”", fail: "“Mismatched vibes! Communicate and try again.”" },
+            6: { title: "MEMORY MATCH", inst: "Find the matching love emojis. 3 wrong pairs = fail!", win: "“Unforgettable connection.”", fail: "“Memory faded. Rebuild the connection!”" },
+            7: { title: "CATCH THE LOVE", inst: "Move your side. Catch 10 hearts together. Catch a broken heart = instant fail!", win: "“Teamwork makes the dream work.”", fail: "“You caught a broken piece. Be careful!”" },
+            8: { title: "HEARTBEAT SYNC", inst: "Tap exactly when the line hits the center. Do it together 3 times!", win: "“Hearts beating in perfect sync.”", fail: "“Out of rhythm. Find your sync again!”" }
+        };
+
+        function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); if(document.getElementById(id)) document.getElementById(id).classList.add('active'); }
+        document.getElementById('btnHome').onclick = () => { window.location.reload(); };
+
+        window.sendEmoji = async function(emoji) { 
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+            if(gState && gState.status === 'playing') await updateDoc(docRef, { latestEmoji: { e: emoji, p: playerNum, id: Date.now() } }); 
+        }
+
+        // INITIALIZE DB STATE
+        function getInitState() {
+            return {
+                status: 'waiting', level: 1, p1Name: myName, p2Name: "", p1Score: 0, p2Score: 0, 
+                overlay: { show: true, state: 'inst' }, // state: 'inst', 'win', 'fail'
+                sparkClicks: 0,
+                scramble: { wordIdx: 0, jumbled: "ROEFREV", fails: 0 },
+                tttBoard: ['','','','','','','','',''], tttTurn: 'X',
+                popScore: 0, popTarget: null,
+                matchP1: "", matchP2: "",
+                memBoard: generateMemoryBoard(), memFlipped: [], memMatched: [], memFails: 0,
+                catchScore: 0, catchObj: null, cP1X: 25, cP2X: 75,
+                syncPos: 0, syncP1Tap: false, syncP2Tap: false, syncScore: 0
+            };
+        }
+
+        function generateMemoryBoard() {
+            let emojis = ['❤️','😍','💍','🌹','🧸','💌'];
+            let arr = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
+            return arr;
+        }
+
+        document.getElementById('btnCreate').addEventListener('click', async () => {
+            myName = document.getElementById('playerName').value.trim(); if(!myName) return;
+            playerNum = 1; gameId = Math.random().toString(36).substring(2, 7).toUpperCase();
+            docRef = doc(db, "games", gameId); messagesRef = collection(db, "games", gameId, "messages");
+            await setDoc(docRef, getInitState());
+            document.getElementById('displayCode').innerText = gameId;
+            showScreen('lobby-screen'); setupSync(); setupChat(); setupWebRTC();
+        });
+
+        document.getElementById('btnJoin').addEventListener('click', async () => {
+            myName = document.getElementById('playerName').value.trim(); gameId = document.getElementById('joinCode').value.trim().toUpperCase();
+            if(!myName || !gameId) return; playerNum = 2;
+            docRef = doc(db, "games", gameId); messagesRef = collection(db, "games", gameId, "messages");
+            let snap = await getDoc(docRef);
+            if(snap.exists()) { await updateDoc(docRef, { p2Name: myName, status: 'playing' }); setupSync(); setupChat(); setupWebRTC(); } 
+            else alert("Room closed or invalid.");
+        });
+
+        // --- OVERLAY LOGIC ---
+        function handleOverlay() {
+            let ov = document.getElementById('ui-overlay');
+            if(!gState.overlay.show) { ov.style.display = 'none'; return; }
+            
+            ov.style.display = 'flex';
+            let lData = levelData[gState.level] || {title:"...", inst:"...", win:"...", fail:"..."};
+            document.getElementById('ov-title').innerText = lData.title;
+
+            document.getElementById('ov-btn').style.display = 'none';
+            document.getElementById('ov-btn-fail').style.display = 'none';
+
+            if(gState.overlay.state === 'inst') {
+                document.getElementById('ov-type').innerText = "HOW TO PLAY";
+                document.getElementById('ov-type').style.color = "#00f2fe";
+                document.getElementById('ov-quote').innerText = lData.inst;
+                if(playerNum === 1) { document.getElementById('ov-btn').style.display = 'block'; document.getElementById('ov-btn').innerText = "Start Level"; }
+            } else if(gState.overlay.state === 'win') {
+                document.getElementById('ov-type').innerText = "SUCCESS";
+                document.getElementById('ov-type').style.color = "#25D366";
+                document.getElementById('ov-quote').innerText = lData.win;
+                if(playerNum === 1) { document.getElementById('ov-btn').style.display = 'block'; document.getElementById('ov-btn').innerText = "Next Level"; }
+            } else if(gState.overlay.state === 'fail') {
+                document.getElementById('ov-type').innerText = "FAILED";
+                document.getElementById('ov-type').style.color = "#ff4d4d";
+                document.getElementById('ov-quote').innerText = lData.fail;
+                if(playerNum === 1) { document.getElementById('ov-btn-fail').style.display = 'block'; }
+            }
+        }
+
+        document.getElementById('ov-btn').onclick = async () => { // Host advances
+            playSound('click');
+            if(gState.overlay.state === 'inst') {
+                await updateDoc(docRef, { overlay: { show: false } });
+            } else if(gState.overlay.state === 'win') {
+                let nextLvl = gState.level === 3 ? 3.5 : (gState.level === 3.5 ? 4 : gState.level + 1);
+                if(nextLvl > 8) { triggerFinale(); } 
+                else { await updateDoc(docRef, { level: nextLvl, overlay: { show: true, state: 'inst' } }); }
+            }
+        };
+
+        document.getElementById('ov-btn-fail').onclick = async () => { // Host restarts level
+            playSound('click');
+            let resetData = { overlay: { show: true, state: 'inst' } };
+            // Level specific resets
+            if(gState.level === 2) resetData.scramble = { wordIdx: 0, jumbled: "FOREVER".split('').sort(()=>Math.random()-0.5).join(' '), fails: 0 };
+            if(gState.level === 4) { resetData.popScore = 0; resetData.popTarget = null; }
+            if(gState.level === 5) { resetData.matchP1 = ""; resetData.matchP2 = ""; }
+            if(gState.level === 6) { resetData.memBoard = generateMemoryBoard(); resetData.memFlipped = []; resetData.memMatched = []; resetData.memFails = 0; }
+            if(gState.level === 7) { resetData.catchScore = 0; resetData.catchObj = null; resetData.cP1X = 25; resetData.cP2X = 75; }
+            if(gState.level === 8) { resetData.syncScore = 0; resetData.syncP1Tap = false; resetData.syncP2Tap = false; }
+            
+            await updateDoc(docRef, resetData);
+        };
+
+        function triggerWin() { playSound('win'); if(playerNum===1) updateDoc(docRef, { overlay: { show: true, state: 'win' } }); }
+        function triggerFail() { playSound('fail'); if(playerNum===1) updateDoc(docRef, { overlay: { show: true, state: 'fail' } }); }
+
+        // --- MAIN GAME LOOP ---
+        let hostIntervals = {};
+        function clearAllIntervals() { Object.values(hostIntervals).forEach(clearInterval); hostIntervals = {}; }
+
+        function setupSync() {
+            onSnapshot(docRef, (snap) => {
+                if(!snap.exists()) return;
+                gState = snap.data();
+                
+                if(gState.status === 'playing') {
+                    if(document.getElementById('game-area').style.display !== 'flex') {
+                        showScreen('none'); document.getElementById('game-area').style.display = 'flex';
+                        document.getElementById('top-nav').style.display = 'flex';
+                        document.getElementById('emoji-bar').style.display = 'flex';
+                        document.getElementById('name1').innerText = gState.p1Name; document.getElementById('name2').innerText = gState.p2Name;
                     }
-                    userRef.on('value', data => {
-                        if(data.val()){
-                            document.getElementById('ui-coins').innerText = data.val().coins;
-                            document.getElementById('ui-streak').innerText = data.val().streak;
-                            document.getElementById('lobby-greeting').innerText = `Hello, ${data.val().name}`;
+                    
+                    document.getElementById('score1').innerText = gState.p1Score; document.getElementById('score2').innerText = gState.p2Score;
+                    document.getElementById('level-title-hud').innerText = gState.level === 3.5 ? "TIE BREAKER" : `LEVEL ${Math.floor(gState.level)}`;
+
+                    handleOverlay();
+                    if(gState.overlay.show) return; // Stop rendering game active state if overlay is up
+
+                    document.querySelectorAll('.lvl-container').forEach(e => e.style.display='none');
+                    document.getElementById('game-canvas').style.display = 'none';
+
+                    if(gState.level === 1) { document.getElementById('lvl-1').style.display='flex'; renderSpark(); if(playerNum===1 && !hostIntervals.l1) hostIntervals.l1 = setInterval(()=>hostSpark(), 1000); }
+                    else if(gState.level === 2) { document.getElementById('lvl-2').style.display='flex'; renderScramble(); }
+                    else if(gState.level === 3) { document.getElementById('lvl-3').style.display='flex'; renderTTT(); }
+                    else if(gState.level === 3.5) { document.getElementById('lvl-3-5').style.display='flex'; renderSD(); if(playerNum===1 && !hostIntervals.l35) hostIntervals.l35 = setInterval(()=>hostSD(), 800); }
+                    else if(gState.level === 4) { document.getElementById('lvl-4').style.display='flex'; renderPopper(); if(playerNum===1 && !hostIntervals.l4) hostIntervals.l4 = setInterval(()=>hostPopper(), 800); }
+                    else if(gState.level === 5) { document.getElementById('lvl-5').style.display='flex'; renderMatch(); }
+                    else if(gState.level === 6) { document.getElementById('lvl-6').style.display='flex'; renderMemory(); }
+                    else if(gState.level === 7) { document.getElementById('game-canvas').style.display='block'; startCatchEngine(); if(playerNum===1 && !hostIntervals.l7) hostIntervals.l7 = setInterval(()=>hostCatch(), 800); }
+                    else if(gState.level === 8) { document.getElementById('lvl-8').style.display='flex'; renderSync(); if(playerNum===1 && !hostIntervals.l8) hostIntervals.l8 = setInterval(()=>hostSync(), 50); }
+                    else if(gState.level >= 9) { triggerFinale(); }
+                }
+            });
+        }
+
+        // --- L1 ---
+        function hostSpark() { if(gState.sparkClicks > 0 && !gState.overlay.show) updateDoc(docRef, { sparkClicks: Math.max(0, gState.sparkClicks - 5) }); }
+        function renderSpark() { document.getElementById('spark-meter-fill').style.width = gState.sparkClicks + '%'; }
+        document.getElementById('sparkBtn').onclick = async () => {
+            if(gState.level !== 1 || gState.overlay.show) return; playSound('click');
+            let n = gState.sparkClicks + 5; 
+            if(n >= 100) { triggerWin(); } else await updateDoc(docRef, { sparkClicks: n });
+        };
+
+        // --- L2 ---
+        const scrWords = ["FOREVER", "TRUST", "PASSION"];
+        function renderScramble() { document.getElementById('scramble-word').innerText = gState.scramble.jumbled; document.getElementById('scramble-prog').innerText = `Strikes: ${gState.scramble.fails}/3`; }
+        document.getElementById('btnScramble').onclick = async () => {
+            if(gState.level !== 2 || gState.overlay.show) return;
+            let v = document.getElementById('scramble-input').value.trim().toUpperCase(); document.getElementById('scramble-input').value = '';
+            if(v === scrWords[gState.scramble.wordIdx]) {
+                playSound('match'); let next = gState.scramble.wordIdx + 1;
+                if(next >= 3) triggerWin(); else updateDoc(docRef, { scramble: { wordIdx: next, jumbled: scrWords[next].split('').sort(()=>Math.random()-0.5).join(' '), fails: gState.scramble.fails } });
+            } else {
+                playSound('fail'); let f = gState.scramble.fails + 1;
+                if(f >= 3) triggerFail(); else updateDoc(docRef, { scramble: { ...gState.scramble, fails: f } });
+            }
+        };
+
+        // --- L3 ---
+        function renderTTT() {
+            let b = document.getElementById('ttt-board'); b.innerHTML = '';
+            gState.tttBoard.forEach((c, i) => {
+                let el = document.createElement('div'); el.className = 'ttt-cell'; el.innerText = c;
+                if(c==='X') el.style.color='#00f2fe'; if(c==='O') el.style.color='#ff007f';
+                el.onclick = () => {
+                    let sym = playerNum===1?'X':'O';
+                    if(gState.tttTurn !== sym || c !== '' || gState.overlay.show) return;
+                    playSound('click'); let nb = [...gState.tttBoard]; nb[i] = sym;
+                    let lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+                    let win = lines.find(l => nb[l[0]] && nb[l[0]]===nb[l[1]] && nb[l[0]]===nb[l[2]]);
+                    if(win) triggerWin(); else if(!nb.includes('')) triggerWin(); // Tie goes to next
+                    else updateDoc(docRef, { tttBoard: nb, tttTurn: sym==='X'?'O':'X' });
+                }; b.appendChild(el);
+            });
+        }
+
+        // --- L3.5 ---
+        function hostSD() { if(!gState.overlay.show) updateDoc(docRef, { sdTarget: { x: Math.random()*80, y: Math.random()*80 } }); }
+        function renderSD() {
+            let a = document.getElementById('sd-area'); a.innerHTML = '';
+            if(gState.sdTarget) {
+                let h = document.createElement('div'); h.className = 'golden-heart'; h.innerText = '💛';
+                h.style.left = gState.sdTarget.x + '%'; h.style.top = gState.sdTarget.y + '%';
+                h.onclick = () => { triggerWin(); }; a.appendChild(h);
+            }
+        }
+
+        // --- L4 ---
+        function hostPopper() { 
+            if(gState.overlay.show) return;
+            if(gState.popScore >= 400) triggerWin();
+            else updateDoc(docRef, { popTarget: { x: Math.random()*80, y: Math.random()*80, id: Date.now(), t: Math.random()>0.7?'bad':'good' } });
+        }
+        function renderPopper() {
+            let a = document.getElementById('popper-area'); a.innerHTML = '';
+            if(gState.popTarget) {
+                let h = document.createElement('div'); h.className = 'pop-target'; h.innerText = gState.popTarget.t === 'bad' ? '💔' : '❤️';
+                h.style.left = gState.popTarget.x + '%'; h.style.top = gState.popTarget.y + '%';
+                h.onclick = () => { 
+                    if(gState.popTarget.t === 'bad') triggerFail();
+                    else { playSound('click'); updateDoc(docRef, { popTarget: null, popScore: gState.popScore+50 }); }
+                }; a.appendChild(h);
+            }
+        }
+
+        // --- L5 ---
+        window.selectMatch = async function(c) {
+            if(gState.level !== 5 || gState.overlay.show) return; playSound('click');
+            let k = playerNum === 1 ? 'matchP1' : 'matchP2';
+            if((playerNum === 1 && gState.matchP1) || (playerNum === 2 && gState.matchP2)) return;
+            await updateDoc(docRef, { [k]: c });
+        }
+        function renderMatch() {
+            let my = playerNum === 1 ? gState.matchP1 : gState.matchP2;
+            let pr = playerNum === 1 ? gState.matchP2 : gState.matchP1;
+            document.querySelectorAll('.match-btn').forEach(b => b.classList.remove('selected'));
+            if(my) document.getElementById('mBtn-' + my)?.classList.add('selected');
+            
+            let s = document.getElementById('match-status');
+            if(!my) s.innerText = "Pick an option!"; else if(!pr) s.innerText = "Waiting for partner..."; else s.innerText = "Checking...";
+
+            if(playerNum===1 && gState.matchP1 && gState.matchP2) {
+                setTimeout(() => { if(gState.matchP1 === gState.matchP2) triggerWin(); else triggerFail(); }, 1000);
+            }
+        }
+
+        // --- L6: Memory Match ---
+        function renderMemory() {
+            document.getElementById('mem-fails-left').innerText = 3 - gState.memFails;
+            let b = document.getElementById('mem-board'); b.innerHTML = '';
+            gState.memBoard.forEach((em, i) => {
+                let c = document.createElement('div'); c.className = 'mem-card';
+                let isFlipped = gState.memFlipped.includes(i) || gState.memMatched.includes(i);
+                if(isFlipped) c.classList.add('flipped');
+                let inn = document.createElement('div'); inn.className = 'inner'; inn.innerText = em; c.appendChild(inn);
+                c.onclick = () => {
+                    if(gState.overlay.show || isFlipped || gState.memFlipped.length >= 2) return;
+                    playSound('click'); let nf = [...gState.memFlipped, i];
+                    updateDoc(docRef, { memFlipped: nf });
+                    if(nf.length === 2 && playerNum===1) {
+                        setTimeout(() => {
+                            if(gState.memBoard[nf[0]] === gState.memBoard[nf[1]]) {
+                                playSound('match'); let nm = [...gState.memMatched, nf[0], nf[1]];
+                                if(nm.length === 12) triggerWin(); else updateDoc(docRef, { memFlipped: [], memMatched: nm });
+                            } else {
+                                playSound('fail'); let fail = gState.memFails + 1;
+                                if(fail >= 3) triggerFail(); else updateDoc(docRef, { memFlipped: [], memFails: fail });
+                            }
+                        }, 1000);
+                    }
+                }; b.appendChild(c);
+            });
+        }
+
+        // --- L7: Catch ---
+        let c = document.getElementById('game-canvas'); let ctx = c.getContext('2d');
+        function res() { c.width = window.innerWidth; c.height = window.innerHeight; } window.addEventListener('resize', res); res();
+        c.addEventListener('touchmove', async e => {
+            if(gState.level !== 7 || gState.overlay.show || playerNum === 0) return;
+            let nx = e.changedTouches[0].screenX; let pct = (nx / c.width) * 100;
+            let lk = playerNum===1 ? 'cP1X' : 'cP2X'; updateDoc(docRef, { [lk]: Math.max(10, Math.min(90, pct)) });
+        });
+
+        let catchObjY = -10;
+        function hostCatch() {
+            if(gState.overlay.show) return;
+            if(!gState.catchObj) updateDoc(docRef, { catchObj: { x: Math.random()*80+10, t: Math.random()>0.7?'bad':'good', id: Date.now() } });
+        }
+        function startCatchEngine() {
+            function render() {
+                if(gState.level !== 7 || gState.overlay.show) { requestAnimationFrame(render); return; }
+                ctx.clearRect(0,0,c.width,c.height);
+                
+                let px1 = (gState.cP1X/100) * c.width; let px2 = (gState.cP2X/100) * c.width; let py = c.height - 100;
+                ctx.fillStyle = "#00f2fe"; ctx.font="30px Arial"; ctx.fillText("🧺", px1-15, py); ctx.fillText(gState.p1Name, px1-15, py+25);
+                ctx.fillStyle = "#ff007f"; ctx.fillText("🧺", px2-15, py); ctx.fillText(gState.p2Name, px2-15, py+25);
+                
+                ctx.fillStyle="#fff"; ctx.font="20px Orbitron"; ctx.fillText("Caught: " + gState.catchScore + "/10", 20, 100);
+
+                if(gState.catchObj) {
+                    catchObjY += 5; let ox = (gState.catchObj.x/100) * c.width;
+                    ctx.font="40px Arial"; ctx.fillText(gState.catchObj.t==='bad'?'💔':'❤️', ox-20, catchObjY);
+                    
+                    if(playerNum === 1 && catchObjY > py - 30 && catchObjY < py + 30) {
+                        let hit = Math.abs(ox - px1) < 40 || Math.abs(ox - px2) < 40;
+                        if(hit) {
+                            if(gState.catchObj.t === 'bad') triggerFail();
+                            else { playSound('match'); let nsc = gState.catchScore+1; if(nsc>=10) triggerWin(); else updateDoc(docRef, { catchObj: null, catchScore: nsc }); catchObjY=-10; }
                         }
-                    });
-                    document.getElementById('local-name-tag').innerText = myName;
-                    navigateTo('lobby-page');
-                });
-            });
-        }
-
-        // --- 2. Board Generation (Exact 4 Pucks Setup) ---
-        function generatePerfectBoard() {
-            const board = document.getElementById('board');
-            board.innerHTML = '';
-            
-            // 15x15 Grid setup
-            for(let r=1; r<=15; r++) {
-                for(let c=1; c<=15; c++) {
-                    const cell = document.createElement('div');
-                    cell.className = 'cell';
-                    cell.id = `cell-${r}-${c}`;
-                    
-                    // Add safe stars on specific coordinates
-                    if((r==7 && c==3) || (r==3 && c==9) || (r==9 && c==13) || (r==13 && c==7) || (r==2 && c==8) || (r==8 && c==14) || (r==14 && c==8) || (r==8 && c==2)){
-                        cell.innerHTML = '<span class="safe-star">⭐</span>';
                     }
-                    board.appendChild(cell);
-                }
+                    if(catchObjY > c.height) { catchObjY=-10; if(playerNum===1) updateDoc(docRef, { catchObj: null }); }
+                } else catchObjY=-10;
+
+                requestAnimationFrame(render);
             }
-
-            // 4 Homes configuration with 4 Puck Spots each
-            const homes = [
-                { color: 'red', class: 'home red' },
-                { color: 'green', class: 'home green' },
-                { color: 'blue', class: 'home blue' },
-                { color: 'yellow', class: 'home yellow' }
-            ];
-
-            homes.forEach(h => {
-                const homeDiv = document.createElement('div');
-                homeDiv.className = h.class;
-                
-                // Create Inner Box & 4 Spots
-                const inner = document.createElement('div');
-                inner.className = 'inner-box';
-                for(let i=1; i<=4; i++) {
-                    const spot = document.createElement('div');
-                    spot.className = 'puck-spot';
-                    spot.id = `spot-${h.color}-${i}`;
-                    
-                    // Only add physical pucks for Red (Player 1) and Blue (Player 2) for this setup
-                    if(h.color === 'red' || h.color === 'blue') {
-                        const puck = document.createElement('div');
-                        puck.className = `puck ${h.color}`;
-                        puck.id = `puck-${h.color}-${i}`;
-                        spot.appendChild(puck);
-                    }
-                    inner.appendChild(spot);
-                }
-                homeDiv.appendChild(inner);
-                board.appendChild(homeDiv);
-            });
-
-            // Center finishing square
-            const center = document.createElement('div');
-            center.className = 'center-home';
-            board.appendChild(center);
+            render();
         }
 
-        // --- 3. Multiplayer Matchmaking ---
-        function createRoom() {
-            currentRoom = Math.random().toString(36).substring(2, 8).toUpperCase(); 
-            isPlayer1 = true;
-            db.ref(`rooms/${currentRoom}`).set({ 
-                p1Id: currentUser.uid, p1Name: myName, state: 'waiting', 
-                board: { turn: currentUser.uid, dice: 0 }
-            });
-            setupGameUI();
-        }
-
-        function joinRoom() {
-            const code = document.getElementById('join-code').value.toUpperCase();
-            if(!code) return alert("Enter Code!");
-            
-            db.ref(`rooms/${code}`).once('value', snap => {
-                if (!snap.exists()) return alert("Invalid Code!");
-                currentRoom = code; isPlayer1 = false;
-                
-                // Fetch P1 name
-                opponentName = snap.val().p1Name;
-                document.getElementById('remote-name-tag').innerText = opponentName;
-
-                db.ref(`rooms/${code}`).update({ p2Id: currentUser.uid, p2Name: myName, state: 'playing' });
-                setupGameUI();
-            });
-        }
-
-        function setupGameUI() {
-            document.getElementById('room-id-display').innerText = `Room: ${currentRoom}`;
-            navigateTo('game-page');
-            generatePerfectBoard();
-            
-            // Listen for opponent name if I created the room
-            if(isPlayer1) {
-                db.ref(`rooms/${currentRoom}`).on('value', snap => {
-                    const d = snap.val();
-                    if(d && d.p2Name) {
-                        opponentName = d.p2Name;
-                        document.getElementById('remote-name-tag').innerText = opponentName;
-                    }
-                });
+        // --- L8: Sync ---
+        let syncDir = 1;
+        function hostSync() {
+            if(gState.overlay.show) return;
+            let p = gState.syncPos + (2 * syncDir);
+            if(p > 100 || p < 0) syncDir *= -1;
+            updateDoc(docRef, { syncPos: p });
+            // Check state
+            if(gState.syncP1Tap && gState.syncP2Tap) {
+                if(p >= 40 && p <= 60) { playSound('match'); let n = gState.syncScore+1; if(n>=3) triggerWin(); else { updateDoc(docRef, { syncScore: n, syncP1Tap: false, syncP2Tap: false }); } }
+                else triggerFail();
             }
+        }
+        function renderSync() {
+            document.getElementById('sync-bar').style.left = gState.syncPos + '%';
+            let btn = document.getElementById('btnSyncTap');
+            let myTap = playerNum === 1 ? gState.syncP1Tap : gState.syncP2Tap;
+            if(myTap) { btn.style.background = '#4facfe'; btn.innerText = "WAITING FOR PARTNER..."; }
+            else { btn.style.background = 'linear-gradient(90deg, #ff007f, #ff758c)'; btn.innerText = `SYNC TAP! (${gState.syncScore}/3)`; }
+        }
+        document.getElementById('btnSyncTap').onclick = () => {
+            if(gState.overlay.show) return; playSound('click');
+            updateDoc(docRef, { [playerNum===1?'syncP1Tap':'syncP2Tap']: true });
+        };
+
+        // --- FINALE ---
+        function triggerFinale() {
+            clearAllIntervals(); document.getElementById('ui-overlay').style.display='none';
+            document.getElementById('game-area').style.display = 'none'; document.getElementById('top-nav').style.display = 'none'; document.getElementById('emoji-bar').style.display = 'none';
+            let fScreen = document.getElementById('final-screen'); fScreen.style.display = 'flex';
+            document.getElementById('final-names').innerText = `${gState.p1Name} & ${gState.p2Name}`;
             
-            listenToGame();
-            startVideo();
-        }
+            let gen = document.getElementById('finale-heart-gen');
+            
+            // 1. Medium heart zooms to cover screen
+            let centerHeart = document.createElement('div');
+            centerHeart.innerHTML = '❤'; centerHeart.className = 'center-massive-heart anim-zoom-fill';
+            centerHeart.style.color = '#ff0055';
+            gen.appendChild(centerHeart);
 
-        // --- 4. Basic Turn Logic ---
-        function rollDice() {
-            db.ref(`rooms/${currentRoom}/board`).once('value', snap => {
-                const data = snap.val();
-                if(data.turn !== currentUser.uid) return alert("Not your turn!");
-
-                const diceEl = document.getElementById('dice-result');
-                diceEl.classList.add('rolling');
-                
-                setTimeout(() => {
-                    diceEl.classList.remove('rolling');
-                    const res = Math.floor(Math.random() * 6) + 1;
-                    
-                    db.ref(`rooms/${currentRoom}`).once('value', roomSnap => {
-                        const rData = roomSnap.val();
-                        const nextTurn = (rData.p1Id === currentUser.uid) ? rData.p2Id : rData.p1Id;
-                        db.ref(`rooms/${currentRoom}/board`).update({ dice: res, turn: nextTurn });
-                    });
-                }, 400);
-            });
-        }
-
-        function listenToGame() {
-            db.ref(`rooms/${currentRoom}/board`).on('value', snap => {
-                const data = snap.val(); if(!data) return;
-                
-                if(data.dice > 0) document.getElementById('dice-result').innerText = diceFaces[data.dice];
-                else document.getElementById('dice-result').innerText = '🎲';
-                
-                const ind = document.getElementById('turn-indicator');
-                if(data.turn === currentUser.uid) { 
-                    ind.innerText = "YOUR TURN! 🎲"; ind.style.color = "var(--ludo-green)"; 
-                } else { 
-                    ind.innerText = `${opponentName}'s Turn`; ind.style.color = "var(--ludo-red)"; 
+            // 2. Multiple colorful hearts burst from center without edges (using text-shadow/filter)
+            const colors = ['#ff007f', '#00f2fe', '#ff758c', '#ffeb3b', '#00ffcc', '#ff0055'];
+            setTimeout(() => {
+                for(let i=0; i<100; i++) {
+                    let h = document.createElement('div'); h.innerHTML = '❤'; h.className = 'bursting-heart anim-burst';
+                    h.style.color = colors[Math.floor(Math.random() * colors.length)];
+                    let a = Math.random() * Math.PI * 2; let d = 100 + Math.random() * 800;
+                    h.style.setProperty('--tx', (Math.cos(a)*d)+'px'); h.style.setProperty('--ty', (Math.sin(a)*d)+'px');
+                    h.style.animationDelay = (Math.random() * 1.5) + 's'; gen.appendChild(h);
                 }
-            });
+            }, 1000);
+
+            // 3. Show text
+            document.getElementById('final-content').classList.add('anim-fade-in');
         }
 
-        // --- WebRTC Video ---
-        async function startVideo() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                document.getElementById('local-video').srcObject = stream;
-            } catch(e) { console.log("Cam denied"); }
-        }
+        // WebRTC & Chat
+        let chatOpen = false;
+        document.getElementById('btnChat').onclick = () => { chatOpen = !chatOpen; document.getElementById('chat-panel').style.display = chatOpen ? 'flex' : 'none'; document.getElementById('chat-badge').style.display = 'none'; };
+        function setupChat() { onSnapshot(query(messagesRef, orderBy("ts")), (snap) => { let box = document.getElementById('chat-msgs'); box.innerHTML = ''; snap.forEach(d => { let m = d.data(); let el = document.createElement('div'); el.className = `msg ${m.sender === playerNum ? 'me' : 'them'}`; el.innerText = m.text; box.appendChild(el); if(!chatOpen && m.sender !== playerNum) document.getElementById('chat-badge').style.display = 'block'; }); box.scrollTop = box.scrollHeight; }); }
+        document.getElementById('btnSendChat').onclick = async () => { let t = document.getElementById('chatInput').value.trim(); if(t) { await addDoc(messagesRef, { text: t, sender: playerNum, ts: Date.now() }); document.getElementById('chatInput').value = ''; } };
+        let localStream, peerConn, isMuted = false;
+        async function setupWebRTC() { try { localStream = await navigator.mediaDevices.getUserMedia({ audio: true }); peerConn = new RTCPeerConnection({ iceServers: [{ urls: ['stun:stun1.l.google.com:19302'] }] }); localStream.getTracks().forEach(t => peerConn.addTrack(t, localStream)); peerConn.ontrack = (e) => { let audio = new Audio(); audio.srcObject = e.streams[0]; audio.play(); }; const callDoc = doc(db, "calls", gameId); const offerC = collection(callDoc, "offerC"); const answerC = collection(callDoc, "answerC"); peerConn.onicecandidate = e => { e.candidate && addDoc(playerNum===1 ? offerC : answerC, e.candidate.toJSON()); }; if(playerNum === 1) { let offer = await peerConn.createOffer(); await peerConn.setLocalDescription(offer); await setDoc(callDoc, { offer: { type: offer.type, sdp: offer.sdp }}); onSnapshot(callDoc, (snap) => { let data = snap.data(); if(data?.answer && !peerConn.currentRemoteDescription) peerConn.setRemoteDescription(new RTCSessionDescription(data.answer)); }); onSnapshot(answerC, snap => snap.docChanges().forEach(c => { if(c.type === 'added') peerConn.addIceCandidate(new RTCIceCandidate(c.doc.data())); })); } else { onSnapshot(callDoc, async (snap) => { let data = snap.data(); if(data?.offer && !peerConn.currentRemoteDescription) { await peerConn.setRemoteDescription(new RTCSessionDescription(data.offer)); let ans = await peerConn.createAnswer(); await peerConn.setLocalDescription(ans); await updateDoc(callDoc, { answer: { type: ans.type, sdp: ans.sdp }}); } }); onSnapshot(offerC, snap => snap.docChanges().forEach(c => { if(c.type === 'added') peerConn.addIceCandidate(new RTCIceCandidate(c.doc.data())); })); } document.getElementById('btnMic').onclick = () => { isMuted = !isMuted; localStream.getAudioTracks()[0].enabled = !isMuted; document.getElementById('btnMic').classList.toggle('muted'); document.getElementById('btnMic').innerText = isMuted ? '🔇' : '🎤'; }; } catch(e) { console.log("Mic error"); } }
     </script>
 </body>
 </html>
