@@ -125,7 +125,7 @@
         #ov-title { font-family: 'Orbitron'; font-size: 40px; color: #ff4d85; margin-bottom: 20px; text-shadow: 0 0 25px rgba(255,77,133,0.8);}
         #ov-quote { font-size: 22px; color: #ffb3c6; font-family: 'Dancing Script', cursive; margin-bottom: 40px; line-height: 1.5; text-shadow: 0 2px 4px rgba(0,0,0,0.5);}
         
-        /* FINALE SCREEN (NEW) */
+        /* FINALE SCREEN */
         #final-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: #050011; z-index: 4000; overflow: hidden; flex-direction: column; align-items: center; justify-content: center; }
         .center-massive-heart { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); font-size: 60px; filter: drop-shadow(0 0 30px #ff0055); z-index: 4005; }
         .anim-zoom-fill { animation: zoomFillHeart 4s forwards cubic-bezier(0.4, 0, 0.2, 1); }
@@ -334,7 +334,7 @@
             2: { title: "SOULMATE SCRAMBLE", inst: "Unscramble the love words. 3 wrong guesses and you fail!", win: "“Communication is the bridge between two hearts.”", fail: "“Words fail, but love remains. Try again!”" },
             3: { title: "TIC TAC TOE", inst: "Classic game. Win to progress, tie leads to Sudden Death!", win: "“Every battle brings us closer.”", fail: "“Love is about taking turns.”" },
             3.5: { title: "SUDDEN DEATH", inst: "Tap the golden heart faster than your partner!", win: "“Quick instincts, true connection.”", fail: "“Too slow! Try again.”" },
-            4: { title: "HEART POPPER", inst: "Pop the good hearts, avoid the broken ones. Score 600 total!", win: "“Protect your heart from the broken pieces.”", fail: "“Too many broken hearts. Heal and retry.”" },
+            4: { title: "HEART POPPER", inst: "Pop the good hearts, avoid the broken ones. Score 300 total!", win: "“Protect your heart from the broken pieces.”", fail: "“Too many broken hearts. Heal and retry.”" },
             5: { title: "PERFECT MATCH", inst: "Pick your ideal date. You MUST pick the same option 3 times!", win: "“Great minds and connected hearts think alike.”", fail: "“Mismatched vibes! Communicate and try again.”" },
             6: { title: "MEMORY MATCH", inst: "Find the matching love emojis. 3 wrong pairs = fail!", win: "“Unforgettable connection.”", fail: "“Memory faded. Rebuild the connection!”" },
             7: { title: "CATCH THE LOVE", inst: "Move your side. Catch 10 hearts together. Catch a broken heart = instant fail!", win: "“Teamwork makes the dream work.”", fail: "“You caught a broken piece. Be careful!”" },
@@ -505,7 +505,7 @@
                     else if(gState.level === 2) { document.getElementById('lvl-2').style.display='flex'; renderScramble(); }
                     else if(gState.level === 3) { document.getElementById('lvl-3').style.display='flex'; renderTTT(); }
                     else if(gState.level === 3.5) { document.getElementById('lvl-3-5').style.display='flex'; renderSD(); if(playerNum===1 && !hostIntervals.l35) hostIntervals.l35 = setInterval(()=>hostSD(), 800); }
-                    else if(gState.level === 4) { document.getElementById('lvl-4').style.display='flex'; renderPopper(); if(playerNum===1 && !hostIntervals.l4) hostIntervals.l4 = setInterval(()=>hostPopper(), 600); }
+                    else if(gState.level === 4) { document.getElementById('lvl-4').style.display='flex'; renderPopper(); if(playerNum===1 && !hostIntervals.l4) hostIntervals.l4 = setInterval(()=>hostPopper(), 800); } // Slower speed
                     else if(gState.level === 5) { document.getElementById('lvl-5').style.display='flex'; renderMatch(); }
                     else if(gState.level === 6) { document.getElementById('lvl-6').style.display='flex'; renderMemory(); }
                     else if(gState.level === 7) { document.getElementById('game-canvas').style.display='block'; startCatchEngine(); if(playerNum===1 && !hostIntervals.l7) hostIntervals.l7 = setInterval(()=>hostCatch(), 800); }
@@ -567,11 +567,11 @@
             }
         }
 
-        // --- L4 (Harder) ---
+        // --- L4 (EASIER TARGET & SLOWER) ---
         function hostPopper() { 
             if(gState.overlay.show) return;
-            if(gState.popScore >= 600) triggerWin(); // Higher score needed
-            else updateDoc(docRef, { popTarget: { x: Math.random()*80, y: Math.random()*80, id: Date.now(), t: Math.random()>0.6?'bad':'good' } });
+            if(gState.popScore >= 300) triggerWin(); // Target score tagginchanu (from 600 to 300)
+            else updateDoc(docRef, { popTarget: { x: Math.random()*80, y: Math.random()*80, id: Date.now(), t: Math.random()>0.8?'bad':'good' } }); // Bad hearts chance 20% ki tagginchanu
         }
         function renderPopper() {
             let a = document.getElementById('popper-area'); a.innerHTML = '';
@@ -580,12 +580,12 @@
                 h.style.left = gState.popTarget.x + '%'; h.style.top = gState.popTarget.y + '%';
                 h.onclick = () => { 
                     if(gState.popTarget.t === 'bad') triggerFail();
-                    else { playSound('click'); updateDoc(docRef, { popTarget: null, popScore: gState.popScore+20 }); } // +20 per pop = 30 pops needed
+                    else { playSound('click'); updateDoc(docRef, { popTarget: null, popScore: gState.popScore+20 }); }
                 }; a.appendChild(h);
             }
         }
 
-        // --- L5 (Longer) ---
+        // --- L5 ---
         window.selectMatch = async function(c) {
             if(gState.level !== 5 || gState.overlay.show || gState.matchEvaluated) return; playSound('click');
             let k = playerNum === 1 ? 'matchP1' : 'matchP2';
