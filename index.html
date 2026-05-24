@@ -138,7 +138,7 @@
         
         #final-quote { font-family: 'Great Vibes', cursive; font-size: 45px; color: #ffb3c6; text-shadow: 0 0 20px #ff0055; line-height: 1.2; margin-bottom: 20px;}
         #final-names { font-family: 'Cinzel', serif; font-weight: 800; font-size: 35px; background: linear-gradient(90deg, #00f2fe, #ff007f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 10px rgba(0,242,254,0.5));}
-        #final-winner { margin-top:20px; font-size:22px; color:#ffeb3b; font-family:'Poppins'; font-weight:bold; text-shadow:0 0 15px rgba(255,235,59,0.8); background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 15px; border: 1px solid #ffeb3b;}
+        #final-winner { margin-top:20px; font-size:20px; color:#ffeb3b; font-family:'Poppins'; font-weight:bold; text-shadow:0 0 15px rgba(255,235,59,0.8); background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 15px; border: 1px solid #ffeb3b;}
 
         @keyframes pulseBeat { 0% { transform: scale(1); } 100% { transform: scale(1.15); } }
     </style>
@@ -476,6 +476,9 @@
         function clearAllIntervals() { Object.values(hostIntervals).forEach(clearInterval); hostIntervals = {}; }
 
         let lastEmojiId = 0;
+        let c = document.getElementById('game-canvas'); let ctx = c.getContext('2d');
+        function res() { c.width = window.innerWidth; c.height = window.innerHeight; } window.addEventListener('resize', res); res();
+
         function setupSync() {
             onSnapshot(docRef, (snap) => {
                 if(!snap.exists()) return;
@@ -516,7 +519,11 @@
                     else if(gState.level === 4) { document.getElementById('lvl-4').style.display='flex'; renderPopper(); if(playerNum===1 && !hostIntervals.l4) hostIntervals.l4 = setInterval(()=>hostPopper(), 800); } 
                     else if(gState.level === 5) { document.getElementById('lvl-5').style.display='flex'; renderMatch(); }
                     else if(gState.level === 6) { document.getElementById('lvl-6').style.display='flex'; renderSequence(); }
-                    else if(gState.level === 7) { document.getElementById('game-canvas').style.display='block'; startCatchEngine(); if(playerNum===1 && !hostIntervals.l7) hostIntervals.l7 = setInterval(()=>hostCatch(), 800); }
+                    else if(gState.level === 7) { 
+                        document.getElementById('game-canvas').style.display='block'; 
+                        startCatchEngine(); 
+                        if(playerNum===1 && !hostIntervals.l7) hostIntervals.l7 = setInterval(()=>hostCatch(), 1000); 
+                    }
                     else if(gState.level === 8) { document.getElementById('lvl-8').style.display='flex'; renderSync(); if(playerNum===1 && !hostIntervals.l8) hostIntervals.l8 = setInterval(()=>hostSync(), 50); }
                 }
             });
@@ -655,7 +662,6 @@
                     await updateDoc(docRef, { [sc]: gState[sc] + 50, seqScore: nextScore });
                     triggerWin();
                 } else {
-                    // Get a new target that isn't the same as the current one
                     let nextT = Math.floor(Math.random()*4);
                     while(nextT === gState.seqTarget) nextT = Math.floor(Math.random()*4);
                     await updateDoc(docRef, { seqScore: nextScore, seqTarget: nextT, [sc]: gState[sc] + 10 });
@@ -678,35 +684,47 @@
         }
 
         // --- L7: Catch ---
-                // --- L7: Catch (Updated with Slower Speed) ---
+        c.addEventListener('touchmove', async e => {
+            if(gState.level !== 7 || gState.overlay.show || playerNum === 0) return;
+            let nx = e.changedTouches[0].screenX; let pct = (nx / c.width) * 100;
+            let lk = playerNum===1 ? 'cP1X' : 'cP2X'; updateDoc(docRef, { [lk]: Math.max(10, Math.min(90, pct)) });
+        });
+
         let catchObjY = -10;
         function hostCatch() {
-            if(gState.overlay.show) return;
-            // Generate objects a bit slower to avoid crowding
-            if(!gState.catchObj) updateDoc(docRef, { catchObj: { x: Math.random()*80+10, t: Math.random()>0.85?'bad':'good', id: Date.now() } });
+            if(gState.overlay.show || gState.level !== 7) return;
+            if(!gState.catchObj || catchObjY > window.innerHeight || catchObjY === -10) { 
+                updateDoc(docRef, { 
+                    catchObj: { x: Math.random()*80+10, t: Math.random()>0.85?'bad':'good', id: Date.now() } 
+                }); 
+            }
         }
         
         function startCatchEngine() {
             function render() {
-                if(gState.level !== 7 || gState.overlay.show) { requestAnimationFrame(render); return; }
+                if(gState.level !== 7) { ctx.clearRect(0,0,c.width,c.height); return; }
+                if(gState.overlay.show) { requestAnimationFrame(render); return; }
+
                 ctx.clearRect(0,0,c.width,c.height);
                 
-                let px1 = (gState.cP1X/100) * c.width; let px2 = (gState.cP2X/100) * c.width; let py = c.height - 100;
-                ctx.fillStyle = "#00f2fe"; ctx.font="30px Arial"; ctx.fillText("🧺", px1-15, py); ctx.fillText(gState.p1Name, px1-15, py+25);
-                ctx.fillStyle = "#ff007f"; ctx.fillText("🧺", px2-15, py); ctx.fillText(gState.p2Name, px2-15, py+25);
+                let px1 = (gState.cP1X/100) * c.width; let px2 = (gState.cP2X/100) * c.width; let py = c.height - 120;
+                ctx.fillStyle = "#00f2fe"; ctx.font="40px Arial"; ctx.textAlign="center"; ctx.fillText("🧺", px1, py);
+                ctx.fillStyle = "#ff007f"; ctx.fillText("🧺", px2, py);
                 
-                ctx.fillStyle="#fff"; ctx.font="20px Orbitron"; ctx.fillText("Caught: " + gState.catchScore + "/10", 20, 100);
+                ctx.font="14px Orbitron"; ctx.fillStyle="#00f2fe"; ctx.fillText(gState.p1Name, px1, py+25);
+                ctx.fillStyle="#ff007f"; ctx.fillText(gState.p2Name, px2, py+25);
+
+                ctx.fillStyle="#fff"; ctx.font="20px Orbitron"; ctx.textAlign="left"; ctx.fillText("Caught: " + gState.catchScore + "/10", 20, 100);
 
                 if(gState.catchObj) {
-                    // Speed decreased from 5 to 2.5 for easier gameplay
                     catchObjY += 2.5; 
                     let ox = (gState.catchObj.x/100) * c.width;
-                    ctx.font="40px Arial"; ctx.fillText(gState.catchObj.t==='bad'?'💔':'❤️', ox-20, catchObjY);
+                    ctx.font="45px Arial"; ctx.textAlign="center"; ctx.fillText(gState.catchObj.t==='bad'?'💔':'❤️', ox, catchObjY);
                     
-                    if(playerNum === 1 && catchObjY > py - 30 && catchObjY < py + 30) {
-                        let hit = Math.abs(ox - px1) < 40 || Math.abs(ox - px2) < 40;
-                        if(hit) {
-                            if(gState.catchObj.t === 'bad') triggerFail();
+                    if(playerNum === 1 && catchObjY > py - 40 && catchObjY < py + 20) {
+                        let hitP1 = Math.abs(ox - px1) < 50; let hitP2 = Math.abs(ox - px2) < 50;
+                        if(hitP1 || hitP2) {
+                            if(gState.catchObj.t === 'bad') { triggerFail(); } 
                             else { playSound('match'); let nsc = gState.catchScore+1; if(nsc>=10) triggerWin(); else updateDoc(docRef, { catchObj: null, catchScore: nsc }); catchObjY=-10; }
                         }
                     }
@@ -717,7 +735,6 @@
             }
             render();
         }
-        
 
         // --- L8: Sync ---
         let syncDir = 1;
