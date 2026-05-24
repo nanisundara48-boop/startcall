@@ -88,7 +88,7 @@
         .giant-heart:active { transform: scale(0.85); filter: drop-shadow(0 0 50px #00f2fe); }
         
         /* L2 */
-        #scramble-word { font-family: 'Orbitron'; font-size: 40px; color: #fff; text-shadow: 0 0 20px #00f2fe; letter-spacing: 10px; text-align: center; margin: 20px 0;}
+        #scramble-word { font-family: 'Orbitron'; font-size: 35px; color: #fff; text-shadow: 0 0 20px #00f2fe; letter-spacing: 8px; text-align: center; margin: 20px 0;}
         
         /* L3 */
         .grid-game { display: grid; gap: 12px; margin-top: 10px; }
@@ -104,13 +104,10 @@
         .match-btn { background: rgba(0,0,0,0.6); border: 2px solid #00f2fe; padding: 20px 10px; border-radius: 15px; color: white; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 10px; transition: 0.2s;}
         .match-btn.selected { background: linear-gradient(135deg, #00f2fe, #4facfe); color: black; box-shadow: 0 0 15px rgba(0,242,254,0.6); }
         
-        /* L6 Memory */
-        .mem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 90%; max-width: 350px;}
-        .mem-card { width: 100%; aspect-ratio: 1; background: rgba(255,0,127,0.2); border: 1px solid #ff007f; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 40px; cursor: pointer; transform-style: preserve-3d; transition: transform 0.4s;}
-        .mem-card.flipped { transform: rotateY(180deg); background: rgba(255,255,255,0.9); }
-        .mem-card .inner { display: none; transform: rotateY(180deg); }
-        .mem-card.flipped .inner { display: block; }
-        
+        /* L6 Sequence Match (Replacing Memory) */
+        .seq-btn { font-size: 40px; aspect-ratio: 1; border-radius: 20px; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; }
+        .seq-btn:active { transform: scale(0.9) !important; }
+
         /* L7 Catch Canvas */
         canvas { display: none; position: absolute; top:0; left:0; width: 100vw; height: 100vh; z-index: 1; }
         
@@ -135,12 +132,13 @@
         .anim-burst { animation: burstHeart 3s forwards ease-out; }
         @keyframes burstHeart { 0% { transform: translate(-50%, -50%) scale(0); opacity: 1; } 100% { transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.5); opacity: 0; } }
 
-        #final-content { display: flex; flex-direction: column; align-items: center; z-index: 4010; opacity: 0; text-align: center; padding: 20px; }
+        #final-content { display: flex; flex-direction: column; align-items: center; z-index: 4010; opacity: 0; text-align: center; padding: 20px; width: 100%;}
         .anim-fade-in { animation: finalFadeIn 2s 3.5s forwards; }
         @keyframes finalFadeIn { to { opacity: 1; } }
         
-        #final-quote { font-family: 'Great Vibes', cursive; font-size: 50px; color: #ffb3c6; text-shadow: 0 0 20px #ff0055; line-height: 1.2; margin-bottom: 30px;}
-        #final-names { font-family: 'Cinzel', serif; font-weight: 800; font-size: 40px; background: linear-gradient(90deg, #00f2fe, #ff007f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 10px rgba(0,242,254,0.5));}
+        #final-quote { font-family: 'Great Vibes', cursive; font-size: 45px; color: #ffb3c6; text-shadow: 0 0 20px #ff0055; line-height: 1.2; margin-bottom: 20px;}
+        #final-names { font-family: 'Cinzel', serif; font-weight: 800; font-size: 35px; background: linear-gradient(90deg, #00f2fe, #ff007f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 10px rgba(0,242,254,0.5));}
+        #final-winner { margin-top:20px; font-size:22px; color:#ffeb3b; font-family:'Poppins'; font-weight:bold; text-shadow:0 0 15px rgba(255,235,59,0.8); background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 15px; border: 1px solid #ffeb3b;}
 
         @keyframes pulseBeat { 0% { transform: scale(1); } 100% { transform: scale(1.15); } }
     </style>
@@ -213,7 +211,7 @@
         </div>
 
         <div id="lvl-2" class="lvl-container">
-            <div style="color: #ffb3c6;" id="scramble-prog"></div>
+            <div style="color: #ffb3c6; margin-bottom:10px; font-weight:bold;">Word <span id="scramble-prog">1</span> of 5 (Fails: <span id="scramble-fails">0</span>/3)</div>
             <div id="scramble-word"></div>
             <input type="text" id="scramble-input" placeholder="Type the true word..." style="text-transform:uppercase; max-width: 300px;">
             <button id="btnScramble" class="btn-primary" style="max-width: 300px;">Guess</button>
@@ -244,8 +242,13 @@
         </div>
 
         <div id="lvl-6" class="lvl-container">
-            <div style="margin-bottom:10px; color:#ffb3c6;">Fails allowed: <span id="mem-fails-left">3</span></div>
-            <div class="mem-grid" id="mem-board"></div>
+            <div style="margin-bottom:20px; color:#ffb3c6; text-align:center; font-weight:bold;">Tap the glowing heart! Fast! (<span id="seq-score-disp">0</span>/5)</div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 250px;">
+                <button class="seq-btn" id="seq-0" onclick="seqClick(0)" style="background:#ff4d4d;">❤️</button>
+                <button class="seq-btn" id="seq-1" onclick="seqClick(1)" style="background:#ff758c;">💖</button>
+                <button class="seq-btn" id="seq-2" onclick="seqClick(2)" style="background:#ffeb3b;">💛</button>
+                <button class="seq-btn" id="seq-3" onclick="seqClick(3)" style="background:#d633ff;">💜</button>
+            </div>
         </div>
 
         <div id="lvl-8" class="lvl-container">
@@ -273,7 +276,7 @@
         <div id="final-content">
             <div id="final-quote">"In a universe of chaos, finding you was my perfect peace."</div>
             <div id="final-names">P1 & P2</div>
-            <div style="margin-top: 30px; font-family: 'Poppins'; color: #00f2fe; letter-spacing: 2px;">JOURNEY COMPLETE</div>
+            <div id="final-winner"></div> <div style="margin-top: 30px; font-family: 'Poppins'; color: #00f2fe; letter-spacing: 2px;">JOURNEY COMPLETE</div>
         </div>
     </div>
 
@@ -331,15 +334,19 @@
         // Data Dictionaries
         const levelData = {
             1: { title: "THE SPARK", inst: "Tap the giant heart together as fast as you can to fill the meter!", win: "“Love is a spark that ignites the soul.”", fail: "“Keep trying, true love takes effort!”" },
-            2: { title: "SOULMATE SCRAMBLE", inst: "Unscramble the love words. 3 wrong guesses and you fail!", win: "“Communication is the bridge between two hearts.”", fail: "“Words fail, but love remains. Try again!”" },
+            2: { title: "SOULMATE SCRAMBLE", inst: "Unscramble 5 daily love words. 3 wrong guesses and you fail!", win: "“Communication is the bridge between two hearts.”", fail: "“Words fail, but love remains. Try again!”" },
             3: { title: "TIC TAC TOE", inst: "Classic game. Win to progress, tie leads to Sudden Death!", win: "“Every battle brings us closer.”", fail: "“Love is about taking turns.”" },
             3.5: { title: "SUDDEN DEATH", inst: "Tap the golden heart faster than your partner!", win: "“Quick instincts, true connection.”", fail: "“Too slow! Try again.”" },
             4: { title: "HEART POPPER", inst: "Pop the good hearts, avoid the broken ones. Score 300 total!", win: "“Protect your heart from the broken pieces.”", fail: "“Too many broken hearts. Heal and retry.”" },
             5: { title: "PERFECT MATCH", inst: "Pick your ideal date. You MUST pick the same option 3 times!", win: "“Great minds and connected hearts think alike.”", fail: "“Mismatched vibes! Communicate and try again.”" },
-            6: { title: "MEMORY MATCH", inst: "Find the matching love emojis. 3 wrong pairs = fail!", win: "“Unforgettable connection.”", fail: "“Memory faded. Rebuild the connection!”" },
+            6: { title: "LOVE SEQUENCE", inst: "Tap the glowing heart faster than your partner. Score 5 points to win!", win: "“Unforgettable connection.”", fail: "“Lost the spark. Rebuild the connection!”" },
             7: { title: "CATCH THE LOVE", inst: "Move your side. Catch 10 hearts together. Catch a broken heart = instant fail!", win: "“Teamwork makes the dream work.”", fail: "“You caught a broken piece. Be careful!”" },
             8: { title: "HEARTBEAT SYNC", inst: "Tap exactly when the line hits the center. Do it together 3 times!", win: "“Hearts beating in perfect sync.”", fail: "“Out of rhythm. Find your sync again!”" }
         };
+
+        // NEW 15+ WORD DICTIONARY (EASY DAILY LOVE WORDS)
+        const allScrWords = ["FOREVER", "TOGETHER", "ROMANCE", "HUGS", "KISSES", "CUTIE", "DARLING", "SWEETY", "BABY", "SOULMATE", "ALWAYS", "CUDDLE", "SMILE", "BEAUTY", "HANDSOME", "HONEY", "ANGEL"];
+        function getRandomWords(n) { return [...allScrWords].sort(()=>Math.random()-0.5).slice(0,n); }
 
         function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); if(document.getElementById(id)) document.getElementById(id).classList.add('active'); }
         document.getElementById('btnHome').onclick = () => { window.location.reload(); };
@@ -370,12 +377,19 @@
             let base = { level: levelToSet, overlay: { show: true, state: 'inst' } };
             // Zero out everything to prevent ghost triggers
             base.sparkClicks = 0;
-            base.scramble = { wordIdx: 0, jumbled: "FOREVER".split('').sort(()=>Math.random()-0.5).join(' '), fails: 0 };
+            
+            // New Scramble generator (5 random words)
+            let w = getRandomWords(5);
+            base.scramble = { words: w, wordIdx: 0, jumbled: w[0].split('').sort(()=>Math.random()-0.5).join(' '), fails: 0 };
+            
             base.tttBoard = ['','','','','','','','','']; base.tttTurn = 'X';
             base.sdTarget = null;
             base.popScore = 0; base.popTarget = null;
             base.matchP1 = ""; base.matchP2 = ""; base.matchWins = 0; base.matchEvaluated = false;
-            base.memBoard = generateMemoryBoard(); base.memFlipped = []; base.memMatched = []; base.memFails = 0;
+            
+            // NEW L6 (Sequence Match instead of Memory Match)
+            base.seqScore = 0; base.seqTarget = Math.floor(Math.random()*4);
+
             base.catchScore = 0; base.catchObj = null; base.cP1X = 25; base.cP2X = 75;
             base.syncPos = 0; base.syncP1Tap = false; base.syncP2Tap = false; base.syncScore = 0;
             return base;
@@ -385,12 +399,6 @@
             let st = getCleanLevelState(1);
             st.status = 'waiting'; st.p1Name = myName; st.p2Name = ""; st.p1Score = 0; st.p2Score = 0;
             return st;
-        }
-
-        function generateMemoryBoard() {
-            let emojis = ['❤️','😍','💍','🌹','🧸','💌'];
-            let arr = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
-            return arr;
         }
 
         document.getElementById('btnCreate').addEventListener('click', async () => {
@@ -505,9 +513,9 @@
                     else if(gState.level === 2) { document.getElementById('lvl-2').style.display='flex'; renderScramble(); }
                     else if(gState.level === 3) { document.getElementById('lvl-3').style.display='flex'; renderTTT(); }
                     else if(gState.level === 3.5) { document.getElementById('lvl-3-5').style.display='flex'; renderSD(); if(playerNum===1 && !hostIntervals.l35) hostIntervals.l35 = setInterval(()=>hostSD(), 800); }
-                    else if(gState.level === 4) { document.getElementById('lvl-4').style.display='flex'; renderPopper(); if(playerNum===1 && !hostIntervals.l4) hostIntervals.l4 = setInterval(()=>hostPopper(), 800); } // Slower speed
+                    else if(gState.level === 4) { document.getElementById('lvl-4').style.display='flex'; renderPopper(); if(playerNum===1 && !hostIntervals.l4) hostIntervals.l4 = setInterval(()=>hostPopper(), 800); } 
                     else if(gState.level === 5) { document.getElementById('lvl-5').style.display='flex'; renderMatch(); }
-                    else if(gState.level === 6) { document.getElementById('lvl-6').style.display='flex'; renderMemory(); }
+                    else if(gState.level === 6) { document.getElementById('lvl-6').style.display='flex'; renderSequence(); }
                     else if(gState.level === 7) { document.getElementById('game-canvas').style.display='block'; startCatchEngine(); if(playerNum===1 && !hostIntervals.l7) hostIntervals.l7 = setInterval(()=>hostCatch(), 800); }
                     else if(gState.level === 8) { document.getElementById('lvl-8').style.display='flex'; renderSync(); if(playerNum===1 && !hostIntervals.l8) hostIntervals.l8 = setInterval(()=>hostSync(), 50); }
                 }
@@ -523,15 +531,30 @@
             if(n >= 100) { triggerWin(); } else await updateDoc(docRef, { sparkClicks: n });
         };
 
-        // --- L2 ---
-        const scrWords = ["FOREVER", "TRUST", "PASSION"];
-        function renderScramble() { document.getElementById('scramble-word').innerText = gState.scramble.jumbled; document.getElementById('scramble-prog').innerText = `Strikes: ${gState.scramble.fails}/3`; }
+        // --- L2 (SMART SCRAMBLE 5 WORDS) ---
+        function renderScramble() { 
+            document.getElementById('scramble-word').innerText = gState.scramble.jumbled; 
+            document.getElementById('scramble-prog').innerText = gState.scramble.wordIdx + 1; 
+            document.getElementById('scramble-fails').innerText = gState.scramble.fails; 
+        }
         document.getElementById('btnScramble').onclick = async () => {
             if(gState.level !== 2 || gState.overlay.show) return;
             let v = document.getElementById('scramble-input').value.trim().toUpperCase(); document.getElementById('scramble-input').value = '';
-            if(v === scrWords[gState.scramble.wordIdx]) {
+            
+            // Check against current word
+            if(v === gState.scramble.words[gState.scramble.wordIdx]) {
                 playSound('match'); let next = gState.scramble.wordIdx + 1;
-                if(next >= 3) triggerWin(); else updateDoc(docRef, { scramble: { wordIdx: next, jumbled: scrWords[next].split('').sort(()=>Math.random()-0.5).join(' '), fails: gState.scramble.fails } });
+                let sc = playerNum === 1 ? 'p1Score' : 'p2Score';
+                
+                if(next >= 5) {
+                    await updateDoc(docRef, { [sc]: gState[sc] + 50 });
+                    triggerWin(); 
+                } else { 
+                    await updateDoc(docRef, { 
+                        [sc]: gState[sc] + 20,
+                        scramble: { ...gState.scramble, wordIdx: next, jumbled: gState.scramble.words[next].split('').sort(()=>Math.random()-0.5).join(' ') } 
+                    }); 
+                }
             } else {
                 playSound('fail'); let f = gState.scramble.fails + 1;
                 if(f >= 3) triggerFail(); else updateDoc(docRef, { scramble: { ...gState.scramble, fails: f } });
@@ -567,11 +590,11 @@
             }
         }
 
-        // --- L4 (EASIER TARGET & SLOWER) ---
+        // --- L4 ---
         function hostPopper() { 
             if(gState.overlay.show) return;
-            if(gState.popScore >= 300) triggerWin(); // Target score tagginchanu (from 600 to 300)
-            else updateDoc(docRef, { popTarget: { x: Math.random()*80, y: Math.random()*80, id: Date.now(), t: Math.random()>0.8?'bad':'good' } }); // Bad hearts chance 20% ki tagginchanu
+            if(gState.popScore >= 300) triggerWin(); 
+            else updateDoc(docRef, { popTarget: { x: Math.random()*80, y: Math.random()*80, id: Date.now(), t: Math.random()>0.8?'bad':'good' } }); 
         }
         function renderPopper() {
             let a = document.getElementById('popper-area'); a.innerHTML = '';
@@ -619,32 +642,39 @@
             }
         }
 
-        // --- L6: Memory Match ---
-        function renderMemory() {
-            document.getElementById('mem-fails-left').innerText = 3 - gState.memFails;
-            let b = document.getElementById('mem-board'); b.innerHTML = '';
-            gState.memBoard.forEach((em, i) => {
-                let c = document.createElement('div'); c.className = 'mem-card';
-                let isFlipped = gState.memFlipped.includes(i) || gState.memMatched.includes(i);
-                if(isFlipped) c.classList.add('flipped');
-                let inn = document.createElement('div'); inn.className = 'inner'; inn.innerText = em; c.appendChild(inn);
-                c.onclick = () => {
-                    if(gState.overlay.show || isFlipped || gState.memFlipped.length >= 2) return;
-                    playSound('click'); let nf = [...gState.memFlipped, i];
-                    updateDoc(docRef, { memFlipped: nf });
-                    if(nf.length === 2 && playerNum===1) {
-                        setTimeout(() => {
-                            if(gState.memBoard[nf[0]] === gState.memBoard[nf[1]]) {
-                                playSound('match'); let nm = [...gState.memMatched, nf[0], nf[1]];
-                                if(nm.length === 12) triggerWin(); else updateDoc(docRef, { memFlipped: [], memMatched: nm });
-                            } else {
-                                playSound('fail'); let fail = gState.memFails + 1;
-                                if(fail >= 3) triggerFail(); else updateDoc(docRef, { memFlipped: [], memFails: fail });
-                            }
-                        }, 1000);
-                    }
-                }; b.appendChild(c);
-            });
+        // --- L6: SEQUENCE MATCH (REPLACES MEMORY) ---
+        window.seqClick = async function(idx) {
+            if(gState.level !== 6 || gState.overlay.show) return;
+            playSound('click');
+            
+            if(gState.seqTarget === idx) {
+                let nextScore = gState.seqScore + 1;
+                let sc = playerNum === 1 ? 'p1Score' : 'p2Score';
+                
+                if(nextScore >= 5) {
+                    await updateDoc(docRef, { [sc]: gState[sc] + 50, seqScore: nextScore });
+                    triggerWin();
+                } else {
+                    // Get a new target that isn't the same as the current one
+                    let nextT = Math.floor(Math.random()*4);
+                    while(nextT === gState.seqTarget) nextT = Math.floor(Math.random()*4);
+                    await updateDoc(docRef, { seqScore: nextScore, seqTarget: nextT, [sc]: gState[sc] + 10 });
+                }
+            } else {
+                triggerFail();
+            }
+        };
+
+        function renderSequence() {
+            document.getElementById('seq-score-disp').innerText = gState.seqScore;
+            for(let i=0; i<4; i++) {
+                let b = document.getElementById('seq-'+i);
+                if(b) {
+                    b.style.opacity = (gState.seqTarget === i) ? "1" : "0.5";
+                    b.style.transform = (gState.seqTarget === i) ? "scale(1.15)" : "scale(1)";
+                    b.style.boxShadow = (gState.seqTarget === i) ? "0 0 25px #fff" : "none";
+                }
+            }
         }
 
         // --- L7: Catch ---
@@ -716,7 +746,7 @@
             updateDoc(docRef, { [playerNum===1?'syncP1Tap':'syncP2Tap']: true });
         };
 
-        // --- FINALE ---
+        // --- FINALE WITH WINNER DISPLAY ---
         let finaleTriggered = false;
         function triggerFinale() {
             if(finaleTriggered) return; finaleTriggered = true;
@@ -725,6 +755,13 @@
             let fScreen = document.getElementById('final-screen'); fScreen.style.display = 'flex';
             document.getElementById('final-names').innerText = `${gState.p1Name} & ${gState.p2Name}`;
             
+            // CALCULATE WINNER
+            let winText = "";
+            if(gState.p1Score > gState.p2Score) { winText = `🏆 ${gState.p1Name} Won with ${gState.p1Score} Points!`; }
+            else if(gState.p2Score > gState.p1Score) { winText = `🏆 ${gState.p2Name} Won with ${gState.p2Score} Points!`; }
+            else { winText = `🤝 Perfect Match! Both Scored ${gState.p1Score} Points!`; }
+            document.getElementById('final-winner').innerText = winText;
+
             let gen = document.getElementById('finale-heart-gen');
             
             // 1. Medium heart zooms
@@ -759,7 +796,6 @@
                 snap.docChanges().forEach(change => {
                     let m = change.doc.data();
                     if(change.type === 'added') {
-                        // Show toast only for new messages received after joining, from the partner, if chat box is closed
                         if(!chatOpen && m.sender !== playerNum && m.ts > joinTime) {
                             showToast(m.text);
                         }
