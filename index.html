@@ -24,7 +24,7 @@
         .header h1 { margin: 0; font-size: 22px; letter-spacing: 0.5px; font-weight: 700; }
         .header p { margin: 6px 0 0 0; font-size: 13px; opacity: 0.85; }
         
-        /* Academic Dashboard Grid */
+        /* Dashboard Grid */
         .main-content { 
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -57,67 +57,50 @@
             font-weight: 500;
             width: 100%;
             text-align: center;
-            text-decoration: none;
             box-sizing: border-box;
             transition: background 0.2s;
         }
         .download-btn:hover { background-color: #1d4ed8; }
 
-        /* Secret Hidden Chat Framework */
+        /* Real Study Material Viewer Modal */
+        #material-viewer {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 10001; justify-content: center; align-items: center;
+        }
+        .viewer-content {
+            background: white; width: 90%; max-width: 500px; padding: 20px; border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+        .viewer-header { display: flex; justify-content: space-between; font-weight: bold; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px; }
+        .viewer-body { max-height: 300px; overflow-y: auto; font-size: 14px; line-height: 1.6; color: #334155; text-align: left;}
+
+        /* Secret Chat Panel */
         #forum-container { 
-            display: none; 
-            position: fixed; 
-            bottom: 20px; 
-            right: 20px; 
-            left: 20px; 
-            max-width: 420px; 
-            margin: auto; 
-            background: white; 
-            border-radius: 12px; 
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); 
-            border: 1px solid #cbd5e1;
-            overflow: hidden; 
-            z-index: 9999;
+            display: none; position: fixed; bottom: 20px; right: 20px; left: 20px; 
+            max-width: 420px; margin: auto; background: white; border-radius: 12px; 
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); border: 1px solid #cbd5e1;
+            overflow: hidden; z-index: 9999;
         }
         .forum-header { 
-            background: #1e3a8a; 
-            color: white; 
-            padding: 14px 16px; 
-            font-size: 14px;
-            font-weight: 600; 
-            display: flex; 
-            justify-content: space-between;
-            align-items: center;
+            background: #1e3a8a; color: white; padding: 14px 16px; font-size: 14px;
+            font-weight: 600; display: flex; justify-content: space-between; align-items: center;
         }
         .close-forum { cursor: pointer; opacity: 0.8; font-size: 18px; padding: 5px; }
-        .close-forum:hover { opacity: 1; }
         
         #forum-board { 
-            height: 340px; 
-            overflow-y: auto; 
-            padding: 15px; 
-            background: #f8fafc; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 12px; 
-            position: relative;
+            height: 340px; overflow-y: auto; padding: 15px; background: #f8fafc; 
+            display: flex; flex-direction: column; gap: 12px; position: relative;
         }
         
         .forum-item {
-            padding: 10px 12px; 
-            border-radius: 8px; 
-            font-size: 13.5px; 
-            line-height: 1.4; 
-            max-width: 80%; 
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-            word-wrap: break-word; 
-            position: relative;
+            padding: 10px 12px; border-radius: 8px; font-size: 13.5px; 
+            line-height: 1.4; max-width: 80%; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            word-wrap: break-word; position: relative;
         }
         .forum-item.mine { align-self: flex-end; background: #e8f5e9; border-right: 4px solid #2e7d32; text-align: right; }
         .forum-item.theirs { align-self: flex-start; background: #ffffff; border-left: 4px solid #c62828; }
         
         .label { font-size: 10px; font-weight: bold; text-transform: uppercase; margin-bottom: 4px; display: block; color: #64748b; }
-        .msg-text { display: block; }
         .edited-tag { font-size: 9px; color: #94a3b8; font-style: italic; }
         
         .reply-snippet {
@@ -125,13 +108,11 @@
             font-size: 11px; margin-bottom: 6px; border-left: 2px solid #64748b;
             text-align: left; color: #475569;
         }
-
         .reaction-badge {
             position: absolute; bottom: -8px; right: 10px; background: white;
             border-radius: 12px; padding: 1px 5px; font-size: 11px; 
             box-shadow: 0 1px 3px rgba(0,0,0,0.15); display: none;
         }
-
         .reply-bar {
             display: none; background: #e2e8f0; padding: 8px 12px; font-size: 12px;
             border-top: 1px solid #cbd5e1; justify-content: space-between; align-items: center;
@@ -145,7 +126,7 @@
         .btn-q { background-color: #c62828; }
         .btn-a { background-color: #2e7d32; }
 
-        /* Context Menu Box */
+        /* Options Modal */
         #msg-options-modal {
             display: none; position: absolute; background: white; border-radius: 8px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.15); z-index: 10000; width: 190px;
@@ -161,44 +142,60 @@
 </head>
 <body>
 
+    <!-- Secret Trigger Area: Long Press for 2 Seconds -->
     <div class="header" id="academic-trigger">
         <h1>SRKR ENGINEERING COLLEGE</h1>
         <p>B.Tech 1st Year - Curriculum & Assignment Verification Forum</p>
     </div>
 
+    <!-- Authentic Study Portal Contents (6 Subjects) -->
     <div class="main-content">
         <div class="subject-card">
             <h3>📖 Mathematics - I (Calculus)</h3>
             <p>Matrix theory, Eigenvalues, Sequences, Series convergence, and Fourier series reference models.</p>
-            <a class="download-btn" href="https://rvrjcce.ac.id/syllabus/r20/111.pdf" target="_blank">Download Syllabus</a>
+            <button class="download-btn" onclick="openPdf('Mathematics - I', 'Unit 1: Matrices & Linear Systems\n- Rank of a matrix by Echelon form.\n- Gauss Elimination and Gauss Seidel iteration methods.\n- Eigenvalues and Eigenvectors of real matrices.\n- Cayley-Hamilton Theorem and its applications.\n\nUnit 2: Sequences & Series\n- Convergence and Divergence tests.\n- D\'Alembert\'s Ratio Test, Cauchy\'s Root Test.\n- Taylor\'s and Maclaurin\'s series expansions.')">View Syllabus</button>
         </div>
         <div class="subject-card">
             <h3>🔬 Engineering Chemistry</h3>
             <p>Water treatment methods, Polymer sheets, Electrochemistry structures, and Spectroscopic logs.</p>
-            <a class="download-btn" href="https://www.becbapatla.ac.id:8080/bec/Syllabus/R20/1st%20Year/CY121.pdf" target="_blank">View Material</a>
+            <button class="download-btn" onclick="openPdf('Engineering Chemistry', 'Unit 1: Water Technology\n- Hardness of water & estimation by EDTA method.\n- Boiler troubles: Sludges, Scales, and Caustic embrittlement.\n- Reverse Osmosis (RO) and Ion-exchange processes.\n\nUnit 2: Polymers & Plastics\n- Thermoplastics vs Thermosetting plastics.\n- Preparation and properties of Bakelite, Nylon-6,6 and Buna-S.\n- Biodegradable polymers applications.')">View Material</button>
         </div>
         <div class="subject-card">
             <h3>💻 Programming for Problem Solving (C)</h3>
             <p>Syntax guides, Loops control statements, Arrays documentation, and Pointer architecture scripts.</p>
-            <a class="download-btn" href="https://www.vrsiddhartha.ac.id/wp-content/uploads/2021/06/19CS1103-PPS.pdf" target="_blank">Download Lab Manual</a>
+            <button class="download-btn" onclick="openPdf('Programming in C', 'Assignment Questions:\n1. Write a C program to find the roots of a Quadratic Equation.\n2. Explain different loops (while, do-while, for) with syntax.\n3. Write a program for Matrix Multiplication.\n4. Explain call-by-value and call-by-reference mechanics with neat code examples.')">Download Lab Manual</button>
         </div>
         <div class="subject-card">
             <h3>📐 Engineering Graphics & Design</h3>
             <p>Principles of Conic sections, Orthographic projections, and Isometric drafting blueprints.</p>
-            <a class="download-btn" href="https://www.jntuka.edu.in/wp-content/uploads/2020/11/R20-B.Tech-I-Year-1-2-Sem-Syllabus.pdf" target="_blank">View Grid Sheets</a>
+            <button class="download-btn" onclick="openPdf('Engineering Graphics', 'Syllabus Grid:\n- Introduction to AutoCAD software tools.\n- Conic sections including Ellipse, Parabola, and Hyperbola (General method).\n- Projections of points and straight lines inclined to both planes.\n- Projections of regular solids: Prisms, Cylinders, Pyramids, and Cones.')">View Grid Sheets</button>
         </div>
         <div class="subject-card">
             <h3>🔌 Basic Electrical & Electronics</h3>
             <p>Analysis of DC/AC Circuits, Network theorems, Transformers parameters, and Semiconductor principles.</p>
-            <a class="download-btn" href="https://www.gvpce.ac.id/syllabi/R20/First%20Year/19EE11D1.pdf" target="_blank">Download Syllabus</a>
+            <button class="download-btn" onclick="openPdf('Basic Electrical Engg.', 'Important Concepts:\n- Kirchhoff\'s Laws (KVL & KCL) application.\n- Superposition, Thevenin\'s, and Norton\'s Theorems.\n- Principle of operation of a Single Phase Transformer.\n- PN Junction Diode characteristics and Full Wave Rectifiers.')">Download Syllabus</button>
         </div>
         <div class="subject-card">
             <h3>🗣️ Professional Communicative English</h3>
             <p>Vocabulary building mechanisms, Functional grammar protocols, and Advanced reading comprehension tests.</p>
-            <a class="download-btn" href="https://www.becbapatla.ac.id:8080/bec/Syllabus/R20/1st%20Year/EG111.pdf" target="_blank">Open Reference Booklet</a>
+            <button class="download-btn" onclick="openPdf('Communicative English', 'Reference Notes:\n- Applied Grammar: Subject-Verb Agreement, Prepositions, and Tenses.\n- Vocabulary: Synonyms, Antonyms, and Idiomatic Expressions.\n- Writing Skills: Formal Letter Writing, Resume drafting, and Essay structuring rules.')">Open Reference Booklet</button>
         </div>
     </div>
 
+    <!-- Authentic Content Viewer (Fake PDF Popup) -->
+    <div id="material-viewer" onclick="closePdf()">
+        <div class="viewer-content" onclick="event.stopPropagation()">
+            <div class="viewer-header">
+                <span id="viewer-title">Subject Title</span>
+                <span style="cursor:pointer;" onclick="closePdf()">✖</span>
+            </div>
+            <div class="viewer-body" id="viewer-body">
+                Syllabus contents...
+            </div>
+        </div>
+    </div>
+
+    <!-- Disguised Chat Container -->
     <div id="forum-container">
         <div class="forum-header">
             <span>Assignment Verification Panel</span>
@@ -220,6 +217,7 @@
         </div>
     </div>
 
+    <!-- Overlays & Options -->
     <div class="modal-overlay" id="modal-overlay" onclick="closeMenu()"></div>
     <div id="msg-options-modal">
         <div class="reaction-row">
@@ -260,7 +258,17 @@
         let selectedDocId = null;
         let selectedDocData = null;
 
-        // Long Press Implementation
+        // Fake PDF Viewer Functions
+        window.openPdf = function(title, content) {
+            document.getElementById('viewer-title').innerText = title + " - Official Syllabus";
+            document.getElementById('viewer-body').innerText = content;
+            document.getElementById('material-viewer').style.display = 'flex';
+        }
+        window.closePdf = function() {
+            document.getElementById('material-viewer').style.display = 'none';
+        }
+
+        // Long Press to trigger Secret Forum
         let pressTimer;
         const trigger = document.getElementById('academic-trigger');
         const startPress = () => { pressTimer = setTimeout(() => toggleForum(true), 2000); };
@@ -302,7 +310,7 @@
             cancelReply();
         }
 
-        // Live Synchronizer
+        // Live Feed Receiver
         const board = document.getElementById('forum-board');
         const q = query(queriesCollection, orderBy("timestamp", "asc"));
 
@@ -340,7 +348,6 @@
                 ${reactionHtml}
             `;
 
-            // Hold triggers
             let holdTimer;
             const onStart = (e) => { holdTimer = setTimeout(() => openMenu(e, docId, data, isMine), 800); };
             const onEnd = () => clearTimeout(holdTimer);
@@ -350,7 +357,6 @@
             itemDiv.addEventListener('mousedown', onStart);
             itemDiv.addEventListener('mouseup', onEnd);
 
-            // Swipe Right Configuration
             let touchStartX = 0;
             itemDiv.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive:true});
             itemDiv.addEventListener('touchend', e => {
@@ -369,6 +375,7 @@
             selectedDocId = docId;
             selectedDocData = data;
 
+            // Strict Validation: Hide Edit & Delete for Everyone if it belongs to opposite user
             document.getElementById('opt-edit').style.display = isMine ? 'block' : 'none';
             document.getElementById('opt-del-everyone').style.display = isMine ? 'block' : 'none';
 
@@ -406,9 +413,11 @@
             closeMenu();
         }
 
-        // Complete Wipe out from database node
+        // Strict Check: Wipe out immediately from database node
         window.deleteForEveryone = async function() {
-            await deleteDoc(doc(db, "srkr_queries", selectedDocId));
+            if(selectedDocData.senderId === myDeviceId) {
+                await deleteDoc(doc(db, "srkr_queries", selectedDocId));
+            }
             closeMenu();
         }
 
