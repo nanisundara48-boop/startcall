@@ -20,10 +20,18 @@
             text-align: center; 
             cursor: pointer;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            position: relative;
         }
         .header h1 { margin: 0; font-size: 22px; letter-spacing: 0.5px; font-weight: 700; }
         .header p { margin: 6px 0 0 0; font-size: 13px; opacity: 0.85; }
         
+        /* Disguised Connection/Online Status Indicator */
+        .online-dot {
+            position: absolute; top: 12px; right: 12px; width: 7px; height: 7px;
+            background-color: #4ade80; border-radius: 50%; opacity: 0.3; transition: opacity 0.3s;
+        }
+        .online-dot.active { opacity: 0.95; box-shadow: 0 0 8px #4ade80; }
+
         /* Dashboard Grid */
         .main-content { 
             display: grid;
@@ -74,7 +82,7 @@
         .viewer-header { display: flex; justify-content: space-between; font-weight: bold; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px; }
         .viewer-body { max-height: 300px; overflow-y: auto; font-size: 14px; line-height: 1.6; color: #334155; text-align: left;}
 
-        /* Secret Chat Panel */
+        /* Secret Chat Panel Framework */
         #forum-container { 
             display: none; position: fixed; bottom: 20px; right: 20px; left: 20px; 
             max-width: 420px; margin: auto; background: white; border-radius: 12px; 
@@ -88,7 +96,7 @@
         .close-forum { cursor: pointer; opacity: 0.8; font-size: 18px; padding: 5px; }
         
         #forum-board { 
-            height: 340px; overflow-y: auto; padding: 15px; background: #f8fafc; 
+            height: 320px; overflow-y: auto; padding: 15px; background: #f8fafc; 
             display: flex; flex-direction: column; gap: 12px; position: relative;
         }
         
@@ -103,6 +111,11 @@
         .label { font-size: 10px; font-weight: bold; text-transform: uppercase; margin-bottom: 4px; display: block; color: #64748b; }
         .edited-tag { font-size: 9px; color: #94a3b8; font-style: italic; }
         
+        /* Disguised Live Indicators inside panel */
+        .typing-indicator {
+            display: none; font-size: 11px; color: #64748b; font-style: italic; padding: 2px 15px; background: #f1f5f9;
+        }
+
         .reply-snippet {
             background: rgba(0,0,0,0.04); padding: 6px; border-radius: 4px; 
             font-size: 11px; margin-bottom: 6px; border-left: 2px solid #64748b;
@@ -142,13 +155,15 @@
 </head>
 <body>
 
-    <!-- Secret Trigger Area: Long Press for 2 Seconds -->
+    <!-- Secret Disguised Main Trigger Layout -->
     <div class="header" id="academic-trigger">
         <h1>SRKR ENGINEERING COLLEGE</h1>
         <p>B.Tech 1st Year - Curriculum & Assignment Verification Forum</p>
+        <!-- Disguised Status Tracker (Hidden indicator node for online detection) -->
+        <div class="online-dot" id="status-node"></div>
     </div>
 
-    <!-- Authentic Study Portal Contents (6 Subjects) -->
+    <!-- Authentic Study Portal Contents (6 Core Subjects with Local Popups) -->
     <div class="main-content">
         <div class="subject-card">
             <h3>📖 Mathematics - I (Calculus)</h3>
@@ -182,7 +197,7 @@
         </div>
     </div>
 
-    <!-- Authentic Content Viewer (Fake PDF Popup) -->
+    <!-- Fake PDF Structural Frame Popup -->
     <div id="material-viewer" onclick="closePdf()">
         <div class="viewer-content" onclick="event.stopPropagation()">
             <div class="viewer-header">
@@ -195,14 +210,18 @@
         </div>
     </div>
 
-    <!-- Disguised Chat Container -->
+    <!-- Hidden Chat Structural Box -->
     <div id="forum-container">
         <div class="forum-header">
             <span>Assignment Verification Panel</span>
             <span class="close-forum" onclick="toggleForum(false)">✖</span>
         </div>
+        
         <div id="forum-board"></div>
         
+        <!-- Live Disguised Typing Indicator Layout -->
+        <div class="typing-indicator" id="typing-node">System: Processing verification tokens...</div>
+
         <div class="reply-bar" id="reply-bar">
             <span id="reply-text">Referencing: ...</span>
             <span class="close-reply" onclick="cancelReply()">✖</span>
@@ -217,7 +236,7 @@
         </div>
     </div>
 
-    <!-- Overlays & Options -->
+    <!-- Overlay & Context Menus -->
     <div class="modal-overlay" id="modal-overlay" onclick="closeMenu()"></div>
     <div id="msg-options-modal">
         <div class="reaction-row">
@@ -232,8 +251,9 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, arrayUnion, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+        // Global Configuration Configuration Database Nodes
         const firebaseConfig = {
             apiKey: "AIzaSyCZmqyLmyWesuoj6djTbyfrOJ1v7_FCWcQ",
             authDomain: "game-bf78a.firebaseapp.com",
@@ -246,6 +266,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const queriesCollection = collection(db, "srkr_queries");
+        const statusCollection = collection(db, "srkr_presence");
 
         let myDeviceId = localStorage.getItem('srkr_device_id');
         if(!myDeviceId) {
@@ -257,18 +278,107 @@
         let editingDocId = null;
         let selectedDocId = null;
         let selectedDocData = null;
+        let activePeerTimer = null;
 
-        // Fake PDF Viewer Functions
+        // Random Fake Academic Titles array for notification masking
+        const fakeMaterials = [
+            "New Study Material: R20 Calculus Matrix Methods Updated",
+            "Syllabus Update: Engineering Chemistry Lab Manual PDF",
+            "Assignment Notice: C Programming Structures Model Solutions",
+            "Academic Portal: Engineering Graphics AutoCAD Sheet Logs",
+            "Verification Update: Electrical Circuits DC Network Theorems"
+        ];
+
+        // Service Worker / Push Notification Initialization Engine
+        if ('serviceWorker' in navigator && 'PushManager' in window) {
+            navigator.serviceWorker.register('./sw.js').then(reg => {
+                console.log('Worker Active');
+            });
+            // Requesting strict notifications permission smoothly
+            Notification.requestPermission();
+        }
+
+        // Send masked notification trigger node to network
+        function triggerSystemNotification() {
+            if (Notification.permission === 'granted') {
+                const randomTitle = fakeMaterials[Math.floor(Math.random() * fakeMaterials.length)];
+                navigator.serviceWorker.ready.then(registration => {
+                    registration.showNotification("SRKR Portal Notification", {
+                        body: randomTitle,
+                        icon: "https://cdn-icons-png.flaticon.com/128/2997/2997608.png",
+                        tag: "study-update",
+                        renotify: true
+                    });
+                });
+            }
+        }
+
+        // Live Presence Tracker (Hidden Presence Engine)
+        function updatePresence(isOnline, isTyping = false) {
+            setDoc(doc(db, "srkr_presence", myDeviceId), {
+                lastSeen: Date.now(),
+                online: isOnline,
+                typing: isTyping
+            }, { merge: true });
+        }
+
+        // Initialize connection loop triggers
+        updatePresence(true);
+        window.addEventListener('beforeunload', () => updatePresence(false));
+        document.addEventListener('visibilitychange', () => {
+            updatePresence(document.visibilityState === 'visible');
+        });
+
+        // Listen for Peer Presence & Typing Engine Status
+        onSnapshot(statusCollection, (snapshot) => {
+            let peerTyping = false;
+            let peerOnline = false;
+
+            snapshot.forEach((docSnap) => {
+                if (docSnap.id !== myDeviceId) {
+                    const data = docSnap.data();
+                    // If last sync heartbeat is within 15 seconds, user is active
+                    if (data.online && (Date.now() - data.lastSeen < 15000)) {
+                        peerOnline = true;
+                        if (data.typing) peerTyping = true;
+                    }
+                }
+            });
+
+            // Update UI components dynamically
+            const dot = document.getElementById('status-node');
+            const typingLabel = document.getElementById('typing-node');
+
+            if (peerOnline) dot.classList.add('active'); else dot.classList.remove('active');
+            
+            if (peerTyping) {
+                typingLabel.innerText = "System: Questioning processing metrics...";
+                typingLabel.style.display = 'block';
+            } else {
+                typingLabel.style.display = 'none';
+            }
+        });
+
+        // Heartbeat pulse to keep status live inside loop
+        setInterval(() => {
+            updatePresence(document.visibilityState === 'visible', document.getElementById('forum-input').value.length > 0);
+        }, 8000);
+
+        // Input Keyboard Tracking for Typing Status
+        const inputField = document.getElementById('forum-input');
+        inputField.addEventListener('input', () => {
+            updatePresence(true, inputField.value.length > 0);
+        });
+
+        // Open/Close Local Materials System
         window.openPdf = function(title, content) {
             document.getElementById('viewer-title').innerText = title + " - Official Syllabus";
             document.getElementById('viewer-body').innerText = content;
             document.getElementById('material-viewer').style.display = 'flex';
         }
-        window.closePdf = function() {
-            document.getElementById('material-viewer').style.display = 'none';
-        }
+        window.closePdf = function() { document.getElementById('material-viewer').style.display = 'none'; }
 
-        // Long Press to trigger Secret Forum
+        // Long Press Implementation Framework
         let pressTimer;
         const trigger = document.getElementById('academic-trigger');
         const startPress = () => { pressTimer = setTimeout(() => toggleForum(true), 2000); };
@@ -282,7 +392,6 @@
             document.getElementById('forum-container').style.display = show ? 'block' : 'none';
         }
 
-        const inputField = document.getElementById('forum-input');
         document.getElementById('submit-q').addEventListener('click', () => sendQuery('question'));
         document.getElementById('submit-a').addEventListener('click', () => sendQuery('answer'));
 
@@ -307,24 +416,36 @@
                 });
             }
             inputField.value = '';
+            updatePresence(true, false);
             cancelReply();
         }
 
-        // Live Feed Receiver
+        // Live Feed Synchronizer Node
         const board = document.getElementById('forum-board');
         const q = query(queriesCollection, orderBy("timestamp", "asc"));
+        let initialLoadDone = false;
 
         onSnapshot(q, (snapshot) => {
+            let newIncomingDetected = false;
             board.innerHTML = ''; 
             snapshot.forEach((docSnap) => {
                 const data = docSnap.data();
-                const docId = docSnap.id;
-
                 if (data.deletedFor && data.deletedFor.includes(myDeviceId)) return;
-
-                renderItem(docId, data);
+                
+                // Track if new item belongs to target partner
+                if (initialLoadDone && data.senderId !== myDeviceId) {
+                    newIncomingDetected = true;
+                }
+                renderItem(docSnap.id, data);
             });
+
+            // Fire Push Notification Engine if interface is hidden/screen closed
+            if (newIncomingDetected && document.hidden) {
+                triggerSystemNotification();
+            }
+
             board.scrollTop = board.scrollHeight;
+            initialLoadDone = true;
         });
 
         function renderItem(docId, data) {
@@ -348,21 +469,14 @@
                 ${reactionHtml}
             `;
 
+            // Menu trigger timings
             let holdTimer;
             const onStart = (e) => { holdTimer = setTimeout(() => openMenu(e, docId, data, isMine), 800); };
             const onEnd = () => clearTimeout(holdTimer);
-            
             itemDiv.addEventListener('touchstart', onStart, {passive: true});
             itemDiv.addEventListener('touchend', onEnd);
             itemDiv.addEventListener('mousedown', onStart);
             itemDiv.addEventListener('mouseup', onEnd);
-
-            let touchStartX = 0;
-            itemDiv.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive:true});
-            itemDiv.addEventListener('touchend', e => {
-                let touchEndX = e.changedTouches[0].screenX;
-                if (touchEndX - touchStartX > 60) { setReply(docId, data.payloadText); }
-            });
 
             board.appendChild(itemDiv);
         }
@@ -374,58 +488,39 @@
             e.preventDefault();
             selectedDocId = docId;
             selectedDocData = data;
-
-            // Strict Validation: Hide Edit & Delete for Everyone if it belongs to opposite user
             document.getElementById('opt-edit').style.display = isMine ? 'block' : 'none';
             document.getElementById('opt-del-everyone').style.display = isMine ? 'block' : 'none';
-
             overlay.style.display = 'block';
             menu.style.display = 'flex';
             menu.style.top = '50%'; menu.style.left = '50%';
             menu.style.transform = 'translate(-50%, -50%)';
         }
 
-        window.closeMenu = function() {
-            overlay.style.display = 'none'; menu.style.display = 'none';
-        }
-
+        window.closeMenu = function() { overlay.style.display = 'none'; menu.style.display = 'none'; }
         window.addReaction = async function(emoji) {
             await updateDoc(doc(db, "srkr_queries", selectedDocId), { reaction: emoji });
             closeMenu();
         }
-
         window.triggerReply = function() {
-            setReply(selectedDocId, selectedDocData.payloadText);
+            replyToData = { id: selectedDocId, text: selectedDocData.payloadText };
+            document.getElementById('reply-bar').style.display = 'flex';
+            document.getElementById('reply-text').innerText = "Ref: " + selectedDocData.payloadText.substring(0, 30) + "...";
+            inputField.focus();
             closeMenu();
         }
-
         window.triggerEdit = function() {
             editingDocId = selectedDocId;
             inputField.value = selectedDocData.payloadText;
             inputField.focus();
             closeMenu();
         }
-
         window.deleteForMe = async function() {
-            await updateDoc(doc(db, "srkr_queries", selectedDocId), { 
-                deletedFor: arrayUnion(myDeviceId) 
-            });
+            await updateDoc(doc(db, "srkr_queries", selectedDocId), { deletedFor: arrayUnion(myDeviceId) });
             closeMenu();
         }
-
-        // Strict Check: Wipe out immediately from database node
         window.deleteForEveryone = async function() {
-            if(selectedDocData.senderId === myDeviceId) {
-                await deleteDoc(doc(db, "srkr_queries", selectedDocId));
-            }
+            if(selectedDocData.senderId === myDeviceId) { await deleteDoc(doc(db, "srkr_queries", selectedDocId)); }
             closeMenu();
-        }
-
-        function setReply(docId, text) {
-            replyToData = { id: docId, text: text };
-            document.getElementById('reply-bar').style.display = 'flex';
-            document.getElementById('reply-text').innerText = "Ref: " + text.substring(0, 30) + "...";
-            inputField.focus();
         }
         window.cancelReply = function() {
             replyToData = null;
