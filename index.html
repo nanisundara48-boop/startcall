@@ -10,7 +10,7 @@
             background-color: #f8fafc; 
             margin: 0; 
             color: #334155;
-            -webkit-user-select: none; /* Prevents text selection during long press */
+            -webkit-user-select: none; 
             user-select: none;
         }
         .header { 
@@ -23,139 +23,96 @@
         .header h1 { margin: 0; font-size: 22px; letter-spacing: 0.5px; }
         .header p { margin: 5px 0 0 0; font-size: 13px; opacity: 0.8; }
         
-        /* Study Material UI */
         .main-content { 
-            display: flex; 
-            flex-wrap: wrap; 
-            justify-content: center; 
-            padding: 40px 20px; 
-            gap: 25px;
+            display: flex; flex-wrap: wrap; justify-content: center; 
+            padding: 40px 20px; gap: 25px;
         }
         .subject-card { 
-            background: white; 
-            padding: 24px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); 
-            width: 260px; 
-            border: 1px solid #e2e8f0;
-            border-top: 4px solid #1e3a8a;
+            background: white; padding: 24px; border-radius: 12px; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); width: 260px; 
+            border: 1px solid #e2e8f0; border-top: 4px solid #1e3a8a;
         }
         .subject-card h3 { margin-top: 0; color: #1e293b; font-size: 16px; }
         .subject-card p { color: #64748b; font-size: 13px; line-height: 1.5; }
         .download-btn { 
-            background-color: #1e3a8a; 
-            color: white; 
-            border: none; 
-            padding: 8px 16px; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            font-size: 13px;
-            font-weight: 500;
-            width: 100%;
-            margin-top: 10px;
+            background-color: #1e3a8a; color: white; border: none; 
+            padding: 8px 16px; border-radius: 6px; cursor: pointer; 
+            font-size: 13px; width: 100%; margin-top: 10px;
         }
 
-        /* Secret Q&A Forum (Hidden Chat Box) */
+        /* Secret Q&A Forum */
         #forum-container { 
-            display: none; 
-            position: fixed; 
-            bottom: 20px; 
-            right: 20px; 
-            left: 20px; /* Make it responsive for mobile */
-            max-width: 400px;
-            margin: auto;
-            background: white; 
-            border-radius: 12px; 
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); 
-            border: 1px solid #cbd5e1;
-            overflow: hidden;
-            z-index: 9999;
+            display: none; position: fixed; bottom: 20px; right: 20px; left: 20px; 
+            max-width: 400px; margin: auto; background: white; border-radius: 12px; 
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); border: 1px solid #cbd5e1;
+            overflow: hidden; z-index: 9999;
         }
         .forum-header { 
-            background: #1e3a8a; 
-            color: white; 
-            padding: 14px; 
-            font-size: 14px;
-            font-weight: 600; 
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            background: #1e3a8a; color: white; padding: 14px; font-size: 14px;
+            font-weight: 600; display: flex; justify-content: space-between;
         }
-        .close-forum { cursor: pointer; opacity: 0.7; font-size: 16px; padding: 0 5px;}
-        .close-forum:hover { opacity: 1; }
+        .close-forum { cursor: pointer; opacity: 0.7; font-size: 16px; padding: 0 5px; }
         
         #forum-board { 
-            height: 300px; 
-            overflow-y: auto; 
-            padding: 15px; 
-            background: #f1f5f9; 
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+            height: 350px; overflow-y: auto; padding: 15px; background: #f1f5f9; 
+            display: flex; flex-direction: column; gap: 12px; position: relative;
         }
         
-        /* Disguised Message Blocks */
+        /* Message Blocks */
         .forum-item {
-            padding: 10px 12px;
-            border-radius: 8px;
-            font-size: 13.5px;
-            line-height: 1.4;
-            max-width: 85%;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-            word-wrap: break-word;
+            padding: 10px 12px; border-radius: 8px; font-size: 13.5px; 
+            line-height: 1.4; max-width: 80%; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            word-wrap: break-word; position: relative; transition: transform 0.2s;
         }
-        .forum-item.question {
-            align-self: flex-start;
-            background: #ffffff;
-            border-left: 4px solid #ef4444;
+        .forum-item.mine { align-self: flex-end; background: #f0fdf4; border-right: 4px solid #22c55e; text-align: right; }
+        .forum-item.theirs { align-self: flex-start; background: #ffffff; border-left: 4px solid #ef4444; }
+        
+        .label { font-size: 10px; font-weight: bold; text-transform: uppercase; margin-bottom: 4px; display: block; color: #64748b; }
+        .msg-text { display: block; }
+        .edited-tag { font-size: 9px; color: #94a3b8; font-style: italic; }
+        .deleted-msg { color: #94a3b8; font-style: italic; }
+        
+        /* Reply Snippet in Message */
+        .reply-snippet {
+            background: rgba(0,0,0,0.05); padding: 5px; border-radius: 4px; 
+            font-size: 11px; margin-bottom: 6px; border-left: 2px solid #64748b;
+            text-align: left;
         }
-        .forum-item.answer {
-            align-self: flex-end;
-            background: #f0fdf4;
-            border-right: 4px solid #22c55e;
-            text-align: right;
-        }
-        .label {
-            font-size: 10px;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-bottom: 4px;
-            display: block;
-        }
-        .label.q { color: #b91c1c; }
-        .label.a { color: #15803d; }
 
-        .forum-input-area {
-            padding: 12px;
-            background: white;
-            border-top: 1px solid #e2e8f0;
+        /* Reactions */
+        .reaction-badge {
+            position: absolute; bottom: -8px; right: 10px; background: white;
+            border-radius: 12px; padding: 2px 5px; font-size: 12px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2); display: none;
         }
-        #forum-input { 
-            width: 100%; 
-            padding: 10px; 
-            border: 1px solid #cbd5e1; 
-            border-radius: 6px; 
-            outline: none;
-            font-size: 13px;
-            box-sizing: border-box;
-            margin-bottom: 8px;
+
+        /* Input Area & Reply Bar */
+        .reply-bar {
+            display: none; background: #e2e8f0; padding: 8px 12px; font-size: 12px;
+            border-top: 1px solid #cbd5e1; justify-content: space-between; align-items: center;
         }
-        .btn-group {
-            display: flex;
-            gap: 8px;
-        }
-        .action-btn {
-            flex: 1;
-            border: none;
-            padding: 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            color: white;
-        }
+        .close-reply { cursor: pointer; font-weight: bold; color: #64748b; }
+        .forum-input-area { padding: 12px; background: white; border-top: 1px solid #e2e8f0; }
+        #forum-input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; font-size: 13px; box-sizing: border-box; margin-bottom: 8px; }
+        .btn-group { display: flex; gap: 8px; }
+        .action-btn { flex: 1; border: none; padding: 10px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; color: white; }
         .btn-q { background-color: #dc2626; }
         .btn-a { background-color: #16a34a; }
+
+        /* Context Menu (Hold Options) */
+        #msg-options-modal {
+            display: none; position: absolute; background: white; border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 10000; width: 180px;
+            overflow: hidden; border: 1px solid #cbd5e1; flex-direction: column;
+        }
+        .reaction-row { display: flex; justify-content: space-around; padding: 10px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; }
+        .react-btn { font-size: 18px; cursor: pointer; border: none; background: none; }
+        .opt-btn { padding: 10px; font-size: 13px; border: none; background: white; text-align: left; cursor: pointer; border-bottom: 1px solid #f1f5f9; color: #334155;}
+        .opt-btn:hover { background: #f1f5f9; }
+        .opt-btn.danger { color: #dc2626; }
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9998;
+        }
     </style>
 </head>
 <body>
@@ -167,31 +124,31 @@
 
     <div class="main-content">
         <div class="subject-card">
-            <h3>📝 Mathematics - I (Calculus)</h3>
-            <p>Matrix operations, Partial differentiation, and Multiple integrals question bank.</p>
-            <button class="download-btn" onclick="alert('Downloading Assignment PDF...')">Download Syllabus</button>
+            <h3>📝 Mathematics - I</h3>
+            <p>Calculus and differential equations material.</p>
+            <button class="download-btn">Download Syllabus</button>
         </div>
         <div class="subject-card">
             <h3>🔬 Engineering Chemistry</h3>
-            <p>Water technology, Molecular structure, and Instrumental methods of analysis slides.</p>
-            <button class="download-btn" onclick="alert('Opening Reference Link...')">View Material</button>
-        </div>
-        <div class="subject-card">
-            <h3>🔌 Basic Electrical Engg.</h3>
-            <p>DC Circuits, AC Fundamentals, and Transformer performance evaluations.</p>
-            <button class="download-btn" onclick="alert('Downloading Manual...')">Download Lab Manual</button>
+            <p>Molecular structure reference slides.</p>
+            <button class="download-btn">View Material</button>
         </div>
     </div>
 
     <div id="forum-container">
         <div class="forum-header">
-            <span>Assignment Doubt Verification Panel</span>
+            <span>Assignment Verification Panel</span>
             <span class="close-forum" onclick="toggleForum(false)">✖</span>
         </div>
-        <div id="forum-board">
-            </div>
+        <div id="forum-board"></div>
+        
+        <div class="reply-bar" id="reply-bar">
+            <span id="reply-text">Referencing: ...</span>
+            <span class="close-reply" onclick="cancelReply()">✖</span>
+        </div>
+
         <div class="forum-input-area">
-            <input type="text" id="forum-input" placeholder="Type assignment question or reference query...">
+            <input type="text" id="forum-input" placeholder="Type query or solution...">
             <div class="btn-group">
                 <button class="action-btn btn-q" id="submit-q">Submit Q</button>
                 <button class="action-btn btn-a" id="submit-a">Submit A</button>
@@ -199,11 +156,23 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="modal-overlay" onclick="closeMenu()"></div>
+    <div id="msg-options-modal">
+        <div class="reaction-row">
+            <button class="react-btn" onclick="addReaction('❤️')">❤️</button>
+            <button class="react-btn" onclick="addReaction('😡')">😡</button>
+        </div>
+        <button class="opt-btn" onclick="triggerReply()">↪ Reference (Reply)</button>
+        <button class="opt-btn" id="opt-edit" onclick="triggerEdit()">✏️ Revise (Edit)</button>
+        <button class="opt-btn danger" onclick="deleteForMe()">🗑️ Hide (Delete for me)</button>
+        <button class="opt-btn danger" id="opt-del-everyone" onclick="deleteForEveryone()">🚫 Withdraw (Delete for everyone)</button>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Your specific Firebase Configuration
+        // ⚠️ YOUR FIREBASE CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyCZmqyLmyWesuoj6djTbyfrOJ1v7_FCWcQ",
             authDomain: "game-bf78a.firebaseapp.com",
@@ -217,43 +186,35 @@
         const db = getFirestore(app);
         const queriesCollection = collection(db, "srkr_queries");
 
-        // Secret Trigger Mechanics: LONG PRESS (2 Seconds)
-        let pressTimer;
-        const trigger = document.getElementById('academic-trigger');
-        const container = document.getElementById('forum-container');
-
-        const startPress = (e) => {
-            // Start a 2-second timer when touch/click starts
-            pressTimer = setTimeout(() => {
-                toggleForum(true);
-            }, 2000); 
-        };
-
-        const cancelPress = () => {
-            // Cancel timer if finger is lifted before 2 seconds
-            clearTimeout(pressTimer);
-        };
-
-        // For Mobile Touch
-        trigger.addEventListener('touchstart', startPress, {passive: true});
-        trigger.addEventListener('touchend', cancelPress);
-        trigger.addEventListener('touchmove', cancelPress); // Cancel if swiping
-        // For PC Mouse
-        trigger.addEventListener('mousedown', startPress);
-        trigger.addEventListener('mouseup', cancelPress);
-        trigger.addEventListener('mouseleave', cancelPress);
-
-        window.toggleForum = function(show) {
-            container.style.display = show ? 'block' : 'none';
-            if(show) {
-                const board = document.getElementById('forum-board');
-                board.scrollTop = board.scrollHeight;
-            }
+        // Secret Device ID (To know who is sender vs receiver without login)
+        let myDeviceId = localStorage.getItem('srkr_device_id');
+        if(!myDeviceId) {
+            myDeviceId = 'user_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('srkr_device_id', myDeviceId);
         }
 
-        // Data Submission Logic
+        // Global States
+        let replyToData = null;
+        let editingDocId = null;
+        let selectedDocId = null;
+        let selectedDocData = null;
+
+        // Long Press to open forum
+        let pressTimer;
+        const trigger = document.getElementById('academic-trigger');
+        const startPress = () => { pressTimer = setTimeout(() => toggleForum(true), 2000); };
+        const cancelPress = () => { clearTimeout(pressTimer); };
+        trigger.addEventListener('touchstart', startPress, {passive: true});
+        trigger.addEventListener('touchend', cancelPress);
+        trigger.addEventListener('mousedown', startPress);
+        trigger.addEventListener('mouseup', cancelPress);
+
+        window.toggleForum = function(show) {
+            document.getElementById('forum-container').style.display = show ? 'block' : 'none';
+        }
+
+        // Send Message
         const inputField = document.getElementById('forum-input');
-        
         document.getElementById('submit-q').addEventListener('click', () => sendQuery('question'));
         document.getElementById('submit-a').addEventListener('click', () => sendQuery('answer'));
 
@@ -261,54 +222,171 @@
             const text = inputField.value.trim();
             if (text === '') return;
 
-            inputField.value = ''; // clear input immediately
-            try {
+            if (editingDocId) {
+                await updateDoc(doc(db, "srkr_queries", editingDocId), {
+                    payloadText: text, isEdited: true
+                });
+                editingDocId = null;
+            } else {
                 await addDoc(queriesCollection, {
+                    senderId: myDeviceId,
                     contentType: type,
                     payloadText: text,
-                    timestamp: Date.now()
+                    timestamp: Date.now(),
+                    isDeleted: false,
+                    deletedFor: [],
+                    replyTo: replyToData,
+                    reaction: null
                 });
-            } catch (e) {
-                console.error("Error adding document: ", e);
-                alert("Failed to send. Check Firebase rules.");
             }
+            inputField.value = '';
+            cancelReply();
         }
 
-        // Real-Time Syncing from Firestore
+        // Realtime Sync
         const board = document.getElementById('forum-board');
         const q = query(queriesCollection, orderBy("timestamp", "asc"));
 
         onSnapshot(q, (snapshot) => {
-            snapshot.docChanges().forEach((change) => {
-                if (change.type === "added") {
-                    const data = change.doc.data();
-                    renderItem(data.payloadText, data.contentType);
-                }
+            board.innerHTML = ''; // Re-render all for simplicity on updates
+            snapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                const docId = docSnap.id;
+
+                // Check "Delete for Me"
+                if (data.deletedFor && data.deletedFor.includes(myDeviceId)) return;
+
+                renderItem(docId, data);
             });
+            board.scrollTop = board.scrollHeight;
         });
 
-        function renderItem(text, type) {
+        function renderItem(docId, data) {
+            const isMine = data.senderId === myDeviceId;
             const itemDiv = document.createElement('div');
-            itemDiv.className = `forum-item ${type}`;
+            itemDiv.className = `forum-item ${isMine ? 'mine' : 'theirs'}`;
             
-            const labelSpan = document.createElement('span');
-            if (type === 'question') {
-                labelSpan.className = 'label q';
-                labelSpan.innerText = '📌 Verified Query ID:';
-            } else {
-                labelSpan.className = 'label a';
-                labelSpan.innerText = '💡 Faculty/Peer Solution:';
+            // Delete for everyone check
+            if (data.isDeleted) {
+                itemDiv.innerHTML = `<span class="deleted-msg">🚫 This submission was withdrawn.</span>`;
+                board.appendChild(itemDiv);
+                return;
             }
 
-            const textSpan = document.createElement('span');
-            textSpan.innerText = text;
+            // Reply Snippet
+            let replyHtml = '';
+            if (data.replyTo) {
+                replyHtml = `<div class="reply-snippet">Ref: ${data.replyTo.text.substring(0,25)}...</div>`;
+            }
 
-            itemDiv.appendChild(labelSpan);
-            itemDiv.appendChild(textSpan);
-            board.appendChild(itemDiv);
+            // Label
+            let label = data.contentType === 'question' ? '📌 Query' : '💡 Solution';
             
-            // Auto-scroll
-            board.scrollTop = board.scrollHeight;
+            // Reaction
+            let reactionHtml = data.reaction ? `<div class="reaction-badge" style="display:block;">${data.reaction}</div>` : '';
+
+            // Edited Tag
+            let editedHtml = data.isEdited ? `<span class="edited-tag"> (Revised)</span>` : '';
+
+            itemDiv.innerHTML = `
+                ${replyHtml}
+                <span class="label">${label}</span>
+                <span class="msg-text">${data.payloadText} ${editedHtml}</span>
+                ${reactionHtml}
+            `;
+
+            // Hold Logic (1 second)
+            let holdTimer;
+            const onStart = (e) => { 
+                holdTimer = setTimeout(() => openMenu(e, docId, data, isMine), 800); 
+            };
+            const onEnd = () => clearTimeout(holdTimer);
+            
+            itemDiv.addEventListener('touchstart', onStart, {passive: true});
+            itemDiv.addEventListener('touchend', onEnd);
+            itemDiv.addEventListener('mousedown', onStart);
+            itemDiv.addEventListener('mouseup', onEnd);
+
+            // Swipe to Reply Logic (Right Swipe)
+            let touchStartX = 0;
+            itemDiv.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive:true});
+            itemDiv.addEventListener('touchend', e => {
+                let touchEndX = e.changedTouches[0].screenX;
+                if (touchEndX - touchStartX > 60) { // Swiped right
+                    setReply(docId, data.payloadText);
+                }
+            });
+
+            board.appendChild(itemDiv);
+        }
+
+        // Action Menu Logic
+        const menu = document.getElementById('msg-options-modal');
+        const overlay = document.getElementById('modal-overlay');
+
+        function openMenu(e, docId, data, isMine) {
+            e.preventDefault();
+            selectedDocId = docId;
+            selectedDocData = data;
+
+            // Show/Hide Edit & Delete for Everyone based on ownership
+            document.getElementById('opt-edit').style.display = isMine ? 'block' : 'none';
+            document.getElementById('opt-del-everyone').style.display = isMine ? 'block' : 'none';
+
+            overlay.style.display = 'block';
+            menu.style.display = 'flex';
+            
+            // Position menu center screen for mobile ease
+            menu.style.top = '50%';
+            menu.style.left = '50%';
+            menu.style.transform = 'translate(-50%, -50%)';
+        }
+
+        window.closeMenu = function() {
+            overlay.style.display = 'none';
+            menu.style.display = 'none';
+        }
+
+        // Message Actions
+        window.addReaction = async function(emoji) {
+            await updateDoc(doc(db, "srkr_queries", selectedDocId), { reaction: emoji });
+            closeMenu();
+        }
+
+        window.triggerReply = function() {
+            setReply(selectedDocId, selectedDocData.payloadText);
+            closeMenu();
+        }
+
+        window.triggerEdit = function() {
+            editingDocId = selectedDocId;
+            inputField.value = selectedDocData.payloadText;
+            inputField.focus();
+            closeMenu();
+        }
+
+        window.deleteForMe = async function() {
+            await updateDoc(doc(db, "srkr_queries", selectedDocId), { 
+                deletedFor: arrayUnion(myDeviceId) 
+            });
+            closeMenu();
+        }
+
+        window.deleteForEveryone = async function() {
+            await updateDoc(doc(db, "srkr_queries", selectedDocId), { isDeleted: true });
+            closeMenu();
+        }
+
+        // Reply Bar Utilities
+        function setReply(docId, text) {
+            replyToData = { id: docId, text: text };
+            document.getElementById('reply-bar').style.display = 'flex';
+            document.getElementById('reply-text').innerText = "Ref: " + text.substring(0, 30) + "...";
+            inputField.focus();
+        }
+        window.cancelReply = function() {
+            replyToData = null;
+            document.getElementById('reply-bar').style.display = 'none';
         }
     </script>
 </body>
